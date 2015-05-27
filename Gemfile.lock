@@ -1,5 +1,6 @@
-PATH
-  remote: /Volumes/one_tb_hd/_programming/2kpcc/data-projects/officer_involved_shootings/transcribable
+GIT
+  remote: https://github.com/SCPR/transcribable.git
+  revision: 71c353e30969313ffc2a23b32c20cfbd305b5675
   specs:
     transcribable (0.0.6)
       rails (>= 4.0.0)
