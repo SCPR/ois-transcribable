@@ -1,0 +1,167 @@
+<%= simple_form_for(@transcription) do |f| %>
+    <%= submit_tag "Submit", :class => "btn btn-success btn-lg btn-block", :id => "transcriptionsubmit"  %>
+    <div class="overflow form-fields">
+        <% if @transcription.errors.any? %>
+            <div id="error_explanation">
+                <h6><%= pluralize(@transcription.errors.count, "error") %> prohibited this transcription from being saved:</h6>
+                <ul>
+                    <% @transcription.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                    <% end %>
+                </ul>
+            </div>
+        <% end %>
+
+        <!-- begin initial data -->
+        <h5>Initial Information</h5>
+        <div class="do_something">
+            <%= f.input :district_attorney_county, class: "form-control", label: "District Attorney County" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :district_attorney_date_of_letter, class: "form-control", as: :date, start_year: Date.today.year - 15, end_year: Date.today.year, order: [:month, :day,  :year], label: "District Attorney Date Of Letter" %>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :officer_police_agency, class: "form-control", label: "Law Enforcement Agency" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :district_attorney_file_number, class: "form-control", label: "District Attorney File Number (In LA County it's the J.S.I.D File Number)" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :date_of_incident, class: "form-control", as: :date, start_year: Date.today.year - 15, end_year: Date.today.year, order: [:month, :day,  :year], label: "Date Of Incident" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :civilian_name, class: "form-control", label: "Civilian Name (Your attribute description here)" %>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :multiple_officers, class: "form-control", label: "Multiple Officers Involved (Click box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :officer_name_and_badge_number, class: "form-control", label: "Officer Names (Include Badge Numbers in parentheses and separate each by commas)" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :district_attorney_conclusion, class: "form-control", label: "District Attorney Conclusion (e.g.: deputies acted lawfully in self-defense and defense of others.)" %>
+            </div>
+        </div>
+        <!-- end initial data -->
+
+        <hr></hr>
+
+        <!-- begin narrative data -->
+        <h5>Factual Analysis</h5>
+        <div class="do_something">
+            <%= f.input :general_location_of_incident, class: "form-control", label: "General Location Of Incident" %>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :what_happened, class: "form-control", label: "What Happened" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :underlying_crime_leading_to_shooting, class: "form-control", label: "Underlying Crime That Led to Shooting" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :how_situation_escalated, class: "form-control", label: "What Caused Situation to Escalate" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :type_of_incident, class: "form-control", label: "Type Of Use of Force Incident" %>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :civillian_weapon, class: "form-control", label: "Weapon Used By Civillian" %>
+            </div>
+        </div>
+        <!-- end narrative data -->
+
+        <!-- begin mention of these things -->
+        <h5>Factors Present</h5>
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :car_stop, class: "form-control", label: "Car Stop (Click box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :chase_or_pursuit, class: "form-control", label: "Chase Or Pursuit (Click box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :mention_of_waistband_in_report, class: "form-control", label: "'Reaching For Waistband' mentioned (Click box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :civillian_armed, class: "form-control", label: "Civillian Armed (Click box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :potential_police_video, class: "form-control", label: "Potential Police Video (Click box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :potential_civillian_video, class: "form-control", label: "Potential Civillian Video (Click box if true)" %>
+            </label>
+        </div>
+
+        <h5>Additional Information</h5>
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :narrative_notes, class: "form-control", label: "Narrative Notes" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :conclusion_notes, class: "form-control", label: "Conclusion Notes" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :autopsy_notes, class: "form-control", label: "Autopsy Notes" %>
+            </div>
+        </div>
+        <!-- end mention of these things -->
+
+        <h5>Signed By Data</h5>
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :district_attorney_prepared_report, class: "form-control", label: "District Attorney Report Prepared By" %>
+            </div>
+        </div>
+
+
+        <%= hidden_field_tag "incident_id", @incident.id %>
+    </div>
+<% end %>

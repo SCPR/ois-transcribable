@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  officer_name: 
+  officer_agency: 
+  officer_badge_number: MyString
+
+two:
+  officer_name: 
+  officer_agency: 
+  officer_badge_number: MyString

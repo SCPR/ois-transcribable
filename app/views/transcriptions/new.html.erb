@@ -1,0 +1,47 @@
+<% if flash[:alert] %>
+    <div class="warn"><%= flash[:alert] %></div>
+<% end %>
+
+<% if flash[:notice] %>
+    <div class="notice"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="row data-visuals">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <div id="doc"></div>
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <div id="form">
+            <%= render 'form' %>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var fn = fn || {};
+
+    var fn = {
+        getDocumentMeta: function(data){
+            console.log(data.document);
+            //console.log(data.document.title);
+            $("#document-title").html(data.document.title);
+        }
+    };
+
+    var initialWidth = $("#doc").width();
+    var CURRENT_DOCUMENT = DV.load("https://documentcloud.org/documents/<%= @incident.dc_slug %>.js", {
+        container: '#doc',
+        width: initialWidth,
+        height: 900,
+        zoom: 'auto',
+        showSidebar: false,
+        embedded: true,
+        showAnnotations: false
+    });
+
+    var docJson = "https://www.documentcloud.org/api/documents/<%= @incident.dc_slug %>.json";
+
+    $.getJSON(docJson, fn.getDocumentMeta);
+
+</script>

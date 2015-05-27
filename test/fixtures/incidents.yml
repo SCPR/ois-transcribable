@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  url: 
+  verified: 
+  civilian_name: 
+  civilian_dob: 
+  civilian_address: MyString
+
+two:
+  url: 
+  verified: 
+  civilian_name: 
+  civilian_dob: 
+  civilian_address: MyString
