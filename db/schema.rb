@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150601201225) do
+ActiveRecord::Schema.define(version: 20150601223057) do
 
   create_table "incidents", force: :cascade do |t|
     t.string   "url"
@@ -44,6 +44,24 @@ ActiveRecord::Schema.define(version: 20150601201225) do
     t.boolean  "potential_civillian_video",            default: false, null: false
     t.boolean  "mention_of_waistband_in_report",       default: false, null: false
     t.boolean  "fatal",                                default: false, null: false
+    t.boolean  "case_relevant",                        default: true,  null: false
+    t.boolean  "victim_arrested",                      default: false, null: false
+    t.text     "victim_case_number"
+    t.text     "officer_special_unit"
+    t.boolean  "officer_charges_filed",                default: false, null: false
+    t.text     "officer_charges_filed_yes_detail"
+    t.boolean  "officer_self_defense",                 default: false, null: false
+    t.boolean  "officer_defense_of_civillians",        default: false, null: false
+    t.boolean  "officer_defense_of_officers",          default: false, null: false
+    t.boolean  "officer_unknown",                      default: false, null: false
+    t.boolean  "officer_serving_warrant",              default: false, null: false
+    t.boolean  "officer_on_surveillance",              default: false, null: false
+    t.boolean  "officer_on_undercover",                default: false, null: false
+    t.boolean  "pursuit_occurred",                     default: false, null: false
+    t.boolean  "victim_gang_member",                   default: false, null: false
+    t.boolean  "victim_ignored_officer_commands",      default: false, null: false
+    t.boolean  "victim_weapon_recovered",              default: false, null: false
+    t.boolean  "victim_initiated_physical_threat",     default: false, null: false
   end
 
   create_table "transcriptions", force: :cascade do |t|
@@ -75,6 +93,24 @@ ActiveRecord::Schema.define(version: 20150601201225) do
     t.text     "what_happened"
     t.boolean  "mention_of_waistband_in_report"
     t.boolean  "fatal"
+    t.boolean  "officer_on_undercover"
+    t.boolean  "pursuit_occurred"
+    t.boolean  "victim_gang_member"
+    t.boolean  "victim_ignored_officer_commands"
+    t.boolean  "victim_weapon_recovered"
+    t.boolean  "officer_self_defense"
+    t.boolean  "officer_defense_of_civillians"
+    t.boolean  "officer_defense_of_officers"
+    t.boolean  "victim_initiated_physical_threat"
+    t.boolean  "case_relevant"
+    t.boolean  "officer_unknown"
+    t.boolean  "officer_serving_warrant"
+    t.boolean  "officer_on_surveillance"
+    t.boolean  "victim_arrested"
+    t.text     "victim_case_number"
+    t.text     "officer_special_unit"
+    t.boolean  "officer_charges_filed"
+    t.text     "officer_charges_filed_yes_detail"
   end
 
   create_table "users", force: :cascade do |t|

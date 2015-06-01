@@ -24,7 +24,25 @@ class Incident < ActiveRecord::Base
         :potential_police_video,
         :potential_civillian_video,
         :mention_of_waistband_in_report,
-        :fatal
+        :fatal,
+        :officer_on_undercover,
+        :pursuit_occurred,
+        :victim_gang_member,
+        :victim_ignored_officer_commands,
+        :victim_weapon_recovered,
+        :victim_initiated_physical_threat,
+        :officer_self_defense,
+        :officer_defense_of_civillians,
+        :officer_defense_of_officers,
+        :officer_unknown,
+        :officer_serving_warrant,
+        :officer_on_surveillance,
+        :case_relevant,
+        :victim_arrested,
+        :victim_case_number,
+        :officer_special_unit,
+        :officer_charges_filed,
+        :officer_charges_filed_yes_detail
 
     validates :district_attorney_file_number, uniqueness: true
 

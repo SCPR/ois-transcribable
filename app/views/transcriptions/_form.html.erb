@@ -14,6 +14,13 @@
 
         <!-- begin initial data -->
         <h5>Initial Information</h5>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :case_relevant, class: "form-control", label: "Case Relevant (Is this an Use Of Force incident?)" %>
+            </label>
+        </div>
+
         <div class="do_something">
             <%= f.input :district_attorney_county, class: "form-control", label: "District Attorney County" %>
         </div>
@@ -42,17 +49,29 @@
 
         <div class="do_something">
             <label class="checkbox-inline">
-                <%= f.input :fatal, class: "form-control", label: "Fatal (Your attribute description here)" %>
+                <%= f.input :victim_arrested, class: "form-control", label: "Was The Victim Arrested" %>
             </label>
         </div>
 
         <div class="do_something">
-            <%= f.input :type_of_incident, class: "form-control", label: "Type Of Use of Force Incident" %>
+            <div class="field" id="notes">
+                <%= f.input :victim_case_number, class: "form-control", label: "Case Number If Victim Arrested" %>
+            </div>
         </div>
 
         <div class="do_something">
             <label class="checkbox-inline">
-                <%= f.input :multiple_officers, class: "form-control", label: "Multiple Officers Involved (Click box if true)" %>
+                <%= f.input :fatal, class: "form-control", label: "Was Use Of Force Fatal (Click box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :type_of_incident, class: "form-control", label: "Type Of Force Used By Officer (Separate by commas)" %>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :multiple_officers, class: "form-control", label: "Were Multiple Officers Involved (Click box if true)" %>
             </label>
         </div>
 
@@ -62,12 +81,160 @@
             </div>
         </div>
 
+
+        <!--
         <div class="do_something">
             <div class="field" id="notes">
-                <%= f.input :district_attorney_conclusion, class: "form-control", label: "District Attorney Conclusion (e.g.: deputies acted lawfully in self-defense and defense of others.)" %>
+                <%#= f.input :district_attorney_conclusion, class: "form-control", label: "District Attorney Conclusion (e.g.: deputies acted lawfully in self-defense and defense of others.)" %>
+            </div>
+        </div>
+        -->
+
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :officer_charges_filed, class: "form-control", label: "Were Charges Filed Against Officer? (Click box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :officer_charges_filed_yes_detail, class: "form-control", label: "If So What Charges Were Filed Against Officer?" %>
+            </div>
+        </div>
+
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <div class="form-group text optional">
+                    <label class="text optional control-label">If No, What Was The Reason? (Click box if true)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :officer_self_defense, class: "form-control", label: "Officer Self Defense" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :officer_defense_of_civillians, class: "form-control", label: "Officer Defense Of Civillians" %>
+                </label>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :officer_defense_of_officers, class: "form-control", label: "Officer Defense Of Officers" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :officer_unknown, class: "form-control", label: "N/A or Unknown" %>
+                </label>
             </div>
         </div>
         <!-- end initial data -->
+
+        <hr></hr>
+
+        <!-- begin various factors present -->
+        <h5>Factors Present (Click box if true)</h5>
+
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :car_stop, class: "form-control", label: "Car Stop" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :chase_or_pursuit, class: "form-control", label: "Chase Or Pursuit Occurred" %>
+                </label>
+            </div>
+
+            <!--
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%#= f.input :pursuit_occurred, class: "form-control", label: "Pursuit Occurred" %>
+                </label>
+            </div>
+            -->
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :civillian_armed, class: "form-control", label: "Believed Victim To Be Armed" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :officer_serving_warrant, class: "form-control", label: "Officer Serving Warrant" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :officer_on_surveillance, class: "form-control", label: "Officer On Surveillance" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :officer_on_undercover, class: "form-control", label: "Officer On Undercover" %>
+                </label>
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :victim_gang_member, class: "form-control", label: "Victim Gang Member" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :victim_ignored_officer_commands, class: "form-control", label: "Victim Ignored Officer Commands" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :victim_weapon_recovered, class: "form-control", label: "Victim Weapon Recovered" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :victim_initiated_physical_threat, class: "form-control", label: "Victim Initiated Physical Threat" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :mention_of_waistband_in_report, class: "form-control", label: "'Reaching For Waistband' Mentioned" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :potential_police_video, class: "form-control", label: "Potential Police Video" %>
+                </label>
+            </div>
+
+            <div class="do_something">
+                <label class="checkbox-inline">
+                    <%= f.input :potential_civillian_video, class: "form-control", label: "Potential Civillian Video" %>
+                </label>
+            </div>
+        </div>
+        <!-- end various factors present -->
 
         <hr></hr>
 
@@ -97,49 +264,21 @@
 
         <div class="do_something">
             <div class="field" id="notes">
-                <%= f.input :civillian_weapon, class: "form-control", label: "Weapon Used By Civillian" %>
+                <%= f.input :civillian_weapon, class: "form-control", label: "Type of Weapon Carried/Used By Victim" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :officer_special_unit, class: "form-control", label: "Officer Special Unit (Your attribute description here)" %>
             </div>
         </div>
         <!-- end narrative data -->
 
-        <!-- begin mention of these things -->
-        <h5>Factors Present</h5>
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= f.input :car_stop, class: "form-control", label: "Car Stop (Click box if true)" %>
-            </label>
-        </div>
 
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= f.input :chase_or_pursuit, class: "form-control", label: "Chase Or Pursuit (Click box if true)" %>
-            </label>
-        </div>
+        <hr></hr>
 
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= f.input :mention_of_waistband_in_report, class: "form-control", label: "'Reaching For Waistband' mentioned (Click box if true)" %>
-            </label>
-        </div>
-
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= f.input :civillian_armed, class: "form-control", label: "Civillian Armed (Click box if true)" %>
-            </label>
-        </div>
-
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= f.input :potential_police_video, class: "form-control", label: "Potential Police Video (Click box if true)" %>
-            </label>
-        </div>
-
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= f.input :potential_civillian_video, class: "form-control", label: "Potential Civillian Video (Click box if true)" %>
-            </label>
-        </div>
-
+        <!-- begin additional data -->
         <h5>Additional Information</h5>
         <div class="do_something">
             <div class="field" id="notes">
@@ -158,16 +297,15 @@
                 <%= f.input :autopsy_notes, class: "form-control", label: "Autopsy Notes" %>
             </div>
         </div>
-        <!-- end mention of these things -->
 
-        <h5>Signed By Data</h5>
         <div class="do_something">
             <div class="field" id="notes">
                 <%= f.input :district_attorney_prepared_report, class: "form-control", label: "District Attorney Report Prepared By" %>
             </div>
         </div>
-
+        <!-- end additional data -->
 
         <%= hidden_field_tag "incident_id", @incident.id %>
+
     </div>
 <% end %>

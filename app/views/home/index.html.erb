@@ -1,9 +1,14 @@
-<h1>Home</h1>
+<h1>Welcome <%= @user.email %></h1>
 
 <p>This is the first page someone will see. It should have a link to create a <%= link_to 'new transcription', controller: :transcriptions, action: :new %>.</p>
 
-<p>It should probably also display some dashboard data?</p>
+<p>It should probably also display some dashboard data for each user?</p>
 
-<p><%= link_to 'Invite new users', new_invitation_path(:user) %></p>
+<ul>
+    <% @users = User.all %>
+    <% @users.each do |user| %>
+        <li><strong><%= user.email %></strong>: (Transcribed so far)</li>
+    <% end %>
+</ul>
 
 <%= render 'devise/menu/login_items' %>
