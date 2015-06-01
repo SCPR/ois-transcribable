@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150526234753) do
+ActiveRecord::Schema.define(version: 20150601180949) do
 
   create_table "incidents", force: :cascade do |t|
     t.string   "url"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20150526234753) do
     t.boolean  "potential_police_video",               default: false, null: false
     t.boolean  "potential_civillian_video",            default: false, null: false
     t.boolean  "mention_of_waistband_in_report",       default: false, null: false
+    t.boolean  "fatal",                                default: false, null: false
   end
 
   create_table "transcriptions", force: :cascade do |t|
@@ -73,6 +74,7 @@ ActiveRecord::Schema.define(version: 20150526234753) do
     t.text     "officer_police_agency"
     t.text     "what_happened"
     t.boolean  "mention_of_waistband_in_report"
+    t.boolean  "fatal"
   end
 
   create_table "users", force: :cascade do |t|

@@ -1,8 +1,8 @@
 class IncidentsController < ApplicationController
-  layout "simple_frame"
+    layout "simple_frame"
 
-  def index
+    def index
 
-  end
+    end
 
 end

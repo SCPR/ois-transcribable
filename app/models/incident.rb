@@ -23,7 +23,8 @@ class Incident < ActiveRecord::Base
         :civillian_armed,
         :potential_police_video,
         :potential_civillian_video,
-        :mention_of_waistband_in_report
+        :mention_of_waistband_in_report,
+        :fatal
 
     validates :district_attorney_file_number, uniqueness: true
 
