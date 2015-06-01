@@ -37,7 +37,11 @@
         </div>
 
         <div class="do_something">
-            <%= f.input :civilian_name, class: "form-control", label: "Civilian Name (Your attribute description here)" %>
+            <%= f.input :civilian_name, class: "form-control", label: "Victim Name" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :type_of_incident, class: "form-control", label: "Type Of Use of Force Incident" %>
         </div>
 
         <div class="do_something">
@@ -83,10 +87,6 @@
             <div class="field" id="notes">
                 <%= f.input :how_situation_escalated, class: "form-control", label: "What Caused Situation to Escalate" %>
             </div>
-        </div>
-
-        <div class="do_something">
-            <%= f.input :type_of_incident, class: "form-control", label: "Type Of Use of Force Incident" %>
         </div>
 
         <div class="do_something">
