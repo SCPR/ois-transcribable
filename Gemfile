@@ -15,6 +15,8 @@ gem 'devise_invitable', '~> 1.3.4'
 
 gem "mysql2"
 
+gem "newrelic_rpm"
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.1'
 # Use SCSS for stylesheets
