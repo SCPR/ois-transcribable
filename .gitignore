@@ -16,4 +16,5 @@
 !/log/.keep
 /tmp
 
-#/config/documentcloud.yml
+/config/documentcloud.yml
+/public/assets/

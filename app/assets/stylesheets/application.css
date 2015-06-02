@@ -14,11 +14,9 @@
  *= require_self
  */
 
-/* sass */
-*= require devise_bootstrap_views
+ /* boostrap */
 
-/* less */
-*= require devise_bootstrap_views_less
-
-/* boostrap */
-*= require bootstrap.min
+/*
+ *= require bootstrap
+ *= require devise_bootstrap_views
+*/
