@@ -19,7 +19,6 @@ class Incident < ActiveRecord::Base
         :how_situation_escalated,
         :civillian_weapon,
         :car_stop,
-        :chase_or_pursuit,
         :civillian_armed,
         :potential_police_video,
         :potential_civillian_video,
