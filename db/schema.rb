@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20150601223057) do
     t.string   "district_attorney_file_number",        default: "",    null: false
     t.string   "district_attorney_county",             default: "",    null: false
     t.date     "district_attorney_date_of_letter",                     null: false
-    t.text     "district_attorney_conclusion",         default: "",    null: false
+    t.text     "district_attorney_conclusion",         
     t.string   "district_attorney_prepared_report",    default: "",    null: false
     t.text     "narrative_notes"
     t.text     "autopsy_notes"
