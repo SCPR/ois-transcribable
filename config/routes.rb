@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   resources :incidents, :only => [:index, :show]
   resources :transcriptions, :only => [:new, :create]
   devise_for :users
-  #devise_for :admins
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
