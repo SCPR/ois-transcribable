@@ -45,14 +45,14 @@ class Incident < ActiveRecord::Base
 
     validates :district_attorney_file_number, uniqueness: true
 
-    validates :district_attorney_file_number,
-        :district_attorney_county,
-        :district_attorney_date_of_letter,
-        :district_attorney_conclusion,
-        :district_attorney_prepared_report,
-        :officer_police_agency,
-        :date_of_incident,
-        presence: true
+    #validates :district_attorney_file_number,
+        #:district_attorney_county,
+        #:district_attorney_date_of_letter,
+        #:district_attorney_conclusion,
+        #:district_attorney_prepared_report,
+        #:officer_police_agency,
+        #:date_of_incident,
+        #presence: true
 
     has_many :transcriptions
 end
