@@ -25,7 +25,6 @@ class Incident < ActiveRecord::Base
         :victim_charges_filed,
         :date_of_incident,
         :district_attorney_date_of_letter,
-        :verified,
         :officers,
         :car_stop,
         :civillian_armed,
