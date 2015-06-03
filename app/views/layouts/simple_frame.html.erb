@@ -43,9 +43,9 @@
         <link href="http://projects.scpr.org/static-files/css/jquery-alerts/jquery.alerts.css" rel="stylesheet" type="text/css" media="all" />
         <link href="http://projects.scpr.org/applications/monthly-water-use/static/cali_water/css/main-foundation-style-v3.css" rel="stylesheet" type="text/css" media="all" />
 
+        <%#= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
         <%= stylesheet_link_tag :simple_frame %>
         <%= yield :css %>
-
         <!-- end css -->
 
         <!-- begin base scripts -->
@@ -127,6 +127,10 @@
         <script src="http://projects.scpr.org/static/static-files/v3-dependencies/scripts/jquery-ui.min.js"></script>
         <script src="http://projects.scpr.org/static/static-files/v3-dependencies/scripts/jquery.alerts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+        <%#= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+        <%= javascript_include_tag "simple_app" %>
+        <%= yield :javascripts %>
 
     </body>
     <!-- end body -->
