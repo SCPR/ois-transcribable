@@ -17,3 +17,6 @@
 
 
 //= require bootstrap
+
+
+//= require simple_app
