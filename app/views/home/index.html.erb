@@ -4,6 +4,18 @@
 
 <p>It should probably also display some dashboard data for each user?</p>
 
+<% @incidents = Incident.all %>
+
+<p>For instance, there are <%= @incidents.size %> documents in the database</p>
+
+<!--
+<ul>
+    <%# @incidents.each do |incident| %>
+        <li><strong><%#= incident.url %></strong></li>
+    <%# end %>
+</ul>
+-->
+
 <ul>
     <% @users = User.all %>
     <% @users.each do |user| %>
