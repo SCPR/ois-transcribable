@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20150601201225) do
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                           null: false
     t.datetime "updated_at",                                           null: false
-    t.string   "url",                                                  null: false
+    t.string   "url"
     t.string   "civilian_name"
     t.string   "district_attorney_file_number"
     t.string   "district_attorney_county"

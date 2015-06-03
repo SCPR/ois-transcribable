@@ -55,7 +55,7 @@ class Incident < ActiveRecord::Base
         :officer_injured,
         :flag_for_followup
 
-    validates :district_attorney_file_number, uniqueness: true
+    validates :district_attorney_file_number, uniqueness:true, allow_blank: true, allow_nil: true
 
     #validates :district_attorney_file_number,
         #:district_attorney_county,
