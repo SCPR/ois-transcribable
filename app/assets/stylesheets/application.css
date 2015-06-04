@@ -14,8 +14,7 @@
  *= require_self
  */
 
-/*= require bootstrap
-
+*= require bootstrap
 *= require devise_bootstrap_views
 *= require bootstrap-datetimepicker.min
 *= simple_frame
