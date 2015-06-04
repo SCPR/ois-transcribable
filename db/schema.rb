@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150604000018) do
+ActiveRecord::Schema.define(version: 20150604192234) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                           null: false
@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(version: 20150604000018) do
     t.string   "user_id"
     t.boolean  "victim_shot_in_back"
     t.boolean  "applied_lawful_force"
+    t.string   "email"
   end
 
   create_table "users", force: :cascade do |t|
