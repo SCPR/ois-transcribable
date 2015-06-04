@@ -2,6 +2,7 @@
 $(document).ready(function(){
     data_form.checkInitialFormState();
     data_form.checkForFormProgress();
+    data_form.blockEnterKeyOnForm();
 });
 //end main function
 
@@ -24,6 +25,22 @@ $(document).ready(function(){
                 console.log($(this));
                 $(this).closest(".do_something").removeClass("has-warning");
                 $(this).closest(".do_something").addClass("has-success");
+            });
+        },
+
+        blockEnterKeyOnForm: function(){
+            $(document).on("keyup keypress", "form input[type='text']", function(e){
+                if(e.which == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            $(document).on("keyup keypress", "form select", function(e){
+                if(e.which == 13) {
+                    e.preventDefault();
+                    return false;
+                }
             });
         }
     };
