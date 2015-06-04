@@ -18,20 +18,20 @@
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             <div class="do_something">
                 <label class="checkbox-inline">
-                    <%= f.input :case_relevant, class: "form-control", label: "Is This An Use Of Force Incident?" %>
+                    <%= f.input :case_relevant, class: "form-control", label: "Was Use Of Force Incident?" %>
                 </label>
             </div>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             <div class="do_something">
                 <label class="checkbox-inline">
-                <%= f.input :flag_for_followup, class: "form-control", label: "Is This Incident Notable?" %>
+                    <%= f.input :fatal, class: "form-control", label: "Was Use Of Force Fatal" %>
                 </label>
             </div>
         </div>
 
         <div class="do_something">
-            <%= f.input :district_attorney_county, class: "form-control", label: "District Attorney's County" %>
+            <%= f.input :district_attorney_county, class: "form-control", label: "District Attorney's County", input_html: {value: @incident.split_url[0]} %>
         </div>
 
         <div class="do_something">
@@ -40,48 +40,32 @@
 
         <div class="do_something">
             <div class="field" id="notes">
-                <%= f.input :officer_police_agency, class: "form-control", label: "Law Enforcement Agency" %>
+                <%= f.input :officer_police_agency, class: "form-control", label: "Law Enforcement Agency (Separate by commas if multiple)" %>
             </div>
         </div>
 
         <div class="do_something">
-            <%= f.input :district_attorney_file_number, class: "form-control", label: "District Attorney File Number (In LA County it's the J.S.I.D File Number)" %>
+            <%= f.input :district_attorney_file_number, class: "form-control", label: "District Attorney File Number (In LA County it's the J.S.I.D File Number)", input_html: {value: @incident.split_url[1]} %>
         </div>
 
         <div class="do_something">
-            <%= f.input :date_of_incident, class: "form-control", as: :date, start_year: Date.today.year - 15, end_year: Date.today.year, order: [:month, :day,  :year], label: "Date Of Incident" %>
+            <%= f.input :da_on_scene, class: "form-control", label: "District Attorney On Scene" %>
         </div>
 
         <div class="do_something">
-            <%= f.input :civilian_name, class: "form-control", label: "Victim Name (Separate by commas)" %>
+            <%= f.input :da_investigator_on_scene, class: "form-control", label: "District Attorney Investigator On Scene" %>
         </div>
 
         <div class="do_something">
-            <label class="checkbox-inline">
-                <%= f.input :victim_arrested, class: "form-control", label: "Victim Arrested (Check box if true)" %>
-            </label>
+            <%= f.input :date_of_incident, class: "form-control", as: :datetime, start_year: Date.today.year - 15, end_year: Date.today.year, ampm: true, order: [:month, :day,  :year], label: "Date Of Incident" %>
         </div>
 
         <div class="do_something">
-            <div class="field" id="notes">
-                <%= f.input :victim_case_number, class: "form-control", label: "Case Number If Victim Arrested" %>
-            </div>
+            <%= f.input :civilian_name, class: "form-control", label: "Victim Name (Separate by commas if multiple)" %>
         </div>
 
         <div class="do_something">
-            <div class="field" id="notes">
-                <%= f.input :victim_charges_filed, class: "form-control", label: "Charges If Victim Charged" %>
-            </div>
-        </div>
-
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= f.input :fatal, class: "form-control", label: "Was Use Of Force Fatal (Check box if true)" %>
-            </label>
-        </div>
-
-        <div class="do_something">
-            <%= f.input :type_of_incident, class: "form-control", label: "Type Of Force Used By Officer (Separate by commas)" %>
+            <%= f.input :type_of_incident, class: "form-control", label: "Type Of Force Used By Officer (Separate by commas if multiple)" %>
         </div>
 
         <div class="do_something">
@@ -94,15 +78,6 @@
             <div class="field" id="notes">
                 <%= f.input :officer_name_and_badge_number, class: "form-control", label: "Officer Names (Include Badge Numbers in parentheses and separate each by commas)" %>
             </div>
-        </div>
-
-
-        <div class="do_something">
-            <%= f.input :da_on_scene, class: "form-control", label: "District Attorney On Scene" %>
-        </div>
-
-        <div class="do_something">
-            <%= f.input :da_investigator_on_scene, class: "form-control", label: "District Attorney Investigator On Scene" %>
         </div>
 
         <!--
@@ -133,38 +108,58 @@
             </div>
         </div>
 
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <div class="do_something">
-                <label class="checkbox-inline">
-                    <%= f.input :officer_self_defense, class: "form-control", label: "Officer Self Defense" %>
-                </label>
+        <div class="row">
+
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :officer_self_defense, class: "form-control", label: "Officer Self Defense" %>
+                    </label>
+                </div>
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :officer_defense_of_civillians, class: "form-control", label: "Officer Defense Of Civillians" %>
+                    </label>
+                </div>
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :applied_lawful_force, class: "form-control", label: "Officer Applied Lawful Force" %>
+                    </label>
+                </div>
+
             </div>
 
-            <div class="do_something">
-                <label class="checkbox-inline">
-                    <%= f.input :officer_defense_of_civillians, class: "form-control", label: "Officer Defense Of Civillians" %>
-                </label>
-            </div>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            <div class="do_something">
-                <label class="checkbox-inline">
-                    <%= f.input :officer_defense_of_officers, class: "form-control", label: "Officer Defense Of Officers" %>
-                </label>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :officer_defense_of_officers, class: "form-control", label: "Officer Defense Of Officers" %>
+                    </label>
+                </div>
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :officer_unknown, class: "form-control", label: "N/A or Unknown" %>
+                    </label>
+                </div>
+
             </div>
 
-            <div class="do_something">
-                <label class="checkbox-inline">
-                    <%= f.input :officer_unknown, class: "form-control", label: "N/A or Unknown" %>
-                </label>
-            </div>
         </div>
+
         <!-- end initial data -->
 
         <hr></hr>
 
         <!-- begin various factors present -->
         <h5>Factors Present (Check box if true)</h5>
+
+        <div class="do_something">
+            <%= f.input :general_location_of_incident, class: "form-control", label: "General Location Of Incident" %>
+        </div>
 
         <div class="row">
 
@@ -258,6 +253,12 @@
                     </label>
                 </div>
 
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :victim_shot_in_back, class: "form-control", label: "Victim Shot in the Back" %>
+                    </label>
+                </div>
+
             </div>
 
         </div>
@@ -300,10 +301,9 @@
                     </label>
                 </div>
 
-
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :mention_of_waistband_in_report, class: "form-control", label: "'Reaching For Waistband' Mentioned" %>
+                        <%= f.input :mention_of_waistband_in_report, class: "form-control", label: "'Reaching For Weapon' Mentioned" %>
                     </label>
                 </div>
 
@@ -316,9 +316,30 @@
                 <%= f.input :civillian_weapon, class: "form-control", label: "Type of Weapon Carried/Used By Victim" %>
             </div>
         </div>
-
-
         <!-- end various factors present -->
+
+        <hr></hr>
+
+        <!-- begin victim arrested -->
+        <h5>Victim Arrest Factors</h5>
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :victim_arrested, class: "form-control", label: "Victim Arrested (Check box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :victim_case_number, class: "form-control", label: "Case Number If Victim Arrested" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :victim_charges_filed, class: "form-control", label: "Charges If Victim Charged" %>
+            </div>
+        </div>
+        <!-- end victim arrested -->
 
         <hr></hr>
 
@@ -327,10 +348,6 @@
 
         <div class="do_something">
             <%= f.input :officer_shots_fired, class: "form-control", label: "Number of Shots Fired By Law Enforcement" %>
-        </div>
-
-        <div class="do_something">
-            <%= f.input :general_location_of_incident, class: "form-control", label: "General Location Of Incident" %>
         </div>
 
         <div class="do_something">
@@ -379,6 +396,12 @@
             <div class="field" id="notes">
                 <%= f.input :autopsy_notes, class: "form-control", label: "Autopsy Notes" %>
             </div>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :flag_for_followup, class: "form-control", label: "Is This Incident Notable?" %>
+            </label>
         </div>
 
         <div class="do_something">
