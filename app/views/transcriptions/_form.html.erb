@@ -108,37 +108,48 @@
             </div>
         </div>
 
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <div class="row">
 
-            <div class="do_something">
-                <label class="checkbox-inline">
-                    <%= f.input :officer_self_defense, class: "form-control", label: "Officer Self Defense" %>
-                </label>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :officer_self_defense, class: "form-control", label: "Officer Self Defense" %>
+                    </label>
+                </div>
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :officer_defense_of_civillians, class: "form-control", label: "Officer Defense Of Civillians" %>
+                    </label>
+                </div>
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :applied_lawful_force, class: "form-control", label: "Officer Applied Lawful Force" %>
+                    </label>
+                </div>
+
             </div>
 
-            <div class="do_something">
-                <label class="checkbox-inline">
-                    <%= f.input :officer_defense_of_civillians, class: "form-control", label: "Officer Defense Of Civillians" %>
-                </label>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :officer_defense_of_officers, class: "form-control", label: "Officer Defense Of Officers" %>
+                    </label>
+                </div>
+
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :officer_unknown, class: "form-control", label: "N/A or Unknown" %>
+                    </label>
+                </div>
+
             </div>
 
         </div>
 
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-
-            <div class="do_something">
-                <label class="checkbox-inline">
-                    <%= f.input :officer_defense_of_officers, class: "form-control", label: "Officer Defense Of Officers" %>
-                </label>
-            </div>
-
-            <div class="do_something">
-                <label class="checkbox-inline">
-                    <%= f.input :officer_unknown, class: "form-control", label: "N/A or Unknown" %>
-                </label>
-            </div>
-
-        </div>
         <!-- end initial data -->
 
         <hr></hr>
@@ -242,6 +253,12 @@
                     </label>
                 </div>
 
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= f.input :victim_shot_in_back, class: "form-control", label: "Victim Shot in the Back" %>
+                    </label>
+                </div>
+
             </div>
 
         </div>
@@ -283,7 +300,6 @@
                         <%= f.input :victim_weapon_recovered, class: "form-control", label: "Victim Weapon Recovered" %>
                     </label>
                 </div>
-
 
                 <div class="do_something">
                     <label class="checkbox-inline">

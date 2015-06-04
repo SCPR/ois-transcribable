@@ -53,7 +53,9 @@ class Incident < ActiveRecord::Base
         :victim_fired_weapon,
         :victim_pointed_weapon,
         :officer_injured,
-        :flag_for_followup
+        :flag_for_followup,
+        :victim_shot_in_back,
+        :applied_lawful_force
 
     validates :district_attorney_file_number, uniqueness:true, allow_blank: true, allow_nil: true
 

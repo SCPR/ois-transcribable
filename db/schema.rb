@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150601201225) do
+ActiveRecord::Schema.define(version: 20150604000018) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                           null: false
@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(version: 20150601201225) do
     t.boolean  "victim_pointed_weapon"
     t.boolean  "officer_injured"
     t.boolean  "flag_for_followup"
+    t.boolean  "victim_shot_in_back"
+    t.boolean  "applied_lawful_force"
   end
 
   create_table "transcriptions", force: :cascade do |t|
@@ -134,6 +136,8 @@ ActiveRecord::Schema.define(version: 20150601201225) do
     t.boolean  "flag_for_followup"
     t.integer  "incident_id"
     t.string   "user_id"
+    t.boolean  "victim_shot_in_back"
+    t.boolean  "applied_lawful_force"
   end
 
   create_table "users", force: :cascade do |t|
