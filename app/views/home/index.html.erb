@@ -6,7 +6,9 @@
 
 <% @incidents = Incident.all %>
 
-<p>For instance, there are <%= @incidents.size %> documents in the database</p>
+<% @transcriptions = Transcription.all %>
+
+<p>For instance, there are <strong><%= @incidents.size %> reports</strong> in the system and we've transcribed <strong><%= @transcriptions.size %></strong>.</p>
 
 <!--
 <ul>
