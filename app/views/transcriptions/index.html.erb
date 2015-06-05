@@ -1,0 +1,9 @@
+<h1>Transcriptions#index</h1>
+
+<p><%= link_to 'Home', controller: :home, action: :index %></p>
+
+<ul>
+    <% @transcriptions.each do |transcription| %>
+        <li><%= link_to transcription, transcription_path(transcription) %></li>
+    <% end %>
+</ul>

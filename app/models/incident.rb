@@ -75,6 +75,8 @@ class Incident < ActiveRecord::Base
         my_data_points = my_string_array[1].split("-")
         if my_data_points[2] == "la"
             county = "Los Angeles"
+        elsif my_data_points[1] == "la"
+            county = "Los Angeles"
         else
             county = nil
         end

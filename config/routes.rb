@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   root 'home#index'
   resources :incidents, :only => [:index, :show]
-  resources :transcriptions, :only => [:new, :create]
+  resources :transcriptions, :only => [:index, :show, :new, :create, :edit, :update]
   devise_for :users
 
   # The priority is based upon order of creation: first created -> highest priority.

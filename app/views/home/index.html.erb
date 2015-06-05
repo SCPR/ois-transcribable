@@ -1,38 +1,22 @@
 <h1>Welcome <%= @user.email %></h1>
 
-<p>This is the first page someone will see. It should have a link to create a <%= link_to 'new transcription', controller: :transcriptions, action: :new %>.</p>
+<p>This is the first page someone will see.</p>
+
+<% @incidents = Incident.all %>
+<% @transcriptions = Transcription.all %>
+<p>For instance, there are <strong><%= @incidents.size %> reports</strong> in the system and we've transcribed <strong><%= @transcriptions.size %></strong>.</p>
+
+<p>It should have a link to create a <%= link_to 'new transcription', controller: :transcriptions, action: :new %>.</p>
+
+<p>It should have a link to <%= link_to 'view all transcriptions', transcriptions_path %>. From there we'll let you edit one.</p>
 
 <p>It should probably also display some dashboard data for each user?</p>
 
-<% @incidents = Incident.all %>
-
-<% @transcriptions = Transcription.all %>
-
-<p>For instance, there are <strong><%= @incidents.size %> reports</strong> in the system and we've transcribed <strong><%= @transcriptions.size %></strong>.</p>
-
-<!--
 <ul>
-    <%# @incidents.each do |incident| %>
-        <li><strong><%#= incident.url %></strong></li>
-    <%# end %>
-</ul>
--->
-
-<ul>
-
-    <!--
-    <%# @users = User.all %>
-    <%# @users.each do |user| %>
-        <li><strong><%#= user.email %></strong>: (Transcribed so far)</li>
-    <%# end %>
-    -->
-
     <% @scoreboard = Transcription.all.group_by(&:email) %>
-
     <% @scoreboard.each do |user| %>
         <li><strong><%= user[0] %></strong> has finished <em><%= user[1].size %></em> transcriptions</li>
     <% end %>
-
 </ul>
 
 <%= render 'devise/menu/login_items' %>
