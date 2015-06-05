@@ -1,14 +1,12 @@
 <h1>Welcome <%= @user.email %></h1>
 
-<p>This is the first page someone will see. It should have a link to create a <%= link_to 'new transcription', controller: :transcriptions, action: :new %>.</p>
-
-<p>It should probably also display some dashboard data for each user?</p>
+<h5>Seems like you'd like to create a <%= link_to 'new transcription', controller: :transcriptions, action: :new %>?</h5>
 
 <% @incidents = Incident.all %>
 
 <% @transcriptions = Transcription.all %>
 
-<p>For instance, there are <strong><%= @incidents.size %> reports</strong> in the system and we've transcribed <strong><%= @transcriptions.size %></strong>.</p>
+<p>There are <strong><%= @incidents.size %> reports</strong> in the system and we've transcribed <strong><%= @transcriptions.size %></strong>.</p>
 
 <!--
 <ul>
@@ -21,10 +19,10 @@
 <ul>
 
     <!--
-    <%# @users = User.all %>
-    <%# @users.each do |user| %>
-        <li><strong><%#= user.email %></strong>: (Transcribed so far)</li>
-    <%# end %>
+        <%# @users = User.all %>
+        <%# @users.each do |user| %>
+            <li><strong><%#= user.email %></strong>: (Transcribed so far)</li>
+        <%# end %>
     -->
 
     <% @scoreboard = Transcription.all.group_by(&:email) %>
