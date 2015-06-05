@@ -2,8 +2,18 @@ class TranscriptionsController < ActionController::Base
 
     layout "simple_frame"
 
+    def index
+        @transcriptions = Transcription.take(15)
+    end
+
+    def show
+        @transcription = Transcription.find(params[:id])
+    end
+
     def new
-        @incident = Incident.assign!(current_user)
+        @user = current_user
+        @incident = Incident.assign!(@user)
+
         # if we're able to assign a filing
         # that the user hasn't done and hasn't been verified
         if @incident.nil?
@@ -12,7 +22,6 @@ class TranscriptionsController < ActionController::Base
         end
         @transcription = Transcription.new
         @transcription.incident = @incident
-        @user = current_user
     end
 
     def create
@@ -26,6 +35,20 @@ class TranscriptionsController < ActionController::Base
             redirect_to(new_transcription_path, :notice => "Thank you for transcribing. Here's another filing.")
         else
             render :action => "new", :alert => "Something went wrong. Please try again."
+        end
+    end
+
+    def edit
+        @transcription = Transcription.find(params[:id])
+        @incident = @transcription.incident
+    end
+
+    def update
+        @transcription = Transcription.find(params[:id])
+        if @transcription.update(transcription_params)
+            redirect_to @transcription
+        else
+            render 'edit'
         end
     end
 

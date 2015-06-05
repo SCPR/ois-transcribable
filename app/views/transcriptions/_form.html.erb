@@ -410,6 +410,14 @@
         </div>
         <!-- end additional data -->
 
+        <% if !@transcription.new_record? %>
+            <div class="do_something">
+                <div class="field" id="notes">
+                    <%= f.input :email, class: "form-control", label: "Staff Transcriber" %>
+                </div>
+            </div>
+        <% end %>
+
         <%= hidden_field_tag "incident_id", @incident.id %>
 
     </div>
