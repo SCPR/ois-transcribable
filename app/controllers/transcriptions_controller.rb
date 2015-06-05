@@ -3,7 +3,7 @@ class TranscriptionsController < ActionController::Base
     layout "simple_frame"
 
     def index
-        @transcriptions = Transcription.take(15)
+        @transcriptions = Transcription.all()
     end
 
     def show
