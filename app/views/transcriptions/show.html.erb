@@ -1,9 +1,17 @@
-<h1>Transcriptions#show</h1>
-
-<p><%= link_to 'Home', controller: :home, action: :index %></p>
-
-<p><%= link_to 'View all transcriptions', transcriptions_path %></p>
-
-<p><%= link_to 'Add Transcription', new_transcription_path %></p>
-
-<p><%= link_to 'Edit Transcription', edit_transcription_path %></p>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ol class="breadcrumb">
+            <li><%= link_to 'Home', controller: :home, action: :index %></li>
+            <li><%= link_to "View Transcriptions", transcriptions_path() %></li>
+            <li><%= @transcription.district_attorney_file_number %></li>
+        </ol>
+        <h1>Transcriptions#show</h1>
+        <ul>
+            <li><h6><%= @transcription.district_attorney_file_number %> (Filed by <%= @transcription.email %>)</h6></li>
+            <ul class="list-inline">
+                <li><%= link_to "Edit", edit_transcription_path(@transcription), class: "btn btn-success" %></li>
+                <li><%= link_to "Delete", transcription_path(@transcription), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></li>
+            </ul>
+        </ul>
+    </div>
+</div>

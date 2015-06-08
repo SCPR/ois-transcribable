@@ -52,6 +52,12 @@ class TranscriptionsController < ActionController::Base
         end
     end
 
+    def destroy
+        @transcription = Transcription.find(params[:id])
+        @transcription.destroy
+        redirect_to(transcriptions_path, :alert => "Deleted")
+    end
+
     private
 
     # By default, the current user is stored in a cookie.
