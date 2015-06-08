@@ -17,9 +17,8 @@
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <h5>User Statistics</h5>
                 <ul>
-                    <% @scoreboard = Transcription.all.group_by(&:email) %>
                     <% @scoreboard.each do |user| %>
-                        <li><strong><%= user[0] %></strong> has finished <em><%= user[1].size %></em> transcriptions</li>
+                        <li><strong><%= user[0] %></strong> has filed <em><%= user[1].size %></em> transcriptions</li>
                     <% end %>
                 </ul>
                 <%= render "devise/menu/login_items" %>

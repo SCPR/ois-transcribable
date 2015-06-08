@@ -3,7 +3,7 @@ class TranscriptionsController < ActionController::Base
     layout "simple_frame"
 
     def index
-        @transcriptions = Transcription.all()
+        @transcriptions = Transcription.all().sort()
     end
 
     def show
