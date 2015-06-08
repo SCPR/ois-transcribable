@@ -6,6 +6,5 @@ class Transcription < ActiveRecord::Base
     define_method("#{k}=") do |val|
       write_attribute k.to_sym, val.to_s.gsub(/[^0-9\.]/,"").to_f
     end
-
   end
 end

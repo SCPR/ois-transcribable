@@ -55,7 +55,11 @@ class Incident < ActiveRecord::Base
         :officer_injured,
         :flag_for_followup,
         :victim_shot_in_back,
-        :applied_lawful_force
+        :applied_lawful_force,
+        :victim_shot_in_head,
+        :victim_unarmed,
+        :officer_couldnt_see_victims_hands,
+        :officer_routine_patrol
 
     validates :district_attorney_file_number, uniqueness:true, allow_blank: true, allow_nil: true
 
