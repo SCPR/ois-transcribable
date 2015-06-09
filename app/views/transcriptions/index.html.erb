@@ -5,6 +5,8 @@
             <li>View Transcriptions</li>
         </ol>
         <h1>Transcriptions#index</h1>
+        <li><%= link_to "Download All Transcriptions", transcriptions_path(format: :csv), class: "btn btn-info" %></li>
+        <hr></hr>
         <ul>
             <% @transcriptions.each do |transcription| %>
                 <li><h6><%= transcription.district_attorney_file_number %> (Filed by <%= transcription.email %>)</h6></li>

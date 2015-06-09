@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
 
+    require 'csv'
+
     layout "simple_frame"
 
     # Prevent CSRF attacks by raising an exception.

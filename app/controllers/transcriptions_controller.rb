@@ -4,6 +4,13 @@ class TranscriptionsController < ActionController::Base
 
     def index
         @transcriptions = Transcription.all().sort()
+        respond_to do |format|
+            format.html
+            format.csv do
+                headers['Content-Disposition'] = "attachment; filename=\"data-export.csv\""
+                headers['Content-Type'] ||= 'text/csv'
+            end
+        end
     end
 
     def show
