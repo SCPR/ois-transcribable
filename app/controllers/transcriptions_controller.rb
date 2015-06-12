@@ -4,9 +4,7 @@ class TranscriptionsController < ActionController::Base
 
     def index
         @transcriptions = Transcription.all
-
         @record_count = Transcription.group(:district_attorney_file_number).count.sort_by { |k,v| v.to_s }.reverse
-
         respond_to do |format|
             format.html
             format.csv do
@@ -14,7 +12,6 @@ class TranscriptionsController < ActionController::Base
                 headers['Content-Type'] ||= 'text/csv'
             end
         end
-
     end
 
     def show
@@ -23,7 +20,9 @@ class TranscriptionsController < ActionController::Base
 
     def new
         @user = current_user
-        @incident = Incident.assign!(@user)
+
+        # find an incident that hasn't been seen yet
+        @incident = Incident.where("transcribed_count = '0'").assign!(@user)
 
         # if we're able to assign a filing
         # that the user hasn't done and hasn't been verified
@@ -31,6 +30,7 @@ class TranscriptionsController < ActionController::Base
             redirect_to(root_path, :alert => "You've transcribed all of the filings. Thank you.")
             return
         end
+
         @transcription = Transcription.new
         @transcription.incident = @incident
     end
