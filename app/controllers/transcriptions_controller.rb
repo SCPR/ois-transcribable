@@ -3,7 +3,10 @@ class TranscriptionsController < ActionController::Base
     layout "simple_frame"
 
     def index
-        @transcriptions = Transcription.all().sort()
+        @transcriptions = Transcription.all
+
+        @record_count = Transcription.group(:district_attorney_file_number).count.sort_by { |k,v| v.to_s }.reverse
+
         respond_to do |format|
             format.html
             format.csv do
@@ -11,6 +14,7 @@ class TranscriptionsController < ActionController::Base
                 headers['Content-Type'] ||= 'text/csv'
             end
         end
+
     end
 
     def show
