@@ -37,11 +37,13 @@ class TranscriptionsController < ActionController::Base
 
     def create
         @incident = Incident.find(params[:incident_id])
+        @incident.transcribed_count = @incident.transcribed_count + 1
         @transcription = Transcription.new(transcription_params)
         @transcription.incident = @incident
         @transcription.user_id = set_user_uuid
         @transcription.email = current_user.email
         if @transcription.save
+            @incident.save
             @incident.verify!
             redirect_to(new_transcription_path, :notice => "Thank you for transcribing. Here's another filing.")
         else
