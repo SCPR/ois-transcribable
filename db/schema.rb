@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150612232435) do
+ActiveRecord::Schema.define(version: 20150617214930) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                                         null: false
@@ -79,6 +79,8 @@ ActiveRecord::Schema.define(version: 20150612232435) do
     t.boolean  "officer_couldnt_see_victims_hands",    limit: 1
     t.boolean  "officer_routine_patrol",               limit: 1
     t.integer  "transcribed_count",                    limit: 4,     default: 0
+    t.boolean  "officer_responding_to_call",           limit: 1
+    t.boolean  "grabbed_officers_weapon",              limit: 1
   end
 
   create_table "transcriptions", force: :cascade do |t|
@@ -148,6 +150,8 @@ ActiveRecord::Schema.define(version: 20150612232435) do
     t.boolean  "victim_unarmed",                       limit: 1
     t.boolean  "officer_couldnt_see_victims_hands",    limit: 1
     t.boolean  "officer_routine_patrol",               limit: 1
+    t.boolean  "officer_responding_to_call",           limit: 1
+    t.boolean  "grabbed_officers_weapon",              limit: 1
   end
 
   create_table "users", force: :cascade do |t|
