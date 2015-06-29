@@ -11,7 +11,9 @@
                 <p>There are <%= @incidents.size %> reports in the system and we've transcribed <%= link_to @transcriptions.size, transcriptions_path %> (<%= "%.2f" % @percent %>%) so far</p>
                 <ul class="list-inline">
                     <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
-                    <li><%= link_to "View transcriptions", transcriptions_path(), class: "btn btn-info" %></li>
+                    <% if @user.email == "ckeller@scpr.org" or @user.email == "elarrubia@scpr.org" %>
+                        <li><%= link_to "Verify transcriptions", transcriptions_path(), class: "btn btn-info" %></li>
+                    <% end %>
                 </ul>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
