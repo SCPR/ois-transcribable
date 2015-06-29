@@ -200,7 +200,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    uuid (2.3.7)
+    uuid (2.3.8)
       macaddr (~> 1.0)
     warden (1.2.3)
       rack (>= 1.0)
