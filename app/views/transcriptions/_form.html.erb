@@ -1,5 +1,11 @@
 <%= simple_form_for(@transcription) do |f| %>
-    <%= submit_tag "Submit", :class => "btn btn-success btn-lg btn-block", :id => "transcriptionsubmit"  %>
+
+    <% if !@transcription.new_record? %>
+        <%= submit_tag "Verify", :class => "btn btn-warning btn-lg btn-block", :id => "transcriptionsubmit"  %>
+    <% else %>
+        <%= submit_tag "Submit", :class => "btn btn-success btn-lg btn-block", :id => "transcriptionsubmit"  %>
+    <% end %>
+
     <div class="overflow form-fields">
         <% if @transcription.errors.any? %>
             <div id="error_explanation">
@@ -33,9 +39,13 @@
             </div>
         </div>
 
-        <div class="do_something">
-            <%= f.input :date_of_incident, class: "form-control", as: :datetime_picker, ampm: true, label: "Date Of Incident", input_html: {data: {date_options: {format: "MMMM D YYYY, h:mm a", showClear: true, showClose: true, inline: true, keepOpen: true, sideBySide: true, viewMode: 'years'}}} %>
-        </div>
+        <% if !@transcription.new_record? %>
+            <%= f.input :date_of_incident, class: "form-control", as: :datetime, label: "Date Of Incident" %>
+        <% else %>
+            <div class="do_something">
+                <%= f.input :date_of_incident, class: "form-control", as: :datetime_picker, ampm: true, label: "Date Of Incident", input_html: {data: {date_options: {format: "MMMM D YYYY, h:mm a", showClear: true, showClose: true, inline: true, keepOpen: true, sideBySide: true, viewMode: 'years'}}} %>
+            </div>
+        <% end %>
 
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             <div class="do_something">
