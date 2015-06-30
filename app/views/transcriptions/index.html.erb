@@ -27,6 +27,7 @@
                             <% @transcriptions.where(district_attorney_file_number: this[0]).find_each do |obj| %>
                                 <td><%= obj.email %></td>
                                 <td><%= obj.created_at.strftime("%m/%d/%Y") %></td>
+                                <td><%= link_to "Delete", transcription_path(obj), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></td>
                                 <td><%= link_to "Verify/Edit", edit_transcription_path(obj), class: "btn btn-success" %></td>
                             <% end %>
                         </tr>
