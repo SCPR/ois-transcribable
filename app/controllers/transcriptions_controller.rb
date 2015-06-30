@@ -127,6 +127,7 @@ class TranscriptionsController < ActionController::Base
             @incident.officer_routine_patrol = @transcription.officer_routine_patrol
             @incident.officer_responding_to_call = @transcription.officer_responding_to_call
             @incident.grabbed_officers_weapon = @transcription.grabbed_officers_weapon
+            @incident.email = current_user.email
             @incident.save
             @transcription.save
             redirect_to @transcription

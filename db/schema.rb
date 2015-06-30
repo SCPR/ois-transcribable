@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150617214930) do
+ActiveRecord::Schema.define(version: 20150630232011) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                                         null: false
@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(version: 20150617214930) do
     t.integer  "transcribed_count",                    limit: 4,     default: 0
     t.boolean  "officer_responding_to_call",           limit: 1
     t.boolean  "grabbed_officers_weapon",              limit: 1
+    t.string   "email",                                limit: 255
   end
 
   create_table "transcriptions", force: :cascade do |t|
