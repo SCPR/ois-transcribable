@@ -12,6 +12,7 @@
         <div id="table-container">
             <table class="kpcc-table">
                 <tr>
+                    <th>Verified</th>
                     <th>DA File Number</th>
                     <th>Transcribed Quantity</th>
                     <th>Transcribed By</th>
@@ -34,6 +35,11 @@
                     <% else %>
                         <% @this_record = @transcriptions.find_by(district_attorney_file_number: this[0]) %>
                             <tr>
+                                <% if @incidents.find_by(id: @this_record.incident_id).verified == true %>
+                                    <td style="color: green">True</td>
+                                <% else %>
+                                    <td style="color: red">False</td>
+                                <% end %>
                                 <td><%= this[0] %></td>
                                 <td><%= this[1] %></td>
                                 <td><%= @this_record.email %></td>
