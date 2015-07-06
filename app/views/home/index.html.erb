@@ -7,8 +7,8 @@
         <h3>Welcome <%= @user.email %></h3>
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <h5>Progress Statistics</h5>
-                <p>There are <%= @incidents.size %> reports in the system and we've transcribed <%= link_to @transcriptions.size, transcriptions_path %> (<%= "%.2f" % @percent %>%) so far</p>
+                <h5>Data Entry Progress</h5>
+                <p>There are <%= @incidents.size %> reports in the system and we've transcribed <%= link_to @transcriptions.size, transcriptions_path %> &ndash; <%= "%.2f" % @percent %>%. Of those <%= @verified %> &ndash; <%= "%.2f" % @verified_percent %>% &ndash; have been verified.</p>
                 <ul class="list-inline">
                     <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
                     <% if @user.email == "ckeller@scpr.org" or @user.email == "elarrubia@scpr.org" %>
