@@ -2,9 +2,10 @@
 
 <ul>
     <li>Incidents transcribed: <%= @transcriptions_count %></li>
-    <li>Weapon recovered: <%= @victim_weapon_recovered %></li>
-    <li>Defense of civillians: <%= @officer_defense_of_civillians %></li>
-    <li>Officer injured: <%= @officer_injured %></li>
-    <li>Intoxicated or mentally ill: <%= @victim_intoxicated_or_ill %>
-    <li>Flag for followup: <%= @flag_for_followup %></li>
+    <li>Fatal: <%= @fatal %> &ndash; <%= "%.2f" % @fatal_pct %>%</li>
+    <li>Weapon recovered: <%= @victim_weapon_recovered %> &ndash; <%= "%.2f" % @victim_weapon_recovered_pct %>%</li>
+    <li>Defense of civillians: <%= @officer_defense_of_civillians %> &ndash; <%= "%.2f" % @officer_defense_of_civillians_pct %>%</li>
+    <li>Officer injured: <%= @officer_injured %> &ndash; <%= "%.2f" % @officer_injured_pct %>%</li>
+    <li>Intoxicated or mentally ill: <%= @victim_intoxicated_or_ill %> &ndash; <%= "%.2f" % @victim_intoxicated_or_ill_pct %>%</li>
+    <li>Flag for followup: <%= @flag_for_followup %> &ndash; <%= "%.2f" % @flag_for_followup_pct %>%</li>
 </ul>
