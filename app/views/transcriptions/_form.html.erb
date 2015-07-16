@@ -1,4 +1,4 @@
-<%= simple_form_for(@transcription) do |f| %>
+0<%= simple_form_for(@transcription) do |f| %>
 
     <% if !@transcription.new_record? %>
         <%= submit_tag "Verify", :class => "btn btn-warning btn-lg btn-block", :id => "transcriptionsubmit"  %>
@@ -40,7 +40,7 @@
         </div>
 
         <% if !@transcription.new_record? %>
-            <%= f.input :date_of_incident, class: "form-control", as: :datetime, label: "Date Of Incident" %>
+            <%= f.input :date_of_incident, class: "form-control", as: :datetime, start_year: Date.today.year - 15, end_year: Date.today.year, label: "Date Of Incident" %>
         <% else %>
             <div class="do_something">
                 <%= f.input :date_of_incident, class: "form-control", as: :datetime_picker, ampm: true, label: "Date Of Incident", input_html: {data: {date_options: {format: "MMMM D YYYY, h:mm a", showClear: true, showClose: true, inline: true, keepOpen: true, sideBySide: true, viewMode: 'years'}}} %>
