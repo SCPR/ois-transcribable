@@ -1,4 +1,4 @@
-0<%= simple_form_for(@transcription) do |f| %>
+<%= simple_form_for(@transcription) do |f| %>
 
     <% if !@transcription.new_record? %>
         <%= submit_tag "Verify", :class => "btn btn-warning btn-lg btn-block", :id => "transcriptionsubmit"  %>
