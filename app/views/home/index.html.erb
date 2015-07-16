@@ -10,7 +10,7 @@
                 <h5>Data Entry Progress</h5>
                 <p>There are <%= @incidents.size %> reports in the system and we've transcribed <%= link_to @transcriptions.size, transcriptions_path %> &ndash; <%= "%.2f" % @percent %>%. Of those <%= @verified %> &ndash; <%= "%.2f" % @verified_percent %>% &ndash; have been verified.</p>
                 <ul class="list-inline">
-                    <% if @transcriptions.count.to_f == 345 %>
+                    <% if @transcriptions.count.to_f == 370 %>
                     <% else %>
                         <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
                     <% end %>
