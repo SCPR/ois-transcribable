@@ -139,10 +139,6 @@ class TranscriptionsController < ActionController::Base
     def destroy
         @transcription = Transcription.find(params[:id])
         @transcription.destroy
-
-        @incident = Incident.find(@transcription.incident_id)
-        @incident.destroy
-
         redirect_to(transcriptions_path, :alert => "Deleted")
     end
 
