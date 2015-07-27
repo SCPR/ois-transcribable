@@ -1,21 +1,39 @@
-<!--
-<h1>Unverified Statistics</h1>
-
-<ul>
-    <li>Incidents transcribed: <#%= @transcriptions_count %></li>
-    <li>Fatal: <#%= @fatal %> &ndash; <#%= "%.2f" % @fatal_pct %>%</li>
-    <li>Weapon recovered: <#%= @victim_weapon_recovered %> &ndash; <#%= "%.2f" % @victim_weapon_recovered_pct %>%</li>
-    <li>Defense of civillians: <#%= @officer_defense_of_civillians %> &ndash; <#%= "%.2f" % @officer_defense_of_civillians_pct %>%</li>
-    <li>Officer injured: <#%= @officer_injured %> &ndash; <#%= "%.2f" % @officer_injured_pct %>%</li>
-    <li>Intoxicated or mentally ill: <#%= @victim_intoxicated_or_ill %> &ndash; <#%= "%.2f" % @victim_intoxicated_or_ill_pct %>%</li>
-    <li>Flag for followup: <#%= @flag_for_followup %> &ndash; <#%= "%.2f" % @flag_for_followup_pct %>%</li>
-</ul>
--->
-
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <ol class="breadcrumb">
             <li><%= link_to 'Home', controller: :home, action: :index %></li>
+            <li>Incident Statistics</li>
+        </ol>
+        <h1>Verified Statistics</h1>
+        <hr></hr>
+        <ul>
+            <li>Number of incidents: <%= @incidents.count %></li>
+            <li>Number of verified incidents: <%= @verified_incidents.count %></li>
+            <li>Number of on-duty use-of-force incidents: <%= @on_duty_incidents.count %></li>
+
+
+
+
+
+
+            <li>Fatal: <%= @fatal %> &ndash; <%= "%.2f" % @fatal_pct %>%</li>
+
+            <li>Weapon recovered: <%= @victim_weapon_recovered %> &ndash; <%= "%.2f" % @victim_weapon_recovered_pct %>%</li>
+            <li>Defense of civillians: <%= @officer_defense_of_civillians %> &ndash; <%= "%.2f" % @officer_defense_of_civillians_pct %>%</li>
+            <li>Officer injured: <%= @officer_injured %> &ndash; <%= "%.2f" % @officer_injured_pct %>%</li>
+            <li>Intoxicated or mentally ill: <%= @victim_intoxicated_or_ill %> &ndash; <%= "%.2f" % @victim_intoxicated_or_ill_pct %>%</li>
+            <li>Flag for followup: <%= @flag_for_followup %> &ndash; <%= "%.2f" % @flag_for_followup_pct %>%</li>
+        </ul>
+    </div>
+</div>
+
+
+
+<!--
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ol class="breadcrumb">
+            <li><#%= link_to 'Home', controller: :home, action: :index %></li>
             <li>View Incidents</li>
         </ol>
         <h1>Incidents#index</h1>
@@ -28,19 +46,20 @@
                     <th>Verified By</th>
                     <th>Delete</th>
                 </tr>
-                <% @incidents.each do |this| %>
+                <#% @incidents.each do |this| %>
                     <tr>
-                        <td><%= this.url %></td>
-                        <% if this.verified == true %>
+                        <td><#%= this.url %></td>
+                        <#% if this.verified == true %>
                             <td style="color: green">&#10004;</td>
-                        <% else %>
+                        <#% else %>
                             <td style="color: red">&mdash;</td>
-                        <% end %>
-                        <td><%= this.email %></td>
-                        <td><%= link_to "Delete", incident_path(this), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></td>
+                        <#% end %>
+                        <td><#%= this.email %></td>
+                        <td><#%= link_to "Delete", incident_path(this), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></td>
                     </tr>
-                <% end %>
+                <#% end %>
             </table>
         </div>
     </div>
 </div>
+-->
