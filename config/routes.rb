@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   root 'home#index'
-  resources :incidents, :only => [:index, :show]
+  resources :incidents, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
   resources :transcriptions, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
   devise_for :users
 
