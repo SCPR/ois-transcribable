@@ -14,7 +14,7 @@
                     <% else %>
                         <span style="color: red"><%= "%.2f" % @transcribed_percent %>%</span>
                     <% end %>
-                of reports.</h6>
+                of <%= link_to @transcriptions.size, transcriptions_path %> reports.</h6>
                 <ul class="list-inline">
                     <% if @transcriptions.count.to_f == 369 %>
                         <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
@@ -35,7 +35,7 @@
                     <% else %>
                         <span style="color: red"><%= "%.2f" % @verified_percent %>%</span>
                     <% end %>
-                of <%= link_to @transcriptions.size, transcriptions_path %> reports.</h6>
+                of <%= link_to @incidents.size, transcriptions_path %> reports.</h6>
                 <ul class="list-inline">
                     <% if @user.email == "ckeller@scpr.org" or @user.email == "elarrubia@scpr.org" %>
                         <li><%= link_to "Verify transcriptions", transcriptions_path(), class: "btn btn-info" %></li>
