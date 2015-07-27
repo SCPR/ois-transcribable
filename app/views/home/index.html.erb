@@ -5,7 +5,7 @@
         </ol>
         <h1>Cataloging Officer Involved Shootings</h1>
         <h3>Welcome <%= @user.email %></h3>
-        <p>There are <%= @incidents.size %> reports in the system.</p>
+        <h6>There are <%= @incidents.size %> reports in the system. View <%= link_to "incident statistics", incidents_path %>.</h6>
         <div class="row">
             <div class="text-center col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <h6>Transcriptions &ndash; We've transcribed
