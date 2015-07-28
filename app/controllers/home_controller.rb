@@ -1,6 +1,5 @@
 class HomeController < ApplicationController
     layout "simple_frame"
-
     def index
       @user = current_user
       @incidents = Incident.all
@@ -12,5 +11,4 @@ class HomeController < ApplicationController
       @verified_scoreboard = @verified.group_by(&:email)
       #Rails.logger.info("Verified so far - #{@verified}")
     end
-
 end
