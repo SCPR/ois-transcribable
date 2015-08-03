@@ -9,7 +9,7 @@ class IncidentsController < ApplicationController
         @fatal = @on_duty_incidents.group(:fatal).count
         @multiple_officers = @on_duty_incidents.group(:multiple_officers).count
         @car_stop = @on_duty_incidents.group(:car_stop).count
-        @civillian_armed = @on_duty_incidents.group(:civillian_armed).count
+        @believed_civillian_armed = @on_duty_incidents.group(:believed_civillian_armed).count
         @potential_police_video = @on_duty_incidents.group(:potential_police_video).count
         @potential_civillian_video = @on_duty_incidents.group(:potential_civillian_video).count
         @mention_of_waistband_in_report = @on_duty_incidents.group(:mention_of_waistband_in_report).count

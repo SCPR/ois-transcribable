@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150729032137) do
+ActiveRecord::Schema.define(version: 20150803172743) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                                         null: false
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20150729032137) do
     t.boolean  "verified",                             limit: 1,     default: false, null: false
     t.boolean  "multiple_officers",                    limit: 1
     t.boolean  "car_stop",                             limit: 1
-    t.boolean  "civillian_armed",                      limit: 1
+    t.boolean  "believed_civillian_armed",             limit: 1
     t.boolean  "potential_police_video",               limit: 1
     t.boolean  "potential_civillian_video",            limit: 1
     t.boolean  "mention_of_waistband_in_report",       limit: 1
@@ -118,7 +118,7 @@ ActiveRecord::Schema.define(version: 20150729032137) do
     t.boolean  "verified",                             limit: 1,     default: false, null: false
     t.boolean  "multiple_officers",                    limit: 1
     t.boolean  "car_stop",                             limit: 1
-    t.boolean  "civillian_armed",                      limit: 1
+    t.boolean  "believed_civillian_armed",             limit: 1
     t.boolean  "potential_police_video",               limit: 1
     t.boolean  "potential_civillian_video",            limit: 1
     t.boolean  "mention_of_waistband_in_report",       limit: 1

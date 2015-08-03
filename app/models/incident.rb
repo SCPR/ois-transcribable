@@ -27,7 +27,7 @@ class Incident < ActiveRecord::Base
         :district_attorney_date_of_letter,
         :officers,
         :car_stop,
-        :civillian_armed,
+        :believed_civillian_armed,
         :potential_police_video,
         :potential_civillian_video,
         :mention_of_waistband_in_report,
