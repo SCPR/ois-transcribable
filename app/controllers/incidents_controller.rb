@@ -67,11 +67,6 @@ class IncidentsController < ApplicationController
 
         #@officer_defense_of_civillians = @on_duty_incidents.where(officer_defense_of_civillians: true).count
         #@officer_defense_of_civillians_pct = create_pct(@officer_defense_of_civillians, @on_duty_incidents.count)
-
-
-
-
-
     end
 
     def show
@@ -85,10 +80,13 @@ class IncidentsController < ApplicationController
         redirect_to(incidents_path, :alert => "Deleted")
     end
 
-    #private
-    #def create_pct(count, total)
-        #pct = (count.to_f / total.to_f) * 100
-        #return pct
-    #end
+    private
+    def create_pct(count)
+        @incidents = Incident.all
+        @verified_incidents = @incidents.where(verified: true)
+        @on_duty_incidents = @verified_incidents.where(case_relevant: true)
+        pct = (count.to_f / @on_duty_incidents.to_f) * 100
+        return pct
+    end
 
 end

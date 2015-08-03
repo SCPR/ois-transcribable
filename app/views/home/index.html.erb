@@ -7,7 +7,7 @@
         <h3>Welcome <%= @user.email %></h3>
         <h6>There are <%= @incidents.size %> reports in the system. View <%= link_to "incident statistics", incidents_path %>.</h6>
         <div class="row">
-            <div class="text-center col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <h6>Transcriptions &ndash; We've transcribed
                     <% if "%.2f" % @transcribed_percent == "100.00" %>
                         <span style="color: green"><%= "%.2f" % @transcribed_percent %>%</span>
@@ -28,7 +28,7 @@
                     <% end %>
                 </ul>
             </div>
-            <div class="text-center col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <h6>Verifications &ndash; We've verified
                     <% if "%.2f" % @verified_percent == "100.00" %>
                         <span style="color: green"><%= "%.2f" % @verified_percent %>%</span>
