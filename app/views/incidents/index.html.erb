@@ -4,270 +4,489 @@
             <li><%= link_to 'Home', controller: :home, action: :index %></li>
             <li>Incident Statistics</li>
         </ol>
-        <h1>Incident Statistics</h1>
-        <hr></hr>
+    </div>
+</div>
 
-        <div id="table-container">
-            <table class="kpcc-table">
-            <thead>
-                <tr>
-                    <th style="text-align: center; width: 33%;">Incidents</th>
-                    <th style="text-align: center; width: 33%;">Verified Incidents</th>
-                    <th style="text-align: center; width: 33%;">On-duty use-of-force incidents</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="text-align: center; width: 33%;"><%= @incidents.count %></td>
-                    <td style="text-align: center; width: 33%;"><%= @verified_incidents.count %></td>
-                    <td style="text-align: center; width: 33%;"><%= @on_duty_incidents.count %></td>
-                </tr>
-            </tbody>
-            </table>
+<div class="row data-filters"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+<script src="http://projects.scpr.org/static-files/v3-dependencies/scripts/underscore-min.js"></script>
+<script src="http://projects.scpr.org/static-files/v3-dependencies/scripts/backbone-min-v1.0.js"></script>
+<script>
+
+    (function(){
+
+         _.templateSettings = {
+            interpolate: /\<\@\=(.+?)\@\>/gim,
+            evaluate: /\<\@(.+?)\@\>/gim
+        };
+
+        window.App = {
+            Models: {},
+            Collections: {},
+            Views: {},
+            Router: {}
+        };
+
+        window.template = function(id){
+            return _.template( $('#' + id).html());
+        };
+
+        App.Views.ApplicationWrapper = Backbone.View.extend({
+            el: "body",
+            initialize: function(){
+                this.render();
+            },
+            render: function(){
+            }
+        });
+
+        $(function(){
+            window.app = new App.Router();
+            Backbone.history.start({
+                root: "http://127.0.0.1:3000/incidents",
+                pushState: false,
+            });
+        });
+
+        // helper functions
+        window.percentifyValue = function(value){
+            var value = value * 100
+            return parseFloat(value.toFixed(2));
+        };
+
+        window.toFixedPercent = function(part, whole){
+            var targetValue = part / whole;
+            var decimal = parseFloat(targetValue);
+            return decimal
+        };
+
+        window.addCommas = function(nStr){
+            nStr += "";
+            x = nStr.split(".");
+            x1 = x[0];
+            x2 = x.length > 1 ? "." + x[1] : "";
+                var rgx = /(\d+)(\d{3})/;
+                    while (rgx.test(x1)) {
+                        x1 = x1.replace(rgx, "$1" + "," + "$2");
+                    }
+                return x1 + x2;
+        };
+
+        window.ifEmptyStringForTotal = function(value){
+            var result;
+            if (value === ""){
+                result = "Total not available";
+            } else {
+                result = window.addCommas(value);
+            }
+            return result;
+        };
+
+        window.string_equals_string = function(comparison, input){
+            var result;
+            if (input === comparison){
+                result = true;
+            } else {
+                result = false;
+            }
+            return result;
+        };
+
+        window.parse_year = function(date_time){
+            var output = moment(date_time).format("YYYY");
+            output = parseInt(output);
+            return output
+        };
+
+        String.prototype.truncateToGraf = function(){
+            var lengthLimit = 900;
+            if (this.length > lengthLimit){
+                return this.substring(0, lengthLimit) + " ... ";
+            } else {
+                return this;
+            }
+        };
+
+        String.prototype.toProperCase = function(){
+            return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+        };
+
+    })();
+
+    App.Models.Incident = Backbone.Model.extend({
+        defaults: {
+            url: null,
+            civilian_name: null,
+            district_attorney_file_number: null,
+            type_of_incident: null,
+        },
+    });
+
+    App.Collections.Incidents = Backbone.Collection.extend({
+        model: App.Models.Incident,
+    });
+
+
+    App.Router = Backbone.Router.extend({
+        initialize: function(){
+            this.fetchData();
+        },
+
+        routes: {
+            // "": "fetchData",
+        },
+
+        fetchData: function(){
+            var _this = this;
+            var applicationCollection = new App.Collections.Incidents(<%= raw @incidents.to_json %>);
+            var checkExist = setInterval(function() {
+                if (applicationCollection.length > 0){
+                    clearInterval(checkExist);
+                    _this.renderApplicationVisuals(applicationCollection);
+                }
+            }, 500);
+        },
+
+        renderApplicationVisuals: function(collection){
+            if (this.applicationVisuals){
+                this.applicationVisuals.remove();
+            };
+            this.applicationVisuals = new App.Views.ApplicationVisuals({
+                total_incidents: collection,
+                container: ".data-filters"
+            });
+            return this.applicationVisuals;
+        },
+    });
+
+    App.Views.ApplicationVisuals = Backbone.View.extend({
+
+        // tagName: "div",
+        // className: "col-xs-12 col-sm-12 col-md-12 col-lg-12",
+
+        el: ".data-filters",
+
+        initialize: function(object){
+            this.view_object = object;
+
+            this.view_object.template = template("my_template");
+
+            this.view_object.total_incidents = this.calculate_data_fields(this.view_object.total_incidents);
+
+            this.view_object.relevant_incidents = new App.Collections.Incidents(
+                this.view_object.total_incidents.where({
+                    case_relevant: true
+                })
+            );
+
+            this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
+
+            this.view_object.filters = [{
+                type: "top_line",
+                filters: [
+                    "fatal",
+                    "victim_unarmed",
+                    "victim_fired_weapon",
+                    "victim_weapon_recovered",
+                    "mention_of_waistband_in_report",
+                    "officer_couldnt_see_victims_hands",
+                ]
+            }, {
+                type: "officer_filters",
+                filters: [
+                    "officer_self_defense",
+                    "officer_defense_of_civillians",
+                    "officer_defense_of_officers",
+                    "applied_lawful_force",
+                    "car_stop",
+                    "officer_serving_warrant",
+                    "officer_on_surveillance",
+                    "officer_on_undercover",
+                    "officer_routine_patrol",
+                    "officer_responding_to_call",
+                    "officer_charges_filed",
+                ]
+            }, {
+                type: "victim_filters",
+                filters: [
+                    "victim_arrested",
+                    "victim_gang_member",
+                    "victim_intoxicated",
+                    "victim_mentally_ill",
+                ]
+            }, {
+                type: "incident_filters",
+                filters: [
+                    "pursuit_occurred",
+                    "multiple_officers",
+                    "grabbed_officers_weapon",
+                    "believed_civillian_armed",
+                    "officer_injured",
+                    "potential_police_video",
+                    "potential_civillian_video",
+                    "civilian_witnesses",
+                    "victim_ignored_officer_commands",
+                    "victim_initiated_physical_threat",
+                    "victim_pointed_weapon",
+                    "victim_shot_in_back",
+                    "victim_shot_in_head",
+                    "flag_for_followup",
+                    "da_the_same",
+                ]
+            }];
+
+            this.render()
+
+        },
+
+        calculate_data_fields: function(collection){
+
+            collection.forEach(function(model, index) {
+
+                var _this = model.attributes;
+
+                model.set("full_name", _this.civilian_name);
+
+                model.set("year_of_incident", parse_year(_this.date_of_incident));
+
+                if (_this.da_on_scene != null && _this.district_attorney_prepared_report != null){
+                    model.set("da_the_same", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
+                } else {
+                    model.set("da_the_same", null);
+                }
+
+            });
+
+            return collection;
+
+        },
+
+        events: {
+            "click [type='checkbox']": "construct_checkbox_filters",
+        },
+
+        render: function(){
+
+            var data = this.view_object.relevant_incidents;
+
+            $(this.view_object.container).html(this.view_object.template({
+
+                years: this.view_object.years,
+
+                filters: this.view_object.filters,
+
+                // models: [{
+                //     models_field: "Relevant incidents",
+                //     models_length: data.where({
+                //         case_relevant: true
+                //     }).length
+                // }, {
+                //     models_field: "Fatal incidents",
+                //     models_length: data.where({
+                //         fatal: true
+                //     }).length
+                // }, {
+                //     models_field: "Victim Unarmed",
+                //     models_length: data.where({
+                //         victim_unarmed: true
+                //     }).length
+                // }, {
+                //     models_field: "Mentally Ill",
+                //     models_length: data.where({
+                //         victim_mentally_ill: true
+                //     }).length
+                // }, {
+                //     models_field: "Mentally Ill And Unarmed",
+                //     models_length: data.where({
+                //         victim_unarmed: true,
+                //         victim_mentally_ill: true
+                //     }).length
+                // }, {
+                //     models_field: "Reaching For Waistband And Unarmed",
+                //     models_length: data.where({
+                //         victim_unarmed: true,
+                //         mention_of_waistband_in_report: true
+                //     }).length
+                // }, {
+                //     models_field: "Pointed Firearm At An Officer",
+                //     models_length: data.where({
+                //         victim_pointed_weapon: true
+                //     }).length
+                // }, {
+                //     models_field: "Fired Firearm At An Officer",
+                //     models_length: data.where({
+                //         victim_fired_weapon: true
+                //     }).length
+                // }, {
+                //     models_field: "Pointed and Fired Firearm At An Officer",
+                //     models_length: data.where({
+                //         victim_pointed_weapon: true,
+                //         victim_fired_weapon: true
+                //     }).length
+                // }, {
+                //     models_field: "Reason was 'defense of civilians'",
+                //     models_length: data.where({
+                //         officer_defense_of_civillians: true
+                //     }).length
+                // }, {
+                //     models_field: "Couldn't See Victims Hands",
+                //     models_length: data.where({
+                //         officer_couldnt_see_victims_hands: true
+                //     }).length
+                // }, {
+                //     models_field: "Responding Prosecutor Did Not Complete The Report",
+                //     models_length: data.where({
+                //         da_the_same: false
+                //     }).length
+                // }, {
+                //     models_field: "Ignored Commands And Demonstrated Symptoms Of Mentally Illness",
+                //     models_length: data.where({
+                //         victim_mentally_ill: true,
+                //         victim_ignored_officer_commands: true,
+                //     }).length
+                // }, {
+                //     models_field: "Ignored Commands And Demonstrated Symptoms Of Intoxication",
+                //     models_length: data.where({
+                //         victim_intoxicated: true,
+                //         victim_ignored_officer_commands: true,
+                //     }).length
+                // }],
+
+                // incidents: data.toJSON()
+
+            }));
+
+            this.construct_checkbox_filters();
+        },
+
+        construct_checkbox_filters: function(){
+            var active_checkboxes = [];
+
+            if (!$("input:checkbox").is(":checked")) {
+
+                $("td#all-incidents").html(this.view_object.total_incidents.length);
+
+                $("td#relevant-incidents").html(this.view_object.relevant_incidents.length);
+
+                $("td#filtered-display").html(this.view_object.relevant_incidents.length);
+
+                var data = this.view_object.relevant_incidents.groupBy(function(model){
+                    return model.get("year_of_incident");
+                });
+
+                this.view_object.years.forEach(function(item){
+                    $("td#_" + item).html(data[item].length);
+                });
+
+                $(".kpcc-table td.swap").css({color: "black"});
+
+            } else {
+
+                $("input:checkbox").each(function(){
+                    var $this = $(this);
+                    if($this.is(":checked")){
+                        var filter_id = $this.attr("id");
+                        active_checkboxes.push(filter_id);
+                    }
+                });
+
+                var filters = {};
+
+                _.each(active_checkboxes, function(key){
+                    filters[key] = true;
+                });
+
+                var filtered_data = new App.Collections.Incidents(
+                    this.view_object.relevant_incidents.where(filters)
+                );
+
+                var data = filtered_data.groupBy(function(model){
+                    return model.get("year_of_incident");
+                });
+
+                $("td#filtered-display").html(filtered_data.length);
+
+                this.view_object.years.forEach(function(item){
+                    $("td#_" + item).html(data[item].length);
+                });
+
+                $(".kpcc-table td.swap").css({color: "red"});
+
+            }
+        },
+    });
+</script>
+
+<script id="my_template" type="text/template">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <form role="form" class="form-inline">
+                    <@ _.each(filters, function(filter) { @>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <h5><@= filter.type @></h5>
+                                <@ _.each(filter.filters, function(checkbox) { @>
+                                    <div class="checkbox col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                        <label class="checkbox-inline" for="<@= checkbox @>">
+                                            <input type="checkbox" id="<@= checkbox @>" value="<@= checkbox @>"> <@= checkbox @>
+                                        </label>
+                                    </div>
+                                <@ }); @>
+                            </div>
+                        </div>
+                    <@ }); @>
+                </form>
+            </div>
+        </div>
+        <hr></hr>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div id="table-container">
+                    <table class="kpcc-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; width: 100%;">Incidents Matching</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="swap" id="filtered-display" style="text-align: center; width: 50%;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="kpcc-table">
+                        <thead>
+                            <tr>
+                                <@ _.each(years, function(year) { @>
+                                    <th style="text-align: center; width: 20%;"><@= year @></th>
+                                <@ }); @>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <@ _.each(years, function(year) { @>
+                                    <td class="swap" id="_<@= year @>" style="text-align: center; width: 20%;">--</td>
+                                <@ }); @>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="kpcc-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; width: 50%;">Incidents</th>
+                                <th style="text-align: center; width: 50%;">On-duty use-of-force incidents</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="all-incidents" style="text-align: center; width: 50%;"></td>
+                                <td id="relevant-incidents" style="text-align: center; width: 50%;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="row">
-    <h4 class="text-center">Based on <%= @on_duty_incidents.count %> relevant, on-duty use-of-force incidents</h4>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-        <h6>Overall</h6>
-        <ul>
-            <li>fatal_incidents</li>
-            <ul>
-                <% @fatal.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>Were Multiple Officers Involved</li>
-            <ul>
-                <% @multiple_officers.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>Charges Filed Against Officer</li>
-            <ul>
-                <% @officer_charges_filed.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_arrested</li>
-            <ul>
-                <% @victim_arrested.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>flag_for_followup</li>
-            <ul>
-                <% @flag_for_followup.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-        </ul>
-    </div>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-        <h6>What Was The Justification?</h6>
-        <ul>
-            <li>officer_self_defense</li>
-            <ul>
-                <% @officer_self_defense.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_defense_of_civillians</li>
-            <ul>
-                <% @officer_defense_of_civillians.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_defense_of_officers</li>
-            <ul>
-                <% @officer_defense_of_officers.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_unknown</li>
-            <ul>
-                <% @officer_unknown.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>applied_lawful_force</li>
-            <ul>
-                <% @applied_lawful_force.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-        </ul>
-    </div>
-</div>
-<hr></hr>
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <h4 class="text-center">True False Factors</h4>
-    </div>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-        <ul>
-            <li>car_stop</li>
-            <ul>
-                <% @car_stop.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>pursuit_occurred</li>
-            <ul>
-                <% @pursuit_occurred.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_serving_warrant</li>
-            <ul>
-                <% @officer_serving_warrant.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_on_surveillance</li>
-            <ul>
-                <% @officer_on_surveillance.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_routine_patrol</li>
-            <ul>
-                <% @officer_routine_patrol.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_responding_to_call</li>
-            <ul>
-                <% @officer_responding_to_call.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_on_undercover</li>
-            <ul>
-                <% @officer_on_undercover.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_injured</li>
-            <ul>
-                <% @officer_injured.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>believed_victim_was_armed</li>
-            <ul>
-                <% @believed_civillian_armed.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_unarmed</li>
-            <ul>
-                <% @victim_unarmed.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_fired_weapon</li>
-            <ul>
-                <% @victim_fired_weapon.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_pointed_weapon</li>
-            <ul>
-                <% @victim_pointed_weapon.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>grabbed_officers_weapon</li>
-            <ul>
-                <% @grabbed_officers_weapon.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-        </ul>
-    </div>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-        <ul>
-            <li>victim_gang_member</li>
-            <ul>
-                <%@victim_gang_member.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_intoxicated</li>
-            <ul>
-                <% @victim_intoxicated.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_mentally_ill</li>
-            <ul>
-                <% @victim_mentally_ill.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>civilian_witnesses</li>
-            <ul>
-                <% @civilian_witnesses.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>potential_civillian_video</li>
-            <ul>
-                <% @potential_civillian_video.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>potential_police_video</li>
-            <ul>
-                <% @potential_police_video.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_shot_in_back</li>
-            <ul>
-                <% @victim_shot_in_back.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_shot_in_head</li>
-            <ul>
-                <% @victim_shot_in_head.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_weapon_recovered</li>
-            <ul>
-                <% @victim_weapon_recovered.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>mention_of_waistband_in_report</li>
-            <ul>
-                <% @mention_of_waistband_in_report.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_ignored_officer_commands</li>
-            <ul>
-                <% @victim_ignored_officer_commands.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>victim_initiated_physical_threat</li>
-            <ul>
-                <% @victim_initiated_physical_threat.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-            <li>officer_couldnt_see_victims_hands</li>
-            <ul>
-                <% @officer_couldnt_see_victims_hands.each do |t, a| %>
-                    <li><%= t %>: <%= a %></li>
-                <% end %>
-            </ul>
-        </ul>
-    </div>
-</div>
+</script>
