@@ -182,56 +182,56 @@
             this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
 
             this.view_object.filters = [{
-                type: "top_line",
+                type: "Top Line Data",
                 filters: [
-                    "fatal",
-                    "victim_unarmed",
-                    "victim_fired_weapon",
-                    "victim_weapon_recovered",
-                    "mention_of_waistband_in_report",
-                    "officer_couldnt_see_victims_hands",
+                    {proper: "Was Use Of Force Fatal", field: "fatal"},
+                    {proper: "Victim Was Unarmed", field: "victim_unarmed"},
+                    {proper: "Victim Fired Weapon", field: "victim_fired_weapon"},
+                    {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
+                    {proper: "Victim Ignored Officer Commands", field: "victim_ignored_officer_commands"},
+                    {proper: "Mention Of Waistband", field: "mention_of_waistband_in_report"},
+                    {proper: "Mention Of Couldn't See Victims Hands", field: "officer_couldnt_see_victims_hands"},
                 ]
             }, {
-                type: "officer_filters",
+                type: "Officer Filters",
                 filters: [
-                    "officer_self_defense",
-                    "officer_defense_of_civillians",
-                    "officer_defense_of_officers",
-                    "applied_lawful_force",
-                    "car_stop",
-                    "officer_serving_warrant",
-                    "officer_on_surveillance",
-                    "officer_on_undercover",
-                    "officer_routine_patrol",
-                    "officer_responding_to_call",
-                    "officer_charges_filed",
+                    {proper: "Officer Self Defense", field: "officer_self_defense"},
+                    {proper: "Officer Defense Of Officers", field: "officer_defense_of_officers"},
+                    {proper: "Officer Defense Of Civillians", field: "officer_defense_of_civillians"},
+                    {proper: "Officer Responding to Call", field: "officer_responding_to_call"},
+                    {proper: "Officer On Routine Patrol", field: "officer_routine_patrol"},
+                    {proper: "Officer Serving Warrant", field: "officer_serving_warrant"},
+                    {proper: "Officer On Surveillance", field: "officer_on_surveillance"},
+                    {proper: "Officer On Undercover", field: "officer_on_undercover"},
+                    {proper: "Charges Filed Against Officer", field: "officer_charges_filed"},
+                    // {proper: "Officer Applied Lawful Force", field: "applied_lawful_force"},
                 ]
             }, {
-                type: "victim_filters",
+                type: "Victim Filters",
                 filters: [
-                    "victim_arrested",
-                    "victim_gang_member",
-                    "victim_intoxicated",
-                    "victim_mentally_ill",
+                    {proper: "Victim Arrested", field: "victim_arrested"},
+                    {proper: "Victim Identified As Gang Member", field: "victim_gang_member"},
+                    {proper: "Mention Of Victim Intoxication", field: "victim_intoxicated"},
+                    {proper: "Mention Of Victim Mental Illness", field: "victim_mentally_ill"},
                 ]
             }, {
-                type: "incident_filters",
+                type: "Incident Filters",
                 filters: [
-                    "pursuit_occurred",
-                    "multiple_officers",
-                    "grabbed_officers_weapon",
-                    "believed_civillian_armed",
-                    "officer_injured",
-                    "potential_police_video",
-                    "potential_civillian_video",
-                    "civilian_witnesses",
-                    "victim_ignored_officer_commands",
-                    "victim_initiated_physical_threat",
-                    "victim_pointed_weapon",
-                    "victim_shot_in_back",
-                    "victim_shot_in_head",
-                    "flag_for_followup",
-                    "da_the_same",
+                    {proper: "Car Stop", field: "car_stop"},
+                    {proper: "Pursuit Occurred", field: "pursuit_occurred"},
+                    {proper: "Multiple Officers Involved", field: "multiple_officers"},
+                    {proper: "Victim Grabbed Officers Weapon", field: "grabbed_officers_weapon"},
+                    {proper: "Believed Victim Was Armed", field: "believed_civillian_armed"},
+                    {proper: "Officer Injured", field: "officer_injured"},
+                    {proper: "Victim Initiated Physical Threat", field: "victim_initiated_physical_threat"},
+                    {proper: "Victim Pointed Weapon", field: "victim_pointed_weapon"},
+                    {proper: "Victim Shot In Back", field: "victim_shot_in_back"},
+                    {proper: "Victim Shot In Head", field: "victim_shot_in_head"},
+                    // {proper: "Flag For Followup", field: "flag_for_followup"},
+                    // {proper: "On-scene DA Also Filed Report", field: "da_the_same"},
+                    // {proper: "Potential Police Video", field: "potential_police_video"},
+                    {proper: "Potential Civillian Video", field: "potential_civillian_video"},
+                    {proper: "Civilian Witnesses", field: "civilian_witnesses"},
                 ]
             }];
 
@@ -400,14 +400,30 @@
                     this.view_object.relevant_incidents.where(filters)
                 );
 
-                var data = filtered_data.groupBy(function(model){
+                if (filtered_data.length){
+                    $("td#filtered-display").html(filtered_data.length);
+                } else {
+                    $("td#filtered-display").html("No Results Found");
+                };
+
+                var yearly_data = filtered_data.groupBy(function(model){
                     return model.get("year_of_incident");
                 });
 
-                $("td#filtered-display").html(filtered_data.length);
+                var number_of_results = _.keys(yearly_data);
 
                 this.view_object.years.forEach(function(item){
-                    $("td#_" + item).html(data[item].length);
+                    if (yearly_data[item] === undefined){
+                        $("td#_" + item).html("No Results Found");
+                    } else {
+
+                        $("td#_" + item).html(yearly_data[item].length);
+
+                        yearly_data[item].forEach(function(model){
+                            $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
+                        });
+
+                    };
                 });
 
                 $(".kpcc-table td.swap").css({color: "red"});
@@ -429,7 +445,7 @@
                                 <@ _.each(filter.filters, function(checkbox) { @>
                                     <div class="checkbox col-xs-12 col-sm-6 col-md-4 col-lg-3">
                                         <label class="checkbox-inline" for="<@= checkbox @>">
-                                            <input type="checkbox" id="<@= checkbox @>" value="<@= checkbox @>"> <@= checkbox @>
+                                            <input type="checkbox" id="<@= checkbox.field @>" value="<@= checkbox.field @>"> <@= checkbox.proper @>
                                         </label>
                                     </div>
                                 <@ }); @>
@@ -443,6 +459,20 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div id="table-container">
+                    <table class="kpcc-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; width: 50%;">Incidents</th>
+                                <th style="text-align: center; width: 50%;">On-duty use-of-force incidents</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="all-incidents" style="text-align: center; width: 50%;"></td>
+                                <td id="relevant-incidents" style="text-align: center; width: 50%;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <table class="kpcc-table">
                         <thead>
                             <tr>
@@ -468,20 +498,6 @@
                                 <@ _.each(years, function(year) { @>
                                     <td class="swap" id="_<@= year @>" style="text-align: center; width: 20%;">--</td>
                                 <@ }); @>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="kpcc-table">
-                        <thead>
-                            <tr>
-                                <th style="text-align: center; width: 50%;">Incidents</th>
-                                <th style="text-align: center; width: 50%;">On-duty use-of-force incidents</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td id="all-incidents" style="text-align: center; width: 50%;"></td>
-                                <td id="relevant-incidents" style="text-align: center; width: 50%;"></td>
                             </tr>
                         </tbody>
                     </table>
