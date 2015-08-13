@@ -9,13 +9,7 @@
 
 <div class="row data-filters"></div>
 <script>
-
     (function(){
-
-         _.templateSettings = {
-            interpolate: /\<\@\=(.+?)\@\>/gim,
-            evaluate: /\<\@(.+?)\@\>/gim
-        };
 
         window.App = {
             Models: {},
@@ -24,26 +18,14 @@
             Router: {}
         };
 
+        _.templateSettings = {
+            interpolate: /\<\@\=(.+?)\@\>/gim,
+            evaluate: /\<\@(.+?)\@\>/gim
+        };
+
         window.template = function(id){
             return _.template( $('#' + id).html());
         };
-
-        App.Views.ApplicationWrapper = Backbone.View.extend({
-            el: "body",
-            initialize: function(){
-                this.render();
-            },
-            render: function(){
-            }
-        });
-
-        $(function(){
-            window.app = new App.Router();
-            Backbone.history.start({
-                root: "/incidents",
-                pushState: false,
-            });
-        });
 
         // helper functions
         window.percentifyValue = function(value){
@@ -108,416 +90,423 @@
             return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
         };
 
-    })();
+        App.Models.Incident = Backbone.Model.extend({
+            defaults: {
+                id: null,
+                created_at: null,
+                updated_at: null,
+                url: null,
+                civilian_name: null,
+                district_attorney_file_number: null,
+                district_attorney_county: null,
+                district_attorney_prepared_report: null,
+                general_location_of_incident: null,
+                type_of_incident: null,
+                civillian_weapon: null,
+                officer_shots_fired: null,
+                da_on_scene: null,
+                da_investigator_on_scene: null,
+                district_attorney_conclusion: null,
+                narrative_notes: null,
+                autopsy_notes: null,
+                conclusion_notes: null,
+                officer_name_and_badge_number: null,
+                officer_police_agency: null,
+                what_happened: null,
+                underlying_crime_leading_to_shooting: null,
+                how_situation_escalated: null,
+                victim_case_number: null,
+                officer_special_unit: null,
+                officer_charges_filed_yes_detail: null,
+                victim_charges_filed: null,
+                date_of_incident: null,
+                district_attorney_date_of_letter: null,
+                verified: null,
+                multiple_officers: null,
+                car_stop: null,
+                believed_civillian_armed: null,
+                potential_police_video: null,
+                potential_civillian_video: null,
+                mention_of_waistband_in_report: null,
+                fatal: null,
+                case_relevant: null,
+                victim_arrested: null,
+                officer_charges_filed: null,
+                officer_self_defense: null,
+                officer_defense_of_civillians: null,
+                officer_defense_of_officers: null,
+                officer_unknown: null,
+                officer_serving_warrant: null,
+                officer_on_surveillance: null,
+                officer_on_undercover: null,
+                pursuit_occurred: null,
+                victim_gang_member: null,
+                victim_ignored_officer_commands: null,
+                victim_weapon_recovered: null,
+                victim_initiated_physical_threat: null,
+                victim_intoxicated: null,
+                victim_mentally_ill: null,
+                civilian_witnesses: null,
+                victim_fired_weapon: null,
+                victim_pointed_weapon: null,
+                officer_injured: null,
+                flag_for_followup: null,
+                victim_shot_in_back: null,
+                applied_lawful_force: null,
+                victim_shot_in_head: null,
+                victim_unarmed: null,
+                officer_couldnt_see_victims_hands: null,
+                officer_routine_patrol: null,
+                transcribed_count: null,
+                officer_responding_to_call: null,
+                grabbed_officers_weapon: null,
+                email: null,
+                civillian_weapon_specific: null,
+                officer_shots_fired_specific: null,
+                type_of_incident_number: null,
+                coroner_case_number: null,
+                in_custody_record_key_number: null,
+            },
+        });
 
-    App.Models.Incident = Backbone.Model.extend({
-        defaults: {
-            id: null,
-            created_at: null,
-            updated_at: null,
-            url: null,
-            civilian_name: null,
-            district_attorney_file_number: null,
-            district_attorney_county: null,
-            district_attorney_prepared_report: null,
-            general_location_of_incident: null,
-            type_of_incident: null,
-            civillian_weapon: null,
-            officer_shots_fired: null,
-            da_on_scene: null,
-            da_investigator_on_scene: null,
-            district_attorney_conclusion: null,
-            narrative_notes: null,
-            autopsy_notes: null,
-            conclusion_notes: null,
-            officer_name_and_badge_number: null,
-            officer_police_agency: null,
-            what_happened: null,
-            underlying_crime_leading_to_shooting: null,
-            how_situation_escalated: null,
-            victim_case_number: null,
-            officer_special_unit: null,
-            officer_charges_filed_yes_detail: null,
-            victim_charges_filed: null,
-            date_of_incident: null,
-            district_attorney_date_of_letter: null,
-            verified: null,
-            multiple_officers: null,
-            car_stop: null,
-            believed_civillian_armed: null,
-            potential_police_video: null,
-            potential_civillian_video: null,
-            mention_of_waistband_in_report: null,
-            fatal: null,
-            case_relevant: null,
-            victim_arrested: null,
-            officer_charges_filed: null,
-            officer_self_defense: null,
-            officer_defense_of_civillians: null,
-            officer_defense_of_officers: null,
-            officer_unknown: null,
-            officer_serving_warrant: null,
-            officer_on_surveillance: null,
-            officer_on_undercover: null,
-            pursuit_occurred: null,
-            victim_gang_member: null,
-            victim_ignored_officer_commands: null,
-            victim_weapon_recovered: null,
-            victim_initiated_physical_threat: null,
-            victim_intoxicated: null,
-            victim_mentally_ill: null,
-            civilian_witnesses: null,
-            victim_fired_weapon: null,
-            victim_pointed_weapon: null,
-            officer_injured: null,
-            flag_for_followup: null,
-            victim_shot_in_back: null,
-            applied_lawful_force: null,
-            victim_shot_in_head: null,
-            victim_unarmed: null,
-            officer_couldnt_see_victims_hands: null,
-            officer_routine_patrol: null,
-            transcribed_count: null,
-            officer_responding_to_call: null,
-            grabbed_officers_weapon: null,
-            email: null,
-            civillian_weapon_specific: null,
-            officer_shots_fired_specific: null,
-            type_of_incident_number: null,
-            coroner_case_number: null,
-            in_custody_record_key_number: null,
-        },
-    });
+        App.Collections.Incidents = Backbone.Collection.extend({
+            model: App.Models.Incident,
+            comparator: function(model) {
+                return model.get("civilian_name");
+            }
+        });
 
-    App.Collections.Incidents = Backbone.Collection.extend({
-        model: App.Models.Incident,
-        comparator: function(model) {
-            return model.get("civilian_name");
-        }
-    });
+        App.Router = Backbone.Router.extend({
 
+            routes: {
+                "": "fetchData",
+            },
 
-    App.Router = Backbone.Router.extend({
-        initialize: function(){
-            this.fetchData();
-        },
-
-        routes: {
-            // "": "fetchData",
-        },
-
-        fetchData: function(){
-            var _this = this;
-            var applicationCollection = new App.Collections.Incidents(<%= raw @incidents.to_json %>);
-            var checkExist = setInterval(function() {
-                if (applicationCollection.length > 0){
-                    clearInterval(checkExist);
-                    _this.renderApplicationVisuals(applicationCollection);
-                }
-            }, 500);
-        },
-
-        renderApplicationVisuals: function(collection){
-            if (this.applicationVisuals){
-                this.applicationVisuals.remove();
-            };
-            this.applicationVisuals = new App.Views.ApplicationVisuals({
-                total_incidents: collection,
-                container: ".data-filters"
-            });
-            return this.applicationVisuals;
-        },
-    });
-
-    App.Views.ApplicationVisuals = Backbone.View.extend({
-
-        // tagName: "div",
-        // className: "col-xs-12 col-sm-12 col-md-12 col-lg-12",
-
-        el: ".data-filters",
-
-        initialize: function(object){
-            this.view_object = object;
-
-            this.view_object.template = template("my_template");
-
-            this.view_object.total_incidents = this.calculate_data_fields(this.view_object.total_incidents);
-
-            this.view_object.relevant_incidents = new App.Collections.Incidents(
-                this.view_object.total_incidents.where({
-                    case_relevant: true
-                })
-            );
-
-            this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
-
-            this.view_object.filters = [{
-                type: "Top Line Data",
-                filters: [
-                    {proper: "Was Use Of Force Fatal", field: "fatal"},
-                    {proper: "Victim Was Unarmed", field: "victim_unarmed"},
-                    {proper: "Victim Fired Weapon", field: "victim_fired_weapon"},
-                    {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
-                    {proper: "Victim Ignored Officer Commands", field: "victim_ignored_officer_commands"},
-                    {proper: "Mention Of Waistband", field: "mention_of_waistband_in_report"},
-                    {proper: "Mention Of Couldn't See Victims Hands", field: "officer_couldnt_see_victims_hands"},
-                ]
-            }, {
-                type: "Officer Filters",
-                filters: [
-                    {proper: "Officer Self Defense", field: "officer_self_defense"},
-                    {proper: "Officer Defense Of Officers", field: "officer_defense_of_officers"},
-                    {proper: "Officer Defense Of Civillians", field: "officer_defense_of_civillians"},
-                    {proper: "Officer Responding to Call", field: "officer_responding_to_call"},
-                    {proper: "Officer On Routine Patrol", field: "officer_routine_patrol"},
-                    {proper: "Officer Serving Warrant", field: "officer_serving_warrant"},
-                    {proper: "Officer On Surveillance", field: "officer_on_surveillance"},
-                    {proper: "Officer On Undercover", field: "officer_on_undercover"},
-                    {proper: "Charges Filed Against Officer", field: "officer_charges_filed"},
-                    // {proper: "Officer Applied Lawful Force", field: "applied_lawful_force"},
-                ]
-            }, {
-                type: "Victim Filters",
-                filters: [
-                    {proper: "Victim Arrested", field: "victim_arrested"},
-                    {proper: "Victim Identified As Gang Member", field: "victim_gang_member"},
-                    {proper: "Mention Of Victim Intoxication", field: "victim_intoxicated"},
-                    {proper: "Mention Of Victim Mental Illness", field: "victim_mentally_ill"},
-                ]
-            }, {
-                type: "Incident Filters",
-                filters: [
-                    {proper: "Car Stop", field: "car_stop"},
-                    {proper: "Pursuit Occurred", field: "pursuit_occurred"},
-                    {proper: "Multiple Officers Involved", field: "multiple_officers"},
-                    {proper: "Victim Grabbed Officers Weapon", field: "grabbed_officers_weapon"},
-                    {proper: "Believed Victim Was Armed", field: "believed_civillian_armed"},
-                    {proper: "Officer Injured", field: "officer_injured"},
-                    {proper: "Victim Initiated Physical Threat", field: "victim_initiated_physical_threat"},
-                    {proper: "Victim Pointed Weapon", field: "victim_pointed_weapon"},
-                    {proper: "Victim Shot In Back", field: "victim_shot_in_back"},
-                    {proper: "Victim Shot In Head", field: "victim_shot_in_head"},
-                    // {proper: "Flag For Followup", field: "flag_for_followup"},
-                    // {proper: "On-scene DA Also Filed Report", field: "da_the_same"},
-                    // {proper: "Potential Police Video", field: "potential_police_video"},
-                    {proper: "Potential Civillian Video", field: "potential_civillian_video"},
-                    {proper: "Civilian Witnesses", field: "civilian_witnesses"},
-                ]
-            }];
-
-            this.render()
-
-        },
-
-        calculate_data_fields: function(collection){
-
-            collection.forEach(function(model, index) {
-
-                var _this = model.attributes;
-
-                model.set("full_name", _this.civilian_name);
-
-                model.set("year_of_incident", parse_year(_this.date_of_incident));
-
-                if (_this.da_on_scene != null && _this.district_attorney_prepared_report != null){
-                    model.set("da_the_same", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
-                } else {
-                    model.set("da_the_same", null);
-                }
-
-            });
-
-            return collection;
-
-        },
-
-        events: {
-            "click [type='checkbox']": "construct_checkbox_filters",
-            "click #clear-filters": "clear_checkbox_filters",
-            "click #demo-filters": "demo_filters"
-        },
-
-        render: function(){
-
-            var data = this.view_object.relevant_incidents;
-
-            $(this.view_object.container).html(this.view_object.template({
-
-                years: this.view_object.years,
-
-                filters: this.view_object.filters,
-
-                // models: [{
-                //     models_field: "Relevant incidents",
-                //     models_length: data.where({
-                //         case_relevant: true
-                //     }).length
-                // }, {
-                //     models_field: "Fatal incidents",
-                //     models_length: data.where({
-                //         fatal: true
-                //     }).length
-                // }, {
-                //     models_field: "Victim Unarmed",
-                //     models_length: data.where({
-                //         victim_unarmed: true
-                //     }).length
-                // }, {
-                //     models_field: "Mentally Ill",
-                //     models_length: data.where({
-                //         victim_mentally_ill: true
-                //     }).length
-                // }, {
-                //     models_field: "Mentally Ill And Unarmed",
-                //     models_length: data.where({
-                //         victim_unarmed: true,
-                //         victim_mentally_ill: true
-                //     }).length
-                // }, {
-                //     models_field: "Reaching For Waistband And Unarmed",
-                //     models_length: data.where({
-                //         victim_unarmed: true,
-                //         mention_of_waistband_in_report: true
-                //     }).length
-                // }, {
-                //     models_field: "Pointed Firearm At An Officer",
-                //     models_length: data.where({
-                //         victim_pointed_weapon: true
-                //     }).length
-                // }, {
-                //     models_field: "Fired Firearm At An Officer",
-                //     models_length: data.where({
-                //         victim_fired_weapon: true
-                //     }).length
-                // }, {
-                //     models_field: "Pointed and Fired Firearm At An Officer",
-                //     models_length: data.where({
-                //         victim_pointed_weapon: true,
-                //         victim_fired_weapon: true
-                //     }).length
-                // }, {
-                //     models_field: "Reason was 'defense of civilians'",
-                //     models_length: data.where({
-                //         officer_defense_of_civillians: true
-                //     }).length
-                // }, {
-                //     models_field: "Couldn't See Victims Hands",
-                //     models_length: data.where({
-                //         officer_couldnt_see_victims_hands: true
-                //     }).length
-                // }, {
-                //     models_field: "Responding Prosecutor Did Not Complete The Report",
-                //     models_length: data.where({
-                //         da_the_same: false
-                //     }).length
-                // }, {
-                //     models_field: "Ignored Commands And Demonstrated Symptoms Of Mentally Illness",
-                //     models_length: data.where({
-                //         victim_mentally_ill: true,
-                //         victim_ignored_officer_commands: true,
-                //     }).length
-                // }, {
-                //     models_field: "Ignored Commands And Demonstrated Symptoms Of Intoxication",
-                //     models_length: data.where({
-                //         victim_intoxicated: true,
-                //         victim_ignored_officer_commands: true,
-                //     }).length
-                // }],
-
-                // incidents: data.toJSON()
-
-            }));
-
-            this.construct_checkbox_filters();
-        },
-
-        construct_checkbox_filters: function(){
-            var active_checkboxes = [];
-
-            if (!$("input:checkbox").is(":checked")) {
-
-                $("td#all-incidents").html(this.view_object.total_incidents.length);
-
-                $("td#relevant-incidents").html(this.view_object.relevant_incidents.length);
-
-                $("td#filtered-display").html(this.view_object.relevant_incidents.length);
-
-                var data = this.view_object.relevant_incidents.groupBy(function(model){
-                    return model.get("year_of_incident");
-                });
-
-                this.view_object.years.forEach(function(item){
-                    $("td#_" + item).html(data[item].length);
-                });
-
-                $(".kpcc-table td.swap").css({color: "black"});
-
-            } else {
-
-                $("input:checkbox").each(function(){
-                    var $this = $(this);
-                    if($this.is(":checked")){
-                        var filter_id = $this.attr("id");
-                        active_checkboxes.push(filter_id);
+            fetchData: function(){
+                var _this = this;
+                var applicationCollection = new App.Collections.Incidents(<%= raw @incidents.to_json %>);
+                var checkExist = setInterval(function() {
+                    if (applicationCollection.length > 0){
+                        clearInterval(checkExist);
+                        _this.renderApplicationVisuals(applicationCollection);
                     }
+                }, 500);
+            },
+
+            renderApplicationVisuals: function(collection){
+                if (this.applicationVisuals){
+                    this.applicationVisuals.remove();
+                };
+                this.applicationVisuals = new App.Views.ApplicationVisuals({
+                    total_incidents: collection,
+                    container: ".data-filters"
                 });
+                return this.applicationVisuals;
+            },
+        });
 
-                var filters = {};
+        App.Views.ApplicationVisuals = Backbone.View.extend({
 
-                _.each(active_checkboxes, function(key){
-                    filters[key] = true;
-                });
+            // tagName: "div",
 
-                var filtered_data = new App.Collections.Incidents(
-                    this.view_object.relevant_incidents.where(filters)
+            // className: "col-xs-12 col-sm-12 col-md-12 col-lg-12",
+
+            el: ".data-filters",
+
+            initialize: function(object){
+                this.view_object = object;
+
+                this.view_object.template = template("my_template");
+
+                this.view_object.total_incidents = this.calculate_data_fields(this.view_object.total_incidents);
+
+                this.view_object.relevant_incidents = new App.Collections.Incidents(
+                    this.view_object.total_incidents.where({
+                        case_relevant: true
+                    })
                 );
 
-                if (filtered_data.length){
-                    $("td#filtered-display").html(filtered_data.length);
-                } else {
-                    $("td#filtered-display").html("No Results Found");
-                };
+                this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
 
-                var yearly_data = filtered_data.groupBy(function(model){
-                    return model.get("year_of_incident");
-                });
+                this.view_object.filters = [{
+                    type: "Top Line Data",
+                    filters: [
+                        {proper: "Was Use Of Force Fatal", field: "fatal"},
+                        {proper: "Victim Was Unarmed", field: "victim_unarmed"},
+                        {proper: "Victim Fired Weapon", field: "victim_fired_weapon"},
+                        {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
+                        {proper: "Victim Ignored Officer Commands", field: "victim_ignored_officer_commands"},
+                        {proper: "Mention Of Waistband", field: "mention_of_waistband_in_report"},
+                        {proper: "Mention Of Couldn't See Victims Hands", field: "officer_couldnt_see_victims_hands"},
+                    ]
+                }, {
+                    type: "Officer Filters",
+                    filters: [
+                        {proper: "Officer Self Defense", field: "officer_self_defense"},
+                        {proper: "Officer Defense Of Officers", field: "officer_defense_of_officers"},
+                        {proper: "Officer Defense Of Civillians", field: "officer_defense_of_civillians"},
+                        {proper: "Officer Responding to Call", field: "officer_responding_to_call"},
+                        {proper: "Officer On Routine Patrol", field: "officer_routine_patrol"},
+                        {proper: "Officer Serving Warrant", field: "officer_serving_warrant"},
+                        {proper: "Officer On Surveillance", field: "officer_on_surveillance"},
+                        {proper: "Officer On Undercover", field: "officer_on_undercover"},
+                        {proper: "Charges Filed Against Officer", field: "officer_charges_filed"},
+                        // {proper: "Officer Applied Lawful Force", field: "applied_lawful_force"},
+                    ]
+                }, {
+                    type: "Victim Filters",
+                    filters: [
+                        {proper: "Victim Arrested", field: "victim_arrested"},
+                        {proper: "Victim Identified As Gang Member", field: "victim_gang_member"},
+                        {proper: "Mention Of Victim Intoxication", field: "victim_intoxicated"},
+                        {proper: "Mention Of Victim Mental Illness", field: "victim_mentally_ill"},
+                    ]
+                }, {
+                    type: "Incident Filters",
+                    filters: [
+                        {proper: "Car Stop", field: "car_stop"},
+                        {proper: "Pursuit Occurred", field: "pursuit_occurred"},
+                        {proper: "Multiple Officers Involved", field: "multiple_officers"},
+                        {proper: "Victim Grabbed Officers Weapon", field: "grabbed_officers_weapon"},
+                        {proper: "Believed Victim Was Armed", field: "believed_civillian_armed"},
+                        {proper: "Officer Injured", field: "officer_injured"},
+                        {proper: "Victim Initiated Physical Threat", field: "victim_initiated_physical_threat"},
+                        {proper: "Victim Pointed Weapon", field: "victim_pointed_weapon"},
+                        {proper: "Victim Shot In Back", field: "victim_shot_in_back"},
+                        {proper: "Victim Shot In Head", field: "victim_shot_in_head"},
+                        // {proper: "Flag For Followup", field: "flag_for_followup"},
+                        // {proper: "On-scene DA Also Filed Report", field: "da_the_same"},
+                        // {proper: "Potential Police Video", field: "potential_police_video"},
+                        {proper: "Potential Civillian Video", field: "potential_civillian_video"},
+                        {proper: "Civilian Witnesses", field: "civilian_witnesses"},
+                    ]
+                }];
 
-                var number_of_results = _.keys(yearly_data);
+                this.render()
 
-                this.view_object.years.forEach(function(item){
-                    if (yearly_data[item] === undefined){
-                        $("td#_" + item).html("No Results Found");
+            },
+
+            calculate_data_fields: function(collection){
+
+                collection.forEach(function(model, index) {
+
+                    var _this = model.attributes;
+
+                    model.set("full_name", _this.civilian_name);
+
+                    model.set("year_of_incident", parse_year(_this.date_of_incident));
+
+                    if (_this.da_on_scene != null && _this.district_attorney_prepared_report != null){
+                        model.set("da_the_same", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
                     } else {
+                        model.set("da_the_same", null);
+                    }
 
-                        $("td#_" + item).html(yearly_data[item].length);
-
-                        yearly_data[item].forEach(function(model){
-                            $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
-                        });
-
-                    };
                 });
 
-                $(".kpcc-table td.swap").css({color: "red"});
-            }
-        },
+                return collection;
 
-        clear_checkbox_filters: function(){
-            $("input:checkbox").each(function(){
-                var $this = $(this);
-                $($this).attr('checked', false);
-            });
-            this.construct_checkbox_filters();
-        },
+            },
 
-        demo_filters: function(){
-            $("input:checkbox[id^=fatal]").attr('checked', true);
-            $("input:checkbox[id^=victim_unarmed]").attr('checked', true);
-            $("input:checkbox[id^=multiple_officers]").attr('checked', true);
-            this.construct_checkbox_filters();
-        },
+            events: {
+                "click [type='checkbox']": "construct_checkbox_filters",
+                "click #clear-filters": "clear_checkbox_filters",
+                "click #demo-filters": "demo_filters"
+            },
 
+            render: function(){
+
+                var data = this.view_object.relevant_incidents;
+
+                $(this.view_object.container).html(this.view_object.template({
+
+                    years: this.view_object.years,
+
+                    filters: this.view_object.filters,
+
+                    // models: [{
+                    //     models_field: "Relevant incidents",
+                    //     models_length: data.where({
+                    //         case_relevant: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Fatal incidents",
+                    //     models_length: data.where({
+                    //         fatal: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Victim Unarmed",
+                    //     models_length: data.where({
+                    //         victim_unarmed: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Mentally Ill",
+                    //     models_length: data.where({
+                    //         victim_mentally_ill: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Mentally Ill And Unarmed",
+                    //     models_length: data.where({
+                    //         victim_unarmed: true,
+                    //         victim_mentally_ill: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Reaching For Waistband And Unarmed",
+                    //     models_length: data.where({
+                    //         victim_unarmed: true,
+                    //         mention_of_waistband_in_report: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Pointed Firearm At An Officer",
+                    //     models_length: data.where({
+                    //         victim_pointed_weapon: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Fired Firearm At An Officer",
+                    //     models_length: data.where({
+                    //         victim_fired_weapon: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Pointed and Fired Firearm At An Officer",
+                    //     models_length: data.where({
+                    //         victim_pointed_weapon: true,
+                    //         victim_fired_weapon: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Reason was 'defense of civilians'",
+                    //     models_length: data.where({
+                    //         officer_defense_of_civillians: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Couldn't See Victims Hands",
+                    //     models_length: data.where({
+                    //         officer_couldnt_see_victims_hands: true
+                    //     }).length
+                    // }, {
+                    //     models_field: "Responding Prosecutor Did Not Complete The Report",
+                    //     models_length: data.where({
+                    //         da_the_same: false
+                    //     }).length
+                    // }, {
+                    //     models_field: "Ignored Commands And Demonstrated Symptoms Of Mentally Illness",
+                    //     models_length: data.where({
+                    //         victim_mentally_ill: true,
+                    //         victim_ignored_officer_commands: true,
+                    //     }).length
+                    // }, {
+                    //     models_field: "Ignored Commands And Demonstrated Symptoms Of Intoxication",
+                    //     models_length: data.where({
+                    //         victim_intoxicated: true,
+                    //         victim_ignored_officer_commands: true,
+                    //     }).length
+                    // }],
+
+                    // incidents: data.toJSON()
+
+                }));
+
+                this.construct_checkbox_filters();
+            },
+
+            construct_checkbox_filters: function(){
+                var active_checkboxes = [];
+
+                if (!$("input:checkbox").is(":checked")) {
+
+                    $("td#all-incidents").html(this.view_object.total_incidents.length);
+
+                    $("td#relevant-incidents").html(this.view_object.relevant_incidents.length);
+
+                    $("td#filtered-display").html(this.view_object.relevant_incidents.length);
+
+                    var data = this.view_object.relevant_incidents.groupBy(function(model){
+                        return model.get("year_of_incident");
+                    });
+
+                    this.view_object.years.forEach(function(item){
+                        $("td#_" + item).html(data[item].length);
+                    });
+
+                    $(".kpcc-table td.swap").css({color: "black"});
+
+                } else {
+
+                    $("input:checkbox").each(function(){
+                        var $this = $(this);
+                        if($this.is(":checked")){
+                            var filter_id = $this.attr("id");
+                            active_checkboxes.push(filter_id);
+                        }
+                    });
+
+                    var filters = {};
+
+                    _.each(active_checkboxes, function(key){
+                        filters[key] = true;
+                    });
+
+                    var filtered_data = new App.Collections.Incidents(
+                        this.view_object.relevant_incidents.where(filters)
+                    );
+
+                    if (filtered_data.length){
+                        $("td#filtered-display").html(filtered_data.length);
+                    } else {
+                        $("td#filtered-display").html("No Results Found");
+                    };
+
+                    var yearly_data = filtered_data.groupBy(function(model){
+                        return model.get("year_of_incident");
+                    });
+
+                    var number_of_results = _.keys(yearly_data);
+
+                    this.view_object.years.forEach(function(item){
+                        if (yearly_data[item] === undefined){
+                            $("td#_" + item).html("No Results Found");
+                        } else {
+
+                            $("td#_" + item).html(yearly_data[item].length);
+
+                            yearly_data[item].forEach(function(model){
+                                $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
+                            });
+
+                        };
+                    });
+
+                    $(".kpcc-table td.swap").css({color: "red"});
+                }
+            },
+
+            clear_checkbox_filters: function(){
+                console.log("cleared");
+                $("input:checkbox").each(function(){
+                    $(this).attr("checked", false);
+                });
+                this.construct_checkbox_filters();
+            },
+
+            demo_filters: function(){
+                console.log("clicked");
+                $("input:checkbox[id^=fatal]").attr("checked", true);
+                $("input:checkbox[id^=victim_unarmed]").attr("checked", true);
+                $("input:checkbox[id^=multiple_officers]").attr("checked", true);
+                this.construct_checkbox_filters();
+            },
+
+        });
+
+    })();
+
+    $(function(){
+        window.app = new App.Router();
+        Backbone.history.start({
+            root: "/incidents",
+            pushState: false,
+        });
     });
+
 </script>
 
 <script id="my_template" type="text/template">
