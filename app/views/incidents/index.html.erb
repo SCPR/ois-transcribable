@@ -40,7 +40,7 @@
         $(function(){
             window.app = new App.Router();
             Backbone.history.start({
-                root: "http://127.0.0.1:3000/incidents",
+                root: "/incidents",
                 pushState: false,
             });
         });
@@ -112,15 +112,88 @@
 
     App.Models.Incident = Backbone.Model.extend({
         defaults: {
+            id: null,
+            created_at: null,
+            updated_at: null,
             url: null,
             civilian_name: null,
             district_attorney_file_number: null,
+            district_attorney_county: null,
+            district_attorney_prepared_report: null,
+            general_location_of_incident: null,
             type_of_incident: null,
+            civillian_weapon: null,
+            officer_shots_fired: null,
+            da_on_scene: null,
+            da_investigator_on_scene: null,
+            district_attorney_conclusion: null,
+            narrative_notes: null,
+            autopsy_notes: null,
+            conclusion_notes: null,
+            officer_name_and_badge_number: null,
+            officer_police_agency: null,
+            what_happened: null,
+            underlying_crime_leading_to_shooting: null,
+            how_situation_escalated: null,
+            victim_case_number: null,
+            officer_special_unit: null,
+            officer_charges_filed_yes_detail: null,
+            victim_charges_filed: null,
+            date_of_incident: null,
+            district_attorney_date_of_letter: null,
+            verified: null,
+            multiple_officers: null,
+            car_stop: null,
+            believed_civillian_armed: null,
+            potential_police_video: null,
+            potential_civillian_video: null,
+            mention_of_waistband_in_report: null,
+            fatal: null,
+            case_relevant: null,
+            victim_arrested: null,
+            officer_charges_filed: null,
+            officer_self_defense: null,
+            officer_defense_of_civillians: null,
+            officer_defense_of_officers: null,
+            officer_unknown: null,
+            officer_serving_warrant: null,
+            officer_on_surveillance: null,
+            officer_on_undercover: null,
+            pursuit_occurred: null,
+            victim_gang_member: null,
+            victim_ignored_officer_commands: null,
+            victim_weapon_recovered: null,
+            victim_initiated_physical_threat: null,
+            victim_intoxicated: null,
+            victim_mentally_ill: null,
+            civilian_witnesses: null,
+            victim_fired_weapon: null,
+            victim_pointed_weapon: null,
+            officer_injured: null,
+            flag_for_followup: null,
+            victim_shot_in_back: null,
+            applied_lawful_force: null,
+            victim_shot_in_head: null,
+            victim_unarmed: null,
+            officer_couldnt_see_victims_hands: null,
+            officer_routine_patrol: null,
+            transcribed_count: null,
+            officer_responding_to_call: null,
+            grabbed_officers_weapon: null,
+            email: null,
+            civillian_weapon_specific: null,
+            officer_shots_fired_specific: null,
+            type_of_incident_number: null,
+            coroner_case_number: null,
+            in_custody_record_key_number: null,
         },
     });
 
     App.Collections.Incidents = Backbone.Collection.extend({
         model: App.Models.Incident,
+        comparator: function(model) {
+            return model.get("civilian_name");
+        }
     });
 
 
@@ -260,6 +333,8 @@
 
         events: {
             "click [type='checkbox']": "construct_checkbox_filters",
+            "click #clear-filters": "clear_checkbox_filters",
+            "click #demo-filters": "demo_filters"
         },
 
         render: function(){
@@ -424,9 +499,24 @@
                 });
 
                 $(".kpcc-table td.swap").css({color: "red"});
-
             }
         },
+
+        clear_checkbox_filters: function(){
+            $("input:checkbox").each(function(){
+                var $this = $(this);
+                $($this).attr('checked', false);
+            });
+            this.construct_checkbox_filters();
+        },
+
+        demo_filters: function(){
+            $("input:checkbox[id^=fatal]").attr('checked', true);
+            $("input:checkbox[id^=victim_unarmed]").attr('checked', true);
+            $("input:checkbox[id^=multiple_officers]").attr('checked', true);
+            this.construct_checkbox_filters();
+        },
+
     });
 </script>
 
@@ -434,6 +524,9 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <p>This tool provides a series of true/false filters that allows you to explore the Use of Force Data we have transcribed.</p>
+                <p>Use any combination of filters to ask questions of the data, see the results by year, and get links to the cases relevant to your query.</p>
+                <p><strong>An example</strong>: Lets say I wanted to see all <em>Fatal incidents</em> in which the <em>Victim Was Unarmed</em> and there were <em>Multiple Officers Involved</em>. Well, you would check the <a id="demo-filters" href="javascript:void(0)">appropriate boxes</a>.</p>
                 <form role="form" class="form-inline">
                     <@ _.each(filters, function(filter) { @>
                         <div class="row">
@@ -455,6 +548,9 @@
         <hr></hr>
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="btn-group" style="width: 100%; margin: 10px 0 10px 0;">
+                    <a id="clear-filters" class="btn btn-success btn-block" href="javascript:void(0)">Clear Filters</a>
+                </div>
                 <div id="table-container">
                     <table class="kpcc-table">
                         <thead>
