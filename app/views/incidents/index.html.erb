@@ -228,6 +228,11 @@
 
                 this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
 
+                this.view_object.baseline_comparison = {
+                    total: null,
+                    relevant: null
+                };
+
                 this.view_object.filters = [{
                     type: "Top Line Data",
                     filters: [
@@ -287,25 +292,17 @@
             },
 
             calculate_data_fields: function(collection){
-
                 collection.forEach(function(model, index) {
-
                     var _this = model.attributes;
-
                     model.set("full_name", _this.civilian_name);
-
                     model.set("year_of_incident", parse_year(_this.date_of_incident));
-
                     if (_this.da_on_scene != null && _this.district_attorney_prepared_report != null){
                         model.set("da_the_same", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
                     } else {
                         model.set("da_the_same", null);
                     }
-
                 });
-
                 return collection;
-
             },
 
             events: {
@@ -411,23 +408,32 @@
             construct_checkbox_filters: function(){
                 var active_checkboxes = [];
 
+                var yearly_data = this.view_object.relevant_incidents.groupBy(function(model){
+                    return model.get("year_of_incident");
+                });
+
+                this.view_object.baseline_comparison.total = this.view_object.total_incidents.length;
+
+                this.view_object.baseline_comparison.relevant = this.view_object.relevant_incidents.length;
+
+                var baseline_comparison_years = yearly_data;
+
                 if (!$("input:checkbox").is(":checked")) {
 
                     $("td#all-incidents").html(this.view_object.total_incidents.length);
 
                     $("td#relevant-incidents").html(this.view_object.relevant_incidents.length);
 
-                    $("td#filtered-display").html(this.view_object.relevant_incidents.length);
+                    var pct = percentifyValue(this.view_object.relevant_incidents.length/this.view_object.baseline_comparison.relevant);
 
-                    var yearly_data = this.view_object.relevant_incidents.groupBy(function(model){
-                        return model.get("year_of_incident");
-                    });
+                    $("td#filtered-display").html(this.view_object.relevant_incidents.length + " of " + this.view_object.baseline_comparison.relevant + " <br /> " + pct + "%");
 
                     this.view_object.years.forEach(function(item){
                         if (yearly_data[item] === undefined){
                             $("td#_" + item).html("No Results Found");
                         } else {
-                            $("td#_" + item).html(yearly_data[item].length);
+                            var yearly_pct = percentifyValue(yearly_data[item].length/baseline_comparison_years[item].length);
+                            $("td#_" + item).html(yearly_data[item].length + " of " + baseline_comparison_years[item].length + " <br /> " + yearly_pct + "%");
                             yearly_data[item].forEach(function(model){
                                 $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
                             });
@@ -457,21 +463,23 @@
                     );
 
                     if (filtered_data.length){
-                        $("td#filtered-display").html(filtered_data.length);
+                        var pct = percentifyValue(filtered_data.length/this.view_object.baseline_comparison.relevant);
+                        $("td#filtered-display").html(filtered_data.length + " of " + this.view_object.baseline_comparison.relevant + " <br /> " + pct + "%");
                     } else {
                         $("td#filtered-display").html("No Results Found");
                     };
 
-                    var yearly_data = filtered_data.groupBy(function(model){
+                    var filtered_yearly_data = filtered_data.groupBy(function(model){
                         return model.get("year_of_incident");
                     });
 
                     this.view_object.years.forEach(function(item){
-                        if (yearly_data[item] === undefined){
+                        if (filtered_yearly_data[item] === undefined){
                             $("td#_" + item).html("No Results Found");
                         } else {
-                            $("td#_" + item).html(yearly_data[item].length);
-                            yearly_data[item].forEach(function(model){
+                            var yearly_pct = percentifyValue(filtered_yearly_data[item].length/baseline_comparison_years[item].length);
+                            $("td#_" + item).html(filtered_yearly_data[item].length + " of " + baseline_comparison_years[item].length + " <br /> " + yearly_pct + "%");
+                            filtered_yearly_data[item].forEach(function(model){
                                 $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
                             });
                         };
@@ -561,7 +569,7 @@
                     <table class="kpcc-table">
                         <thead>
                             <tr>
-                                <th style="text-align: center; width: 100%;">Incidents Matching</th>
+                                <th style="text-align: center; width: 100%;">Relevant Incidents Matching</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -574,7 +582,7 @@
                         <thead>
                             <tr>
                                 <@ _.each(years, function(year) { @>
-                                    <th style="text-align: center; width: 20%;"><@= year @></th>
+                                    <th style="text-align: center; width: 20%;"><@= year @> Cases Reviewed</th>
                                 <@ }); @>
                             </tr>
                         </thead>
