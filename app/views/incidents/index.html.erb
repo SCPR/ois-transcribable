@@ -28,7 +28,7 @@
         };
 
         // helper functions
-        window.percentifyValue = function(value){
+        window.percentify = function(value){
             var value = value * 100
             return parseFloat(value.toFixed(2));
         };
@@ -169,6 +169,27 @@
             },
         });
 
+        App.Models.Racial = Backbone.Model.extend({
+            defaults: {
+                // id: null,
+                // districtattorneyfilenumber: null,
+                // firstname: null,
+                // lastname: null,
+                dateofbirth: null,
+                age: null,
+                ethnicity: null,
+                gender: null,
+                dateofdeath: null,
+                placeofdeath: null,
+                manner: null,
+            }
+        });
+
+        App.Collections.Racials = Backbone.Collection.extend({
+            model: App.Models.Racial,
+            url: "/incidents/coroner-data"
+        });
+
         App.Collections.Incidents = Backbone.Collection.extend({
             model: App.Models.Incident,
             comparator: function(model) {
@@ -183,22 +204,30 @@
             },
 
             fetchData: function(){
+
                 var _this = this;
                 var applicationCollection = new App.Collections.Incidents(<%= raw @incidents.to_json %>);
+
+                var coronerCollection = new App.Collections.Racials();
+                coronerCollection.fetch({
+                    async: true
+                });
+
                 var checkExist = setInterval(function() {
-                    if (applicationCollection.length > 0){
+                    if (applicationCollection.length > 0 || coronerCollection.length > 0){
                         clearInterval(checkExist);
-                        _this.renderApplicationVisuals(applicationCollection);
+                        _this.renderApplicationVisuals(applicationCollection, coronerCollection);
                     }
                 }, 500);
             },
 
-            renderApplicationVisuals: function(collection){
+            renderApplicationVisuals: function(applicationCollection, coronerCollection){
                 if (this.applicationVisuals){
                     this.applicationVisuals.remove();
                 };
                 this.applicationVisuals = new App.Views.ApplicationVisuals({
-                    total_incidents: collection,
+                    total_incidents: applicationCollection,
+                    demographic_data: coronerCollection,
                     container: ".data-filters"
                 });
                 return this.applicationVisuals;
@@ -214,11 +243,12 @@
             el: ".data-filters",
 
             initialize: function(object){
+
                 this.view_object = object;
 
                 this.view_object.template = template("my_template");
 
-                this.view_object.total_incidents = this.calculate_data_fields(this.view_object.total_incidents);
+                this.view_object.total_incidents = this.calculate_data_fields(this.view_object.total_incidents, this.view_object.demographic_data);
 
                 this.view_object.relevant_incidents = new App.Collections.Incidents(
                     this.view_object.total_incidents.where({
@@ -228,10 +258,9 @@
 
                 this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
 
-                this.view_object.baseline_comparison = {
-                    total: null,
-                    relevant: null
-                };
+                this.view_object.genders = _.uniq(this.view_object.relevant_incidents.pluck("gender")).sort();
+
+                this.view_object.ethnicities = _.uniq(this.view_object.relevant_incidents.pluck("ethnicity")).sort();
 
                 this.view_object.filters = [{
                     type: "Top Line Data",
@@ -256,7 +285,6 @@
                         {proper: "Officer On Surveillance", field: "officer_on_surveillance"},
                         {proper: "Officer On Undercover", field: "officer_on_undercover"},
                         {proper: "Charges Filed Against Officer", field: "officer_charges_filed"},
-                        // {proper: "Officer Applied Lawful Force", field: "applied_lawful_force"},
                     ]
                 }, {
                     type: "Victim Filters",
@@ -279,9 +307,6 @@
                         {proper: "Victim Pointed Weapon", field: "victim_pointed_weapon"},
                         {proper: "Victim Shot In Back", field: "victim_shot_in_back"},
                         {proper: "Victim Shot In Head", field: "victim_shot_in_head"},
-                        // {proper: "Flag For Followup", field: "flag_for_followup"},
-                        // {proper: "On-scene DA Also Filed Report", field: "da_the_same"},
-                        // {proper: "Potential Police Video", field: "potential_police_video"},
                         {proper: "Potential Civillian Video", field: "potential_civillian_video"},
                         {proper: "Civilian Witnesses", field: "civilian_witnesses"},
                     ]
@@ -291,18 +316,57 @@
 
             },
 
-            calculate_data_fields: function(collection){
-                collection.forEach(function(model, index) {
+            calculate_data_fields: function(total_incidents, demographic_data){
+
+                total_incidents.forEach(function(model, index){
+
                     var _this = model.attributes;
+
                     model.set("full_name", _this.civilian_name);
+
                     model.set("year_of_incident", parse_year(_this.date_of_incident));
+
                     if (_this.da_on_scene != null && _this.district_attorney_prepared_report != null){
                         model.set("da_the_same", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
                     } else {
                         model.set("da_the_same", null);
                     }
+
+                    /* try to set the demographic data */
+                    var demographics = demographic_data.where({
+                        districtattorneyfilenumber: _this.district_attorney_file_number
+                    });
+
+                    if (demographics.length > 0){
+                        model.set(demographics[0].attributes);
+                    }
+
+                    if (_this.ethnicity === undefined){
+                        model.set("ethnicity", "na");
+                    } else if (_this.ethnicity === null){
+                        model.set("ethnicity", "na");
+                    } else if (_this.ethnicity === ""){
+                        model.set("ethnicity", "na");
+                    } else if (_this.ethnicity === "HISPANIC/LATIN AMERICAN"){
+                        model.set("ethnicity", "HISPANIC");
+                    } else if (_this.ethnicity === "MIDDLE EASTERN"){
+                        model.set("ethnicity", "MIDDLE-EASTERN");
+                    };
+
+                    if (_this.gender === undefined){
+                        model.set("gender", "na");
+                    } else if (_this.gender === "MALE"){
+                        model.set("gender", "male");
+                        model.set("male", true);
+                    } else if (_this.gender === "FEMALE"){
+                        model.set("gender", "female");
+                        model.set("female", true);
+                    };
+
                 });
-                return collection;
+
+                return total_incidents;
+
             },
 
             events: {
@@ -312,134 +376,58 @@
             },
 
             render: function(){
-
                 var data = this.view_object.relevant_incidents;
-
                 $(this.view_object.container).html(this.view_object.template({
-
                     years: this.view_object.years,
-
                     filters: this.view_object.filters,
-
-                    // models: [{
-                    //     models_field: "Relevant incidents",
-                    //     models_length: data.where({
-                    //         case_relevant: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Fatal incidents",
-                    //     models_length: data.where({
-                    //         fatal: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Victim Unarmed",
-                    //     models_length: data.where({
-                    //         victim_unarmed: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Mentally Ill",
-                    //     models_length: data.where({
-                    //         victim_mentally_ill: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Mentally Ill And Unarmed",
-                    //     models_length: data.where({
-                    //         victim_unarmed: true,
-                    //         victim_mentally_ill: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Reaching For Waistband And Unarmed",
-                    //     models_length: data.where({
-                    //         victim_unarmed: true,
-                    //         mention_of_waistband_in_report: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Pointed Firearm At An Officer",
-                    //     models_length: data.where({
-                    //         victim_pointed_weapon: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Fired Firearm At An Officer",
-                    //     models_length: data.where({
-                    //         victim_fired_weapon: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Pointed and Fired Firearm At An Officer",
-                    //     models_length: data.where({
-                    //         victim_pointed_weapon: true,
-                    //         victim_fired_weapon: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Reason was 'defense of civilians'",
-                    //     models_length: data.where({
-                    //         officer_defense_of_civillians: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Couldn't See Victims Hands",
-                    //     models_length: data.where({
-                    //         officer_couldnt_see_victims_hands: true
-                    //     }).length
-                    // }, {
-                    //     models_field: "Responding Prosecutor Did Not Complete The Report",
-                    //     models_length: data.where({
-                    //         da_the_same: false
-                    //     }).length
-                    // }, {
-                    //     models_field: "Ignored Commands And Demonstrated Symptoms Of Mentally Illness",
-                    //     models_length: data.where({
-                    //         victim_mentally_ill: true,
-                    //         victim_ignored_officer_commands: true,
-                    //     }).length
-                    // }, {
-                    //     models_field: "Ignored Commands And Demonstrated Symptoms Of Intoxication",
-                    //     models_length: data.where({
-                    //         victim_intoxicated: true,
-                    //         victim_ignored_officer_commands: true,
-                    //     }).length
-                    // }],
-
-                    // incidents: data.toJSON()
-
+                    genders: this.view_object.genders,
+                    ethnicities: this.view_object.ethnicities,
                 }));
-
                 this.construct_checkbox_filters();
             },
 
             construct_checkbox_filters: function(){
-                var active_checkboxes = [];
 
-                var yearly_data = this.view_object.relevant_incidents.groupBy(function(model){
+                var obj_filter = {};
+
+                obj_filter.active_checkboxes = [];
+
+                obj_filter.relevant_incidents = this.view_object.relevant_incidents;
+
+                obj_filter.relevant_scope = obj_filter.relevant_incidents.length;
+
+                obj_filter.total_incidents = this.view_object.total_incidents;
+
+                obj_filter.ethnic_data = this.view_object.ethnicities;
+
+                obj_filter.ethnic_group = this.view_object.relevant_incidents.groupBy(function(model){
+                    return model.get("ethnicity");
+                });
+
+                obj_filter.gender_data = this.view_object.genders;
+
+                obj_filter.gender_group = this.view_object.relevant_incidents.groupBy(function(model){
+                    return model.get("gender");
+                });
+
+                obj_filter.yearly_data = this.view_object.years;
+
+                obj_filter.yearly_group = this.view_object.relevant_incidents.groupBy(function(model){
                     return model.get("year_of_incident");
                 });
 
-                this.view_object.baseline_comparison.total = this.view_object.total_incidents.length;
-
-                this.view_object.baseline_comparison.relevant = this.view_object.relevant_incidents.length;
-
-                var baseline_comparison_years = yearly_data;
-
                 if (!$("input:checkbox").is(":checked")) {
 
-                    $("td#all-incidents").html(this.view_object.total_incidents.length);
+                    /* calculate overall statistics */
+                    $("td#all-incidents").html(obj_filter.total_incidents.length);
+                    $("td#relevant-incidents").html(obj_filter.relevant_incidents.length);
 
-                    $("td#relevant-incidents").html(this.view_object.relevant_incidents.length);
+                    this.present_table_data(obj_filter, "initial")
+                    // this.present_table_data(obj_filter, "gender", "_group")
+                    // this.present_table_data(obj_filter, "ethnic", "_group")
+                    this.present_table_data(obj_filter, "yearly", "_group")
 
-                    var pct = percentifyValue(this.view_object.relevant_incidents.length/this.view_object.baseline_comparison.relevant);
-
-                    $("td#filtered-display").html(this.view_object.relevant_incidents.length + " of " + this.view_object.baseline_comparison.relevant + " <br /> " + pct + "%");
-
-                    this.view_object.years.forEach(function(item){
-                        if (yearly_data[item] === undefined){
-                            $("td#_" + item).html("No Results Found");
-                        } else {
-                            var yearly_pct = percentifyValue(yearly_data[item].length/baseline_comparison_years[item].length);
-                            $("td#_" + item).html(yearly_data[item].length + " of " + baseline_comparison_years[item].length + " <br /> " + yearly_pct + "%");
-                            yearly_data[item].forEach(function(model){
-                                $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
-                            });
-                        };
-                    });
-
+                    /* change the color scheme on the table */
                     $(".kpcc-table td.swap").css({color: "black"});
 
                 } else {
@@ -448,49 +436,80 @@
                         var $this = $(this);
                         if($this.is(":checked")){
                             var filter_id = $this.attr("id");
-                            active_checkboxes.push(filter_id);
+                            obj_filter.active_checkboxes.push(filter_id);
                         }
                     });
 
-                    var filters = {};
+                    obj_filter.selected_filters = {};
 
-                    _.each(active_checkboxes, function(key){
-                        filters[key] = true;
+                    _.each(obj_filter.active_checkboxes, function(key){
+                        obj_filter.selected_filters[key] = true;
                     });
 
-                    var filtered_data = new App.Collections.Incidents(
-                        this.view_object.relevant_incidents.where(filters)
+                    /* apply filters to relevant data */
+                    obj_filter.filtered_data = new App.Collections.Incidents(
+                        obj_filter.relevant_incidents.where(obj_filter.selected_filters)
                     );
 
-                    if (filtered_data.length){
-                        var pct = percentifyValue(filtered_data.length/this.view_object.baseline_comparison.relevant);
-                        $("td#filtered-display").html(filtered_data.length + " of " + this.view_object.baseline_comparison.relevant + " <br /> " + pct + "%");
-                    } else {
-                        $("td#filtered-display").html("No Results Found");
-                    };
+                    /* adjust scope due to filters */
+                    obj_filter.relevant_scope = obj_filter.filtered_data.length;
 
-                    var filtered_yearly_data = filtered_data.groupBy(function(model){
+                    /* apply filters to get gender data */
+                    obj_filter.gender_filtered = obj_filter.filtered_data.groupBy(function(model){
+                        return model.get("gender");
+                    });
+
+                    /* apply filters to get gender data */
+                    obj_filter.ethnic_filtered = obj_filter.filtered_data.groupBy(function(model){
+                        return model.get("ethnicity");
+                    });
+
+                    /* apply filters to get year by year data */
+                    obj_filter.yearly_filtered = obj_filter.filtered_data.groupBy(function(model){
                         return model.get("year_of_incident");
                     });
 
-                    this.view_object.years.forEach(function(item){
-                        if (filtered_yearly_data[item] === undefined){
-                            $("td#_" + item).html("No Results Found");
-                        } else {
-                            var yearly_pct = percentifyValue(filtered_yearly_data[item].length/baseline_comparison_years[item].length);
-                            $("td#_" + item).html(filtered_yearly_data[item].length + " of " + baseline_comparison_years[item].length + " <br /> " + yearly_pct + "%");
-                            filtered_yearly_data[item].forEach(function(model){
-                                $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
-                            });
-                        };
-                    });
+                    var is_fatal_checked = _.has(obj_filter.selected_filters, "fatal");
 
+                    if (is_fatal_checked === true){
+                        this.present_table_data(obj_filter, "gender", "_filtered")
+                        this.present_table_data(obj_filter, "ethnic", "_filtered")
+                    };
+
+                    this.present_table_data(obj_filter, "overall")
+                    this.present_table_data(obj_filter, "yearly", "_filtered")
+
+                    /* change the color scheme on the table */
                     $(".kpcc-table td.swap").css({color: "red"});
                 }
             },
 
+            present_table_data: function(obj_filter, category, scope){
+                if (category === "initial"){
+                    $("td#filtered-display").html(obj_filter.relevant_incidents.length + " of " + obj_filter.relevant_incidents.length + " <br /> " + percentify(obj_filter.relevant_incidents.length / obj_filter.relevant_scope) + "%");
+                } else if (category === "overall"){
+                    if (obj_filter.filtered_data.length){
+                        $("td#filtered-display").html(obj_filter.filtered_data.length + " of " + obj_filter.relevant_incidents.length + " <br /> " + percentify(obj_filter.filtered_data.length / obj_filter.relevant_scope) + "%");
+                    } else {
+                        $("td#filtered-display").html("No Results Found");
+                    };
+                } else {
+                    obj_filter[category + "_data"].forEach(function(item){
+                        if (obj_filter[category + scope][item] === undefined){
+                            $("td#_" + item).html("No Results Found");
+                        } else {
+                            $("td#_" + item).html(obj_filter[category + scope][item].length + " of " + obj_filter.relevant_scope + " <br /> " + percentify(obj_filter[category + scope][item].length / obj_filter.relevant_scope) + "%");
+                            if (category === "yearly"){
+                                obj_filter[category + scope][item].forEach(function(model){
+                                    $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
+                                });
+                            }
+                        };
+                    });
+                };
+            },
+
             clear_checkbox_filters: function(){
-                console.log("cleared");
                 $("input:checkbox").each(function(){
                     $(this).attr("checked", false);
                 });
@@ -498,7 +517,6 @@
             },
 
             demo_filters: function(){
-                console.log("clicked");
                 $("input:checkbox[id^=fatal]").attr("checked", true);
                 $("input:checkbox[id^=victim_unarmed]").attr("checked", true);
                 $("input:checkbox[id^=multiple_officers]").attr("checked", true);
@@ -575,6 +593,39 @@
                         <tbody>
                             <tr>
                                 <td class="swap" id="filtered-display" style="text-align: center; width: 50%;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="kpcc-table">
+                        <thead>
+                            <tr>
+                                <@ _.each(genders, function(gender) { @>
+                                    <th style="text-align: center; width: 20%;"><@= gender @> Cases</th>
+                                <@ }); @>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <@ _.each(genders, function(gender) { @>
+                                    <td class="swap" id="_<@= gender @>" style="text-align: center; width: 20%;">--</td>
+                                <@ }); @>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="kpcc-table">
+                        <thead>
+                            <tr>
+                                <@ var width = 100 / ethnicities.length @>
+                                <@ _.each(ethnicities, function(ethnicity) { @>
+                                    <th style="text-align: center; width: <@= width @>%;"><@= ethnicity @> Cases</th>
+                                <@ }); @>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <@ _.each(ethnicities, function(ethnicity) { @>
+                                    <td class="swap" id="_<@= ethnicity @>" style="text-align: center; width: <@= width @>%;">--</td>
+                                <@ }); @>
                             </tr>
                         </tbody>
                     </table>
