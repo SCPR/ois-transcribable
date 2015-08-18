@@ -15,10 +15,10 @@ class IncidentsController < ApplicationController
         @incident = Incident.new
     end
 
-    def coroner_data
-        @coroners_data = File.read("#{Rails.root}/public/assets/coroners_data.json")
-        render :json => @coroners_data
-    end
+    # def coroner_data
+    #     @coroners_data = File.read("#{Rails.root}/public/assets/coroners_data.json")
+    #     render :json => @coroners_data
+    # end
 
     def create
         @incident = Incident.new(incident_params)
