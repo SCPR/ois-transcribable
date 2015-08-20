@@ -518,7 +518,7 @@
                     $("td#filtered-display").html(obj_filter.relevant_incidents.length + " of " + obj_filter.relevant_incidents.length + " <br /> " + percentify(obj_filter.relevant_incidents.length / obj_filter.relevant_scope) + "%");
                 } else if (category === "overall"){
                     if (obj_filter.filtered_data.length){
-                        $("td#filtered-display").html(obj_filter.filtered_data.length + " of " + obj_filter.relevant_incidents.length + " <br /> " + percentify(obj_filter.filtered_data.length / obj_filter.relevant_scope) + "%");
+                        $("td#filtered-display").html(obj_filter.filtered_data.length + " of " + obj_filter.relevant_incidents.length + " <br /> " + percentify(obj_filter.filtered_data.length / obj_filter.relevant_incidents.length) + "%");
                     } else {
                         $("td#filtered-display").html("No Results Found");
                     };
