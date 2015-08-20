@@ -268,6 +268,7 @@
                     filters: [
                         {proper: "Was Use Of Force Fatal", field: "fatal"},
                         {proper: "Victim Was Unarmed", field: "victim_unarmed"},
+                        {proper: "Victim Armed With Firearm/Gun", field: "victim_unarmed"},
                         {proper: "Victim Fired Weapon", field: "victim_fired_weapon"},
                         {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
                         {proper: "Victim Ignored Officer Commands", field: "victim_ignored_officer_commands"},
@@ -364,6 +365,34 @@
                         model.set("female", true);
                     };
 
+                    model.set("armed_with_firearm", false)
+
+                    if (_this.civillian_weapon != null){
+
+                        var array_of_weapons = [
+                            "assault weapon",
+                            "handgun",
+                            "firearm",
+                            "officer's weapon",
+                            "shotgun",
+                            "rifle",
+                        ];
+
+                        var length = array_of_weapons.length;
+
+                        while(length--){
+                            if (_this.civillian_weapon.indexOf(array_of_weapons[length]) != -1){
+                                model.set("armed_with_firearm", true)
+                            }
+                        }
+
+                    };
+
+                    if (_this.armed_with_firearm === false){
+                        console.log(_this.civillian_weapon + " - " + _this.armed_with_firearm);
+                    };
+
+
                 });
 
                 return total_incidents;
@@ -423,10 +452,10 @@
                     $("td#all-incidents").html(obj_filter.total_incidents.length);
                     $("td#relevant-incidents").html(obj_filter.relevant_incidents.length);
 
-                    this.present_table_data(obj_filter, "initial")
-                    // this.present_table_data(obj_filter, "gender", "_group")
-                    // this.present_table_data(obj_filter, "ethnic", "_group")
+                    this.present_table_data(obj_filter, "initial", null)
                     this.present_table_data(obj_filter, "yearly", "_group")
+                    this.present_table_data(obj_filter, "gender", "initial")
+                    this.present_table_data(obj_filter, "ethnic", "initial")
 
                     /* change the color scheme on the table */
                     $(".kpcc-table td.swap").css({color: "black"});
@@ -470,15 +499,14 @@
                         return model.get("year_of_incident");
                     });
 
-                    var is_fatal_checked = _.has(obj_filter.selected_filters, "fatal");
+                    this.present_table_data(obj_filter, "overall", null)
+                    this.present_table_data(obj_filter, "yearly", "_filtered")
 
+                    var is_fatal_checked = _.has(obj_filter.selected_filters, "fatal");
                     if (is_fatal_checked === true){
                         this.present_table_data(obj_filter, "gender", "_filtered")
                         this.present_table_data(obj_filter, "ethnic", "_filtered")
                     };
-
-                    this.present_table_data(obj_filter, "overall")
-                    this.present_table_data(obj_filter, "yearly", "_filtered")
 
                     /* change the color scheme on the table */
                     $(".kpcc-table td.swap").css({color: "red"});
@@ -495,18 +523,24 @@
                         $("td#filtered-display").html("No Results Found");
                     };
                 } else {
-                    obj_filter[category + "_data"].forEach(function(item){
-                        if (obj_filter[category + scope][item] === undefined){
-                            $("td#_" + item).html("No Results Found");
-                        } else {
-                            $("td#_" + item).html(obj_filter[category + scope][item].length + " of " + obj_filter.relevant_scope + " <br /> " + percentify(obj_filter[category + scope][item].length / obj_filter.relevant_scope) + "%");
-                            if (category === "yearly"){
-                                obj_filter[category + scope][item].forEach(function(model){
-                                    $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
-                                });
-                            }
-                        };
-                    });
+                    if (scope === "initial"){
+                        obj_filter[category + "_data"].forEach(function(item){
+                            $("td#_" + item).html("--");
+                        });
+                    } else {
+                        obj_filter[category + "_data"].forEach(function(item){
+                            if (obj_filter[category + scope][item] === undefined){
+                                $("td#_" + item).html("No Results Found");
+                            } else {
+                                $("td#_" + item).html(obj_filter[category + scope][item].length + " of " + obj_filter.relevant_scope + " <br /> " + percentify(obj_filter[category + scope][item].length / obj_filter.relevant_scope) + "%");
+                                if (category === "yearly"){
+                                    obj_filter[category + scope][item].forEach(function(model){
+                                        $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
+                                    });
+                                }
+                            };
+                        });
+                    };
                 };
             },
 
