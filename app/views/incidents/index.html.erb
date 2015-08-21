@@ -268,7 +268,8 @@
                     filters: [
                         {proper: "Was Use Of Force Fatal", field: "fatal"},
                         {proper: "Victim Was Unarmed", field: "victim_unarmed"},
-                        {proper: "Victim Armed With Firearm/Gun", field: "victim_unarmed"},
+                        {proper: "Victim Was Armed", field: "victim_armed_calc"},
+                        {proper: "Victim Armed With Firearm/Gun", field: "armed_with_firearm_calc"},
                         {proper: "Victim Fired Weapon", field: "victim_fired_weapon"},
                         {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
                         {proper: "Victim Ignored Officer Commands", field: "victim_ignored_officer_commands"},
@@ -355,7 +356,8 @@
                         model.set("ethnicity", "MIDDLE-EASTERN");
                     };
 
-                    if (_this.gender === undefined){
+                    /* set gender data */
+                    if (_this.gender === null || _this.gender === undefined){
                         model.set("gender", "na");
                     } else if (_this.gender === "MALE"){
                         model.set("gender", "male");
@@ -365,7 +367,12 @@
                         model.set("female", true);
                     };
 
-                    model.set("armed_with_firearm", false)
+                    /* determine if armed */
+                    if (_this.victim_unarmed === false){
+                        model.set("victim_armed_calc", true);
+                    };
+
+                    model.set("armed_with_firearm_calc", false)
 
                     if (_this.civillian_weapon != null){
 
@@ -382,15 +389,17 @@
 
                         while(length--){
                             if (_this.civillian_weapon.indexOf(array_of_weapons[length]) != -1){
-                                model.set("armed_with_firearm", true)
+                                model.set("armed_with_firearm_calc", true)
                             }
                         }
 
                     };
 
-                    if (_this.armed_with_firearm === false){
-                        console.log(_this.civillian_weapon + " - " + _this.armed_with_firearm);
-                    };
+
+
+                    // if (_this.armed_with_firearm === false){
+                    //     console.log(_this.civillian_weapon + " - " + _this.armed_with_firearm);
+                    // };
 
 
                 });
