@@ -72,9 +72,37 @@
         };
 
         window.parse_year = function(date_time){
-            var output = moment(date_time).format("YYYY");
+            var output = moment(date_time).locale("en").format("YYYY");
             output = parseInt(output);
             return output
+        };
+
+        window.parse_month_of_year = function(date_time){
+            var output = moment(date_time).locale("en").format("MMM");
+            return output
+        };
+
+        window.parse_day_of_week = function(date_time){
+            var output = moment(date_time).locale("en").format("dddd");
+            return output
+        };
+
+        window.parse_time_of_day = function(date_time){
+            var output;
+            var moment_date = moment.utc(date_time).format("HH:mm:ss");
+            var comparison_date = "2011-01-01 " + moment_date;
+            if (Date.parse(comparison_date) >= Date.parse("2011-01-01 00:00:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 06:00:00")){
+                output = "midnight to 6 am";
+            } else if (Date.parse(comparison_date) >= Date.parse("2011-01-01 06:01:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 12:00:00")){
+                output = "6 am to noon";
+            } else if (Date.parse(comparison_date) >= Date.parse("2011-01-01 12:01:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 06:00:00")){
+                output = "noon to 6 pm";
+            } else if (Date.parse(comparison_date) >= Date.parse("2011-01-01 06:01:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 23:59:59")){
+                output = "6 pm to midnight";
+            } else {
+                output = "outlier";
+            };
+            return output;
         };
 
         String.prototype.truncateToGraf = function(){
@@ -259,6 +287,38 @@
 
                 this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
 
+                this.view_object.months = [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec"
+                ];
+
+                this.view_object.days = [
+                    "Sunday",
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday"
+                ];
+
+                this.view_object.times_of_day = [
+                    "midnight to 6 am",
+                    "6 am to noon",
+                    "noon to 6 pm",
+                    "6 pm to midnight",
+                ];
+
                 this.view_object.genders = _.uniq(this.view_object.relevant_incidents.pluck("gender")).sort();
 
                 this.view_object.ethnicities = _.uniq(this.view_object.relevant_incidents.pluck("ethnicity")).sort();
@@ -267,11 +327,13 @@
                     type: "Top Line Data",
                     filters: [
                         {proper: "Was Use Of Force Fatal", field: "fatal"},
-                        {proper: "Victim Was Unarmed", field: "victim_unarmed"},
+                        {proper: "Was Use Of Force Non-Fatal", field: "nonfatal"},
                         {proper: "Victim Was Armed", field: "victim_armed_calc"},
+                        {proper: "Victim Was Unarmed", field: "victim_unarmed"},
                         {proper: "Victim Armed With Firearm/Gun", field: "armed_with_firearm_calc"},
+                        {proper: "Victim Armed With Other Weapon", field: "armed_with_other_calc"},
                         {proper: "Victim Fired Weapon", field: "victim_fired_weapon"},
-                        {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
+                        {proper: "Victim Pointed Weapon", field: "victim_pointed_weapon"},
                         {proper: "Victim Ignored Officer Commands", field: "victim_ignored_officer_commands"},
                         {proper: "Mention Of Waistband", field: "mention_of_waistband_in_report"},
                         {proper: "Mention Of Couldn't See Victims Hands", field: "officer_couldnt_see_victims_hands"},
@@ -302,12 +364,13 @@
                     filters: [
                         {proper: "Car Stop", field: "car_stop"},
                         {proper: "Pursuit Occurred", field: "pursuit_occurred"},
-                        {proper: "Multiple Officers Involved", field: "multiple_officers"},
+                        {proper: "Single Officer Shot", field: "single_officer_calc"},
+                        {proper: "Multiple Officers Shot", field: "multiple_officers"},
                         {proper: "Victim Grabbed Officers Weapon", field: "grabbed_officers_weapon"},
+                        {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
                         {proper: "Believed Victim Was Armed", field: "believed_civillian_armed"},
                         {proper: "Officer Injured", field: "officer_injured"},
                         {proper: "Victim Initiated Physical Threat", field: "victim_initiated_physical_threat"},
-                        {proper: "Victim Pointed Weapon", field: "victim_pointed_weapon"},
                         {proper: "Victim Shot In Back", field: "victim_shot_in_back"},
                         {proper: "Victim Shot In Head", field: "victim_shot_in_head"},
                         {proper: "Potential Civillian Video", field: "potential_civillian_video"},
@@ -325,15 +388,31 @@
 
                     var _this = model.attributes;
 
-                    model.set("full_name", _this.civilian_name);
-
+                    // create a year of incident measure
                     model.set("year_of_incident", parse_year(_this.date_of_incident));
 
+                    // create a month of incident measure
+                    model.set("month_of_incident", parse_month_of_year(_this.date_of_incident));
+
+                    // create a day of the week measure
+                    model.set("day_of_incident", parse_day_of_week(_this.date_of_incident));
+
+                    // create a time of the day measure
+                    model.set("times_of_day", parse_time_of_day(_this.date_of_incident));
+
+                    // tell us if the da that went to the scene also completed the report
                     if (_this.da_on_scene != null && _this.district_attorney_prepared_report != null){
                         model.set("da_the_same", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
                     } else {
                         model.set("da_the_same", null);
-                    }
+                    };
+
+                    // was this a non-fatal incident
+                    if (_this.fatal === true){
+                        model.set("nonfatal", false);
+                    } else {
+                        model.set("nonfatal", true);
+                    };
 
                     /* try to set the demographic data */
                     var demographics = demographic_data.where({
@@ -356,7 +435,7 @@
                         model.set("ethnicity", "MIDDLE-EASTERN");
                     };
 
-                    /* set gender data */
+                    // set gender data
                     if (_this.gender === null || _this.gender === undefined){
                         model.set("gender", "na");
                     } else if (_this.gender === "MALE"){
@@ -367,11 +446,12 @@
                         model.set("female", true);
                     };
 
-                    /* determine if armed */
+                    // determine if armed
                     if (_this.victim_unarmed === false){
                         model.set("victim_armed_calc", true);
                     };
 
+                    // did they have a firearm
                     model.set("armed_with_firearm_calc", false)
 
                     if (_this.civillian_weapon != null){
@@ -383,6 +463,7 @@
                             "officer's weapon",
                             "shotgun",
                             "rifle",
+                            // "replica",
                         ];
 
                         var length = array_of_weapons.length;
@@ -395,11 +476,27 @@
 
                     };
 
+                    // did they have a weapon
+                    if (_this.victim_armed_calc === true){
+                        if (_this.armed_with_firearm_calc === false){
+                            model.set("armed_with_other_calc", true);
+                        }
+                    } else {
+                        model.set("armed_with_other_calc", false);
+                    };
 
+                    // did they have a replica or toy gun
+                    if (_this.civillian_weapon === "replica, nonfunctional, toy or blank gun"){
+                        model.set("victim_armed_calc", null);
+                        model.set("victim_unarmed", null);
+                        model.set("armed_with_firearm_calc", null)
+                        model.set("armed_with_other_calc", null);
+                    };
 
-                    // if (_this.armed_with_firearm === false){
-                    //     console.log(_this.civillian_weapon + " - " + _this.armed_with_firearm);
-                    // };
+                    // find single officer incidents
+                    if (_this.multiple_officers === false){
+                        model.set("single_officer_calc", true);
+                    };
 
 
                 });
@@ -418,6 +515,9 @@
                 var data = this.view_object.relevant_incidents;
                 $(this.view_object.container).html(this.view_object.template({
                     years: this.view_object.years,
+                    months: this.view_object.months,
+                    days: this.view_object.days,
+                    times_of_day: this.view_object.times_of_day,
                     filters: this.view_object.filters,
                     genders: this.view_object.genders,
                     ethnicities: this.view_object.ethnicities,
@@ -455,6 +555,24 @@
                     return model.get("year_of_incident");
                 });
 
+                obj_filter.monthly_data = this.view_object.months;
+
+                obj_filter.monthly_group = this.view_object.relevant_incidents.groupBy(function(model){
+                    return model.get("month_of_incident");
+                });
+
+                obj_filter.daily_data = this.view_object.days;
+
+                obj_filter.daily_group = this.view_object.relevant_incidents.groupBy(function(model){
+                    return model.get("day_of_incident");
+                });
+
+                obj_filter.time_data = this.view_object.times_of_day;
+
+                obj_filter.time_group = this.view_object.relevant_incidents.groupBy(function(model){
+                    return model.get("time_of_day");
+                });
+
                 if (!$("input:checkbox").is(":checked")) {
 
                     /* calculate overall statistics */
@@ -463,6 +581,9 @@
 
                     this.present_table_data(obj_filter, "initial", null)
                     this.present_table_data(obj_filter, "yearly", "_group")
+                    this.present_table_data(obj_filter, "monthly", "_group")
+                    this.present_table_data(obj_filter, "daily", "_group")
+                    this.present_table_data(obj_filter, "time", "_group")
                     this.present_table_data(obj_filter, "gender", "initial")
                     this.present_table_data(obj_filter, "ethnic", "initial")
 
@@ -508,8 +629,26 @@
                         return model.get("year_of_incident");
                     });
 
+                    /* apply filters to get month by month data */
+                    obj_filter.monthly_filtered = obj_filter.filtered_data.groupBy(function(model){
+                        return model.get("month_of_incident");
+                    });
+
+                    /* apply filters to get day by day data */
+                    obj_filter.daily_filtered = obj_filter.filtered_data.groupBy(function(model){
+                        return model.get("day_of_incident");
+                    });
+
+                    /* apply filters to get time of day data */
+                    obj_filter.daily_filtered = obj_filter.filtered_data.groupBy(function(model){
+                        return model.get("times_of_day");
+                    });
+
                     this.present_table_data(obj_filter, "overall", null)
                     this.present_table_data(obj_filter, "yearly", "_filtered")
+                    this.present_table_data(obj_filter, "monthly", "_filtered")
+                    this.present_table_data(obj_filter, "daily", "_filtered")
+                    this.present_table_data(obj_filter, "time", "_filtered")
 
                     var is_fatal_checked = _.has(obj_filter.selected_filters, "fatal");
                     if (is_fatal_checked === true){
@@ -546,7 +685,7 @@
                                     obj_filter[category + scope][item].forEach(function(model){
                                         $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
                                     });
-                                }
+                                };
                             };
                         });
                     };
@@ -644,7 +783,7 @@
                         <thead>
                             <tr>
                                 <@ _.each(genders, function(gender) { @>
-                                    <th style="text-align: center; width: 20%;"><@= gender @> Cases</th>
+                                    <th style="text-align: center; width: 20%;"><@= gender @></th>
                                 <@ }); @>
                             </tr>
                         </thead>
@@ -661,7 +800,7 @@
                             <tr>
                                 <@ var width = 100 / ethnicities.length @>
                                 <@ _.each(ethnicities, function(ethnicity) { @>
-                                    <th style="text-align: center; width: <@= width @>%;"><@= ethnicity @> Cases</th>
+                                    <th style="text-align: center; width: <@= width @>%;"><@= ethnicity @></th>
                                 <@ }); @>
                             </tr>
                         </thead>
@@ -676,8 +815,59 @@
                     <table class="kpcc-table">
                         <thead>
                             <tr>
+                                <@ _.each(months, function(month) { @>
+                                    <th style="text-align: center; width: 8%;"><@= month @></th>
+                                <@ }); @>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <@ _.each(months, function(month) { @>
+                                    <td class="swap" id="_<@= month @>" style="text-align: center; width: 8%;">--</td>
+                                <@ }); @>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="kpcc-table">
+                        <thead>
+                            <tr>
+                                <@ _.each(days, function(day) { @>
+                                    <th style="text-align: center; width: 8%;"><@= day @></th>
+                                <@ }); @>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <@ _.each(days, function(day) { @>
+                                    <td class="swap" id="_<@= day @>" style="text-align: center; width: 8%;">--</td>
+                                <@ }); @>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="kpcc-table">
+                        <thead>
+                            <tr>
+                                <@ _.each(times_of_day, function(time) { @>
+                                    <th style="text-align: center; width: 8%;"><@= time @></th>
+                                <@ }); @>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <@ _.each(times_of_day, function(time) { @>
+                                    <td class="swap" id="_<@= time @>" style="text-align: center; width: 8%;">--</td>
+                                <@ }); @>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="kpcc-table">
+                        <thead>
+                            <tr>
                                 <@ _.each(years, function(year) { @>
-                                    <th style="text-align: center; width: 20%;"><@= year @> Cases Reviewed</th>
+                                    <th style="text-align: center; width: 20%;"><@= year @></th>
                                 <@ }); @>
                             </tr>
                         </thead>
