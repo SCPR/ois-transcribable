@@ -92,13 +92,13 @@
             var moment_date = moment.utc(date_time).format("HH:mm:ss");
             var comparison_date = "2011-01-01 " + moment_date;
             if (Date.parse(comparison_date) >= Date.parse("2011-01-01 00:00:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 06:00:00")){
-                output = "midnight to 6 am";
+                output = "_midnight_to_6_am";
             } else if (Date.parse(comparison_date) >= Date.parse("2011-01-01 06:01:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 12:00:00")){
-                output = "6 am to noon";
-            } else if (Date.parse(comparison_date) >= Date.parse("2011-01-01 12:01:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 06:00:00")){
-                output = "noon to 6 pm";
-            } else if (Date.parse(comparison_date) >= Date.parse("2011-01-01 06:01:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 23:59:59")){
-                output = "6 pm to midnight";
+                output = "_6_am_to_noon";
+            } else if (Date.parse(comparison_date) >= Date.parse("2011-01-01 12:01:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 18:00:00")){
+                output = "_noon_to_6_pm";
+            } else if (Date.parse(comparison_date) >= Date.parse("2011-01-01 18:01:00") && Date.parse(comparison_date) <= Date.parse("2011-01-01 23:59:59")){
+                output = "_6_pm_to_midnight";
             } else {
                 output = "outlier";
             };
@@ -312,11 +312,11 @@
                     "Saturday"
                 ];
 
-                this.view_object.times_of_day = [
-                    "midnight to 6 am",
-                    "6 am to noon",
-                    "noon to 6 pm",
-                    "6 pm to midnight",
+                this.view_object.time_of_day = [
+                    "_midnight_to_6_am",
+                    "_6_am_to_noon",
+                    "_noon_to_6_pm",
+                    "_6_pm_to_midnight",
                 ];
 
                 this.view_object.genders = _.uniq(this.view_object.relevant_incidents.pluck("gender")).sort();
@@ -327,7 +327,7 @@
                     type: "Top Line Data",
                     filters: [
                         {proper: "Was Use Of Force Fatal", field: "fatal"},
-                        {proper: "Was Use Of Force Non-Fatal", field: "nonfatal"},
+                        {proper: "Was Use Of Force Non-Fatal", field: "nonfatal_calc"},
                         {proper: "Victim Was Armed", field: "victim_armed_calc"},
                         {proper: "Victim Was Unarmed", field: "victim_unarmed"},
                         {proper: "Victim Armed With Firearm/Gun", field: "armed_with_firearm_calc"},
@@ -367,6 +367,7 @@
                         {proper: "Single Officer Shot", field: "single_officer_calc"},
                         {proper: "Multiple Officers Shot", field: "multiple_officers"},
                         {proper: "Victim Grabbed Officers Weapon", field: "grabbed_officers_weapon"},
+                        {proper: "Officer Claimed Vehicle Used as Weapon", field: "vehicle_as_weapon"},
                         {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
                         {proper: "Believed Victim Was Armed", field: "believed_civillian_armed"},
                         {proper: "Officer Injured", field: "officer_injured"},
@@ -375,6 +376,21 @@
                         {proper: "Victim Shot In Head", field: "victim_shot_in_head"},
                         {proper: "Potential Civillian Video", field: "potential_civillian_video"},
                         {proper: "Civilian Witnesses", field: "civilian_witnesses"},
+                    ]
+                }, {
+                    type: "Time Filters",
+                    filters: [
+                        {proper: "Midnight to 6 a.m.", field: "_midnight_to_6_am"},
+                        {proper: "6 a.m. to Noon", field: "_6_am_to_noon"},
+                        {proper: "Noon to 6 p.m.", field: "_noon_to_6_pm"},
+                        {proper: "6 p.m. to midnight", field: "_6_pm_to_midnight"},
+                        {proper: "Sunday", field: "sunday"},
+                        {proper: "Monday", field: "monday"},
+                        {proper: "Tuesday", field: "tuesday"},
+                        {proper: "Wednesday", field: "wednesday"},
+                        {proper: "Thursday", field: "thursday"},
+                        {proper: "Friday", field: "friday"},
+                        {proper: "Saturday", field: "saturday"},
                     ]
                 }];
 
@@ -397,21 +413,114 @@
                     // create a day of the week measure
                     model.set("day_of_incident", parse_day_of_week(_this.date_of_incident));
 
+                    if (_this.day_of_incident === "Sunday"){
+                        model.set("sunday", true);
+                        model.set("monday", false);
+                        model.set("tuesday", false);
+                        model.set("wednesday", false);
+                        model.set("thursday", false);
+                        model.set("friday", false);
+                        model.set("saturday", false);
+                    } else if (_this.day_of_incident === "Monday"){
+                        model.set("sunday", false);
+                        model.set("monday", true);
+                        model.set("tuesday", false);
+                        model.set("wednesday", false);
+                        model.set("thursday", false);
+                        model.set("friday", false);
+                        model.set("saturday", false);
+                    } else if (_this.day_of_incident === "Tuesday"){
+                        model.set("sunday", false);
+                        model.set("monday", false);
+                        model.set("tuesday", true);
+                        model.set("wednesday", false);
+                        model.set("thursday", false);
+                        model.set("friday", false);
+                        model.set("saturday", false);
+                    } else if (_this.day_of_incident === "Wednesday"){
+                        model.set("sunday", false);
+                        model.set("monday", false);
+                        model.set("tuesday", false);
+                        model.set("wednesday", true);
+                        model.set("thursday", false);
+                        model.set("friday", false);
+                        model.set("saturday", false);
+                    } else if (_this.day_of_incident === "Thursday"){
+                        model.set("sunday", false);
+                        model.set("monday", false);
+                        model.set("tuesday", false);
+                        model.set("wednesday", false);
+                        model.set("thursday", true);
+                        model.set("friday", false);
+                        model.set("saturday", false);
+                    } else if (_this.day_of_incident === "Friday"){
+                        model.set("sunday", false);
+                        model.set("monday", false);
+                        model.set("tuesday", false);
+                        model.set("wednesday", false);
+                        model.set("thursday", false);
+                        model.set("friday", true);
+                        model.set("saturday", false);
+                    } else if (_this.day_of_incident === "Saturday"){
+                        model.set("sunday", false);
+                        model.set("monday", false);
+                        model.set("tuesday", false);
+                        model.set("wednesday", false);
+                        model.set("thursday", false);
+                        model.set("friday", false);
+                        model.set("saturday", true);
+                    } else {
+                        model.set("sunday", undefined);
+                        model.set("monday", undefined);
+                        model.set("tuesday", undefined);
+                        model.set("wednesday", undefined);
+                        model.set("thursday", undefined);
+                        model.set("friday", undefined);
+                        model.set("saturday", undefined);
+                    };
+
                     // create a time of the day measure
-                    model.set("times_of_day", parse_time_of_day(_this.date_of_incident));
+                    model.set("time_of_day", parse_time_of_day(_this.date_of_incident));
+
+                    if (_this.time_of_day === "_midnight_to_6_am"){
+                        model.set("_midnight_to_6_am", true);
+                        model.set("_6_am_to_noon", false);
+                        model.set("_noon_to_6_pm", false);
+                        model.set("_6_pm_to_midnight", false);
+                    } else if (_this.time_of_day === "_6_am_to_noon"){
+                        model.set("_midnight_to_6_am", false);
+                        model.set("_6_am_to_noon", true);
+                        model.set("_noon_to_6_pm", false);
+                        model.set("_6_pm_to_midnight", false);
+                    } else if (_this.time_of_day === "_noon_to_6_pm"){
+                        model.set("_midnight_to_6_am", false);
+                        model.set("_6_am_to_noon", false);
+                        model.set("_noon_to_6_pm", true);
+                        model.set("_6_pm_to_midnight", false);
+                    } else if (_this.time_of_day === "_6_pm_to_midnight"){
+                        model.set("_midnight_to_6_am", false);
+                        model.set("_6_am_to_noon", false);
+                        model.set("_noon_to_6_pm", false);
+                        model.set("_6_pm_to_midnight", true);
+                    } else {
+                        model.set("_midnight_to_6_am", undefined);
+                        model.set("_6_am_to_noon", undefined);
+                        model.set("_noon_to_6_pm", undefined);
+                        model.set("_6_pm_to_midnight", undefined);
+                    };
 
                     // tell us if the da that went to the scene also completed the report
                     if (_this.da_on_scene != null && _this.district_attorney_prepared_report != null){
-                        model.set("da_the_same", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
+                        model.set("da_the_same_calc", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
                     } else {
-                        model.set("da_the_same", null);
+                        model.set("da_the_same_calc", null);
                     };
 
                     // was this a non-fatal incident
                     if (_this.fatal === true){
-                        model.set("nonfatal", false);
+                        model.set("nonfatal_calc", false);
                     } else {
-                        model.set("nonfatal", true);
+                        model.set("nonfatal_calc", true);
                     };
 
                     /* try to set the demographic data */
@@ -476,6 +585,13 @@
 
                     };
 
+                    // shot because cop claims they tried to run them over with a car
+                    if (_this.civillian_weapon === "vehicle"){
+                        model.set("victim_unarmed", true);
+                        model.set("vehicle_as_weapon", true);
+                        model.set("civillian_weapon", null);
+                    };
+
                     // did they have a weapon
                     if (_this.victim_armed_calc === true){
                         if (_this.armed_with_firearm_calc === false){
@@ -498,7 +614,6 @@
                         model.set("single_officer_calc", true);
                     };
 
-
                 });
 
                 return total_incidents;
@@ -517,7 +632,7 @@
                     years: this.view_object.years,
                     months: this.view_object.months,
                     days: this.view_object.days,
-                    times_of_day: this.view_object.times_of_day,
+                    time_of_day: this.view_object.time_of_day,
                     filters: this.view_object.filters,
                     genders: this.view_object.genders,
                     ethnicities: this.view_object.ethnicities,
@@ -567,25 +682,25 @@
                     return model.get("day_of_incident");
                 });
 
-                obj_filter.time_data = this.view_object.times_of_day;
+                obj_filter.time_data = this.view_object.time_of_day;
 
                 obj_filter.time_group = this.view_object.relevant_incidents.groupBy(function(model){
                     return model.get("time_of_day");
                 });
 
-                if (!$("input:checkbox").is(":checked")) {
+                if (!$("input:checkbox").is(":checked")){
 
                     /* calculate overall statistics */
                     $("td#all-incidents").html(obj_filter.total_incidents.length);
                     $("td#relevant-incidents").html(obj_filter.relevant_incidents.length);
 
-                    this.present_table_data(obj_filter, "initial", null)
-                    this.present_table_data(obj_filter, "yearly", "_group")
-                    this.present_table_data(obj_filter, "monthly", "_group")
-                    this.present_table_data(obj_filter, "daily", "_group")
-                    this.present_table_data(obj_filter, "time", "_group")
-                    this.present_table_data(obj_filter, "gender", "initial")
-                    this.present_table_data(obj_filter, "ethnic", "initial")
+                    this.present_table_data(obj_filter, "initial", null);
+                    this.present_table_data(obj_filter, "gender", "initial");
+                    this.present_table_data(obj_filter, "ethnic", "initial");
+                    this.present_table_data(obj_filter, "yearly", "_group");
+                    this.present_table_data(obj_filter, "monthly", "_group");
+                    this.present_table_data(obj_filter, "daily", "_group");
+                    this.present_table_data(obj_filter, "time", "_group");
 
                     /* change the color scheme on the table */
                     $(".kpcc-table td.swap").css({color: "black"});
@@ -640,8 +755,8 @@
                     });
 
                     /* apply filters to get time of day data */
-                    obj_filter.daily_filtered = obj_filter.filtered_data.groupBy(function(model){
-                        return model.get("times_of_day");
+                    obj_filter.time_filtered = obj_filter.filtered_data.groupBy(function(model){
+                        return model.get("time_of_day");
                     });
 
                     this.present_table_data(obj_filter, "overall", null)
@@ -779,6 +894,8 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <h6 class="text-center">By Gender</h6>
                     <table class="kpcc-table">
                         <thead>
                             <tr>
@@ -795,6 +912,8 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <h6 class="text-center">By Ethnicity</h6>
                     <table class="kpcc-table">
                         <thead>
                             <tr>
@@ -812,23 +931,26 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <h6 class="text-center">By Time of Day</h6>
                     <table class="kpcc-table">
                         <thead>
                             <tr>
-                                <@ _.each(months, function(month) { @>
-                                    <th style="text-align: center; width: 8%;"><@= month @></th>
+                                <@ _.each(time_of_day, function(time) { @>
+                                    <th style="text-align: center; width: 8%;"><@= time @></th>
                                 <@ }); @>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <@ _.each(months, function(month) { @>
-                                    <td class="swap" id="_<@= month @>" style="text-align: center; width: 8%;">--</td>
+                                <@ _.each(time_of_day, function(time) { @>
+                                    <td class="swap" id="_<@= time @>" style="text-align: center; width: 8%;">--</td>
                                 <@ }); @>
                             </tr>
                         </tbody>
                     </table>
 
+                    <h6 class="text-center">By Day of the Week</h6>
                     <table class="kpcc-table">
                         <thead>
                             <tr>
@@ -846,23 +968,25 @@
                         </tbody>
                     </table>
 
+                    <h6 class="text-center">By Month</h6>
                     <table class="kpcc-table">
                         <thead>
                             <tr>
-                                <@ _.each(times_of_day, function(time) { @>
-                                    <th style="text-align: center; width: 8%;"><@= time @></th>
+                                <@ _.each(months, function(month) { @>
+                                    <th style="text-align: center; width: 8%;"><@= month @></th>
                                 <@ }); @>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <@ _.each(times_of_day, function(time) { @>
-                                    <td class="swap" id="_<@= time @>" style="text-align: center; width: 8%;">--</td>
+                                <@ _.each(months, function(month) { @>
+                                    <td class="swap" id="_<@= month @>" style="text-align: center; width: 8%;">--</td>
                                 <@ }); @>
                             </tr>
                         </tbody>
                     </table>
 
+                    <h6 class="text-center">By Year</h6>
                     <table class="kpcc-table">
                         <thead>
                             <tr>
@@ -879,6 +1003,7 @@
                             </tr>
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>
