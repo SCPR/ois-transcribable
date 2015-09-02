@@ -627,47 +627,91 @@
             },
 
             render: function(){
+
+                var data = this.view_object.relevant_incidents;
+
                 var top_line_stats = {};
 
-                top_line_stats["Use Of Force Fatal"] = this.view_object.relevant_incidents.where({
+                top_line_stats["Use Of Force Fatal"] = data.where({
                     fatal: true
                 });
 
-                top_line_stats["Use Of Force Non-Fatal"] = this.view_object.relevant_incidents.where({
+                top_line_stats["Use Of Force Non-Fatal"] = data.where({
                     nonfatal_calc: true
                 });
 
-                top_line_stats["Armed"] = this.view_object.relevant_incidents.where({
+                top_line_stats["Armed"] = data.where({
                     victim_armed_calc: true
                 });
 
-                top_line_stats["Unarmed"] = this.view_object.relevant_incidents.where({
+                top_line_stats["Unarmed"] = data.where({
                     victim_unarmed: true
                 });
 
-                top_line_stats["Armed With Firearm/Gun"] = this.view_object.relevant_incidents.where({armed_with_firearm_calc: true
+                top_line_stats["Armed With Firearm/Gun"] = data.where({
+                    armed_with_firearm_calc: true
                 });
 
-                top_line_stats["Armed With Other Weapon"] = this.view_object.relevant_incidents.where({armed_with_other_calc: true
+                top_line_stats["Armed With Other Weapon"] = data.where({
+                    armed_with_other_calc: true
                 });
 
-                top_line_stats["Fired Weapon"] = this.view_object.relevant_incidents.where({
+                top_line_stats["Fired Weapon"] = data.where({
                     victim_fired_weapon: true
                 });
 
-                top_line_stats["Pointed Weapon"] = this.view_object.relevant_incidents.where({
+                top_line_stats["Pointed Weapon"] = data.where({
                     victim_pointed_weapon: true
                 });
 
-                top_line_stats["Ignored Officer Commands"] = this.view_object.relevant_incidents.where({
+                top_line_stats["Ignored Officer Commands"] = data.where({
                     victim_ignored_officer_commands: true
                 });
 
-                top_line_stats["Mention Of Waistband"] = this.view_object.relevant_incidents.where({
+                top_line_stats["Mention Of Waistband"] = data.where({
                     mention_of_waistband_in_report: true
                 });
 
-                top_line_stats["Couldn't See Victims Hands"] = this.view_object.relevant_incidents.where({officer_couldnt_see_victims_hands: true
+                top_line_stats["Couldn't See Victims Hands"] = data.where({
+                    officer_couldnt_see_victims_hands: true
+                });
+
+                top_line_stats["Single Officer Shot"] = data.where({
+                    single_officer_calc: true
+                });
+
+                top_line_stats["Multiple Officers Shot"] = data.where({
+                    multiple_officers: true
+                });
+
+                // pointed and fired firearm at an officer
+                top_line_stats["Pointed & Fired Firearm"] = data.where({
+                    victim_pointed_weapon: true,
+                    victim_fired_weapon: true
+                });
+
+                // ignored commands and demonstrated symptoms of intoxication
+                top_line_stats["Ignored Commands & Symptoms Of Intoxication"] = data.where({
+                    victim_ignored_officer_commands: true,
+                    victim_intoxicated: true
+                });
+
+                // ignored commands and demonstrated symptoms of mentally illness
+                top_line_stats["Ignored Commands & Symptoms of Mental Illness"] = data.where({
+                    victim_ignored_officer_commands: true,
+                    victim_mentally_ill: true
+                });
+
+                // reaching for waistband and unarmed
+                top_line_stats["Reaching For Waistband & Unarmed"] = data.where({
+                    victim_unarmed: true,
+                    mention_of_waistband_in_report: true
+                });
+
+                // mentally ill and unarmed
+                top_line_stats["Unarmed & Symptoms of Mental Illness"] = data.where({
+                    victim_unarmed: true,
+                    victim_mentally_ill: true
                 });
 
                 console.log(top_line_stats);
