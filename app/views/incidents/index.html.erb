@@ -324,7 +324,7 @@
                 this.view_object.ethnicities = _.uniq(this.view_object.relevant_incidents.pluck("ethnicity")).sort();
 
                 this.view_object.filters = [{
-                    type: "Top Line Data",
+                    type: "Top Line Filters",
                     filters: [
                         {proper: "Was Use Of Force Fatal", field: "fatal"},
                         {proper: "Was Use Of Force Non-Fatal", field: "nonfatal_calc"},
@@ -627,8 +627,54 @@
             },
 
             render: function(){
-                var data = this.view_object.relevant_incidents;
+                var top_line_stats = {};
+
+                top_line_stats["Use Of Force Fatal"] = this.view_object.relevant_incidents.where({
+                    fatal: true
+                });
+
+                top_line_stats["Use Of Force Non-Fatal"] = this.view_object.relevant_incidents.where({
+                    nonfatal_calc: true
+                });
+
+                top_line_stats["Armed"] = this.view_object.relevant_incidents.where({
+                    victim_armed_calc: true
+                });
+
+                top_line_stats["Unarmed"] = this.view_object.relevant_incidents.where({
+                    victim_unarmed: true
+                });
+
+                top_line_stats["Armed With Firearm/Gun"] = this.view_object.relevant_incidents.where({armed_with_firearm_calc: true
+                });
+
+                top_line_stats["Armed With Other Weapon"] = this.view_object.relevant_incidents.where({armed_with_other_calc: true
+                });
+
+                top_line_stats["Fired Weapon"] = this.view_object.relevant_incidents.where({
+                    victim_fired_weapon: true
+                });
+
+                top_line_stats["Pointed Weapon"] = this.view_object.relevant_incidents.where({
+                    victim_pointed_weapon: true
+                });
+
+                top_line_stats["Ignored Officer Commands"] = this.view_object.relevant_incidents.where({
+                    victim_ignored_officer_commands: true
+                });
+
+                top_line_stats["Mention Of Waistband"] = this.view_object.relevant_incidents.where({
+                    mention_of_waistband_in_report: true
+                });
+
+                top_line_stats["Couldn't See Victims Hands"] = this.view_object.relevant_incidents.where({officer_couldnt_see_victims_hands: true
+                });
+
+                console.log(top_line_stats);
+
                 $(this.view_object.container).html(this.view_object.template({
+                    top_line_total: this.view_object.relevant_incidents.length,
+                    top_line_stats: top_line_stats,
                     years: this.view_object.years,
                     months: this.view_object.months,
                     days: this.view_object.days,
@@ -843,6 +889,20 @@
                 <p>This data only shows the number of Use of Force cases reviewed by the Los Angeles District Attorney's Office in that timeframe. It is not the total number of cases.</p>
                 <p>Use any combination of filters to ask questions of the data, see the results by year, and get links to the cases relevant to your query.</p>
                 <p><strong>An example</strong>: Lets say I wanted to see all <em>Fatal incidents</em> in which the <em>Victim Was Unarmed</em> and there were <em>Multiple Officers Involved</em>. Well, you would check the <a id="demo-filters" href="javascript:void(0)">appropriate boxes</a>.</p>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <h5>Top Line Stats - <@= top_line_total @> incidents</h5>
+                        <ul>
+                            <@ _.each(top_line_stats, function(value, key) { @>
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                    <li><em><@= key @></em>: <@= value.length @> out of <@= top_line_total @></li>
+                                </div>
+                            <@ }); @>
+                        </ul>
+                    </div>
+                </div>
+
                 <form role="form" class="form-inline">
                     <@ _.each(filters, function(filter) { @>
                         <div class="row">
@@ -1003,7 +1063,6 @@
                             </tr>
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
