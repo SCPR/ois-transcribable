@@ -1058,8 +1058,9 @@
 
     $(function(){
         window.app = new App.Router();
+        Backbone.history.stop();
         Backbone.history.start({
-            root: "/incidents",
+            root: "/incidents/statistics",
             pushState: false,
         });
     });
