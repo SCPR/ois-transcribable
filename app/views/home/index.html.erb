@@ -5,49 +5,56 @@
         </ol>
         <h1>Cataloging Officer Involved Shootings</h1>
         <h3>Welcome <%= @user.email %></h3>
-        <h6>There are <%= @incidents.size %> reports in the system. View <%= link_to "incident statistics", incidents_path %>.</h6>
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <h6>Transcriptions &ndash; We've transcribed
-                    <% if "%.2f" % @transcribed_percent == "100.00" %>
-                        <span style="color: green"><%= "%.2f" % @transcribed_percent %>%</span>
-                    <% else %>
-                        <span style="color: red"><%= "%.2f" % @transcribed_percent %>%</span>
-                    <% end %>
-                of <%= link_to @transcriptions.size, transcriptions_path %> reports.</h6>
-                <ul class="list-inline">
-                    <% if @transcriptions.count.to_f == 369 %>
-                        <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
-                    <% else %>
-                        <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
-                    <% end %>
-                </ul>
-                <ul>
-                    <% @transcribed_scoreboard.each do |user| %>
-                        <li><strong><%= user[0] %></strong> has entered <em><%= user[1].size %></em> transcriptions</li>
-                    <% end %>
-                </ul>
+        <% if @user.email == "wcterrill@gmail.com" %>
+            <h6><%= link_to "Explore details", incidents_path %> about the <%= @incidents.size %> incidents we've transcribed.</h6>
+        <% else %>
+            <h6><%= link_to "Explore details", incidents_path %> about the <%= @incidents.size %> incidents we've transcribed.</h6>
+
+            <hr></hr>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <h6>Transcriptions &ndash; We've transcribed
+                        <% if "%.2f" % @transcribed_percent == "100.00" %>
+                            <span style="color: green"><%= "%.2f" % @transcribed_percent %>%</span>
+                        <% else %>
+                            <span style="color: red"><%= "%.2f" % @transcribed_percent %>%</span>
+                        <% end %>
+                    of <%= link_to @transcriptions.size, transcriptions_path %> reports.</h6>
+                    <ul class="list-inline">
+                        <% if @transcriptions.count.to_f == 369 %>
+                            <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
+                        <% else %>
+                            <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
+                        <% end %>
+                    </ul>
+                    <ul>
+                        <% @transcribed_scoreboard.each do |user| %>
+                            <li><strong><%= user[0] %></strong> has entered <em><%= user[1].size %></em> transcriptions</li>
+                        <% end %>
+                    </ul>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <h6>Verifications &ndash; We've verified
+                        <% if "%.2f" % @verified_percent == "100.00" %>
+                            <span style="color: green"><%= "%.2f" % @verified_percent %>%</span>
+                        <% else %>
+                            <span style="color: red"><%= "%.2f" % @verified_percent %>%</span>
+                        <% end %>
+                    of <%= link_to @incidents.size, transcriptions_path %> reports.</h6>
+                    <ul class="list-inline">
+                        <% if @user.email == "ckeller@scpr.org" or @user.email == "elarrubia@scpr.org" %>
+                            <li><%= link_to "Verify transcriptions", transcriptions_path(), class: "btn btn-info" %></li>
+                        <% end %>
+                    </ul>
+                    <ul>
+                        <% @verified_scoreboard.each do |user| %>
+                            <li><strong><%= user[0] %></strong> has verified <em><%= user[1].size %></em> transcriptions</li>
+                        <% end %>
+                    </ul>
+                </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <h6>Verifications &ndash; We've verified
-                    <% if "%.2f" % @verified_percent == "100.00" %>
-                        <span style="color: green"><%= "%.2f" % @verified_percent %>%</span>
-                    <% else %>
-                        <span style="color: red"><%= "%.2f" % @verified_percent %>%</span>
-                    <% end %>
-                of <%= link_to @incidents.size, transcriptions_path %> reports.</h6>
-                <ul class="list-inline">
-                    <% if @user.email == "ckeller@scpr.org" or @user.email == "elarrubia@scpr.org" %>
-                        <li><%= link_to "Verify transcriptions", transcriptions_path(), class: "btn btn-info" %></li>
-                    <% end %>
-                </ul>
-                <ul>
-                    <% @verified_scoreboard.each do |user| %>
-                        <li><strong><%= user[0] %></strong> has verified <em><%= user[1].size %></em> transcriptions</li>
-                    <% end %>
-                </ul>
-            </div>
-        </div>
+        <% end %>
     </div>
 </div>
 <div class="row">
@@ -55,3 +62,6 @@
         <%= render "devise/menu/login_items" %>
     </div>
 </div>
+
+
+
