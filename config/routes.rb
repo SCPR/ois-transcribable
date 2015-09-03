@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
-  # get "/incidents/coroner-data" => "incidents#coroner_data"
+  get "/incidents/statistics" => "incidents#statistics"
 
   resources :incidents, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
 

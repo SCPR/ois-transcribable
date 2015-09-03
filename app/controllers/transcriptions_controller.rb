@@ -7,13 +7,6 @@ class TranscriptionsController < ActionController::Base
         @transcriptions = Transcription.all
         @incidents = Incident.all
         @record_count = Transcription.group(:district_attorney_file_number).count.sort_by { |k,v| v.to_s }.reverse
-        respond_to do |format|
-            format.html
-            format.csv do
-                headers['Content-Disposition'] = "attachment; filename=\"data-export.csv\""
-                headers['Content-Type'] ||= 'text/csv'
-            end
-        end
     end
 
     def show
@@ -132,7 +125,7 @@ class TranscriptionsController < ActionController::Base
             @transcription.save
             redirect_to @transcription
         else
-            render 'edit'
+            render "edit"
         end
     end
 

@@ -4,6 +4,11 @@ class IncidentsController < ApplicationController
 
     def index
         @incidents = Incident.all
+        @transcriptions = Transcription.all
+    end
+
+    def statistics
+        @incidents = Incident.all
     end
 
     def show
@@ -15,18 +20,13 @@ class IncidentsController < ApplicationController
         @incident = Incident.new
     end
 
-    # def coroner_data
-    #     @coroners_data = File.read("#{Rails.root}/public/assets/coroners_data.json")
-    #     render :json => @coroners_data
-    # end
-
     def create
         @incident = Incident.new(incident_params)
     end
 
     def edit
-        @transcription = Transcription.find(params[:id])
-        @incident = Incident.find_by id: @transcription.incident_id
+        @incident = Incident.find(params[:id])
+        @transcription = Transcription.find_by district_attorney_file_number: @incident.district_attorney_file_number
     end
 
     def update
@@ -101,9 +101,9 @@ class IncidentsController < ApplicationController
             @transcription.email = @incident.email
             @incident.save
             @transcription.save
-            render :index
+            redirect_to @incident
         else
-            render :index
+            render "edit"
         end
     end
 
