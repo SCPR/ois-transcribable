@@ -6,7 +6,7 @@
         <h1>Cataloging Officer Involved Shootings</h1>
         <h3>Welcome <%= @user.email %></h3>
         <% if @user.email == "wcterrill@gmail.com" %>
-            <h6><%= link_to "Explore details", incidents_path %> about the <%= @incidents.size %> incidents we've transcribed.</h6>
+            <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @incidents.size %> incidents we've transcribed.</h6>
         <% else %>
             <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @incidents.size %> incidents we've transcribed.</h6>
             <hr></hr>
