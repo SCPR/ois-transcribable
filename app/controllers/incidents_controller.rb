@@ -12,8 +12,8 @@ class IncidentsController < ApplicationController
     end
 
     def show
-        @transcription = Transcription.find(params[:id])
-        @incident = Incident.find_by id: @transcription.incident_id
+        @incident = Incident.find(params[:id])
+        @transcription = Transcription.find_by district_attorney_file_number: @incident.district_attorney_file_number
     end
 
     def new

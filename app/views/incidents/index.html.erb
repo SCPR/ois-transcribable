@@ -20,7 +20,7 @@
                     <th>Edit</th>
                 </tr>
                 <% @incidents.each do |incident| %>
-                    <% @this_record = @incidents.find_by(district_attorney_file_number: incident.district_attorney_file_number) %>
+                    <% @this_record = @incidents.find_by(id: incident.id) %>
                         <tr>
                             <% if incident.verified == true %>
                                 <td style="color: green">&#10004;</td>
