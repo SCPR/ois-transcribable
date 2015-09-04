@@ -111,8 +111,27 @@
             return array_of_strings;
         };
 
-        window.clean_up_array_items = function(item){
+        window.create_models_from_comma_separated = function(array){
+            var counts = {};
+            _.each(array, function(value){
+                counts[value] = counts[value] ? counts[value] + 1 : 1;
+            });
+            var array_of_models = [];
+            _.each(counts, function(value, key, obj){
+                var output = {
+                    name: key.replace(/^\s+|\s+$/gm, ""),
+                    quantity: value
+                };
 
+                // var model = new App.Models.PoliceDepartment({
+                //     name: key.replace(/^\s+|\s+$/gm, ""),
+                //     quantity: value
+                // });
+
+                array_of_models.push(output);
+            });
+
+            return array_of_models;
         };
 
         String.prototype.truncateToGraf = function(){
@@ -231,15 +250,15 @@
             url: "/coroners_data.json"
         });
 
-        App.Models.PoliceDepartment = Backbone.Model.extend({
+        App.Models.CommaSeparated = Backbone.Model.extend({
             defaults: {
                 name: null,
                 quantity: null,
             },
         });
 
-        App.Collections.PoliceDepartments = Backbone.Collection.extend({
-            model: App.Models.PoliceDepartment,
+        App.Collections.CommaSeparateds = Backbone.Collection.extend({
+            model: App.Models.CommaSeparated,
             comparator: function(model) {
                 return -model.get("quantity");
             }
@@ -304,8 +323,16 @@
                     })
                 );
 
-                this.view_object.police_agencies = new App.Collections.PoliceDepartments(
+                this.view_object.police_agencies = new App.Collections.CommaSeparateds(
                     this.view_object.police_agencies
+                );
+
+                this.view_object.police_officers = new App.Collections.CommaSeparateds(
+                    this.view_object.police_officers
+                );
+
+                this.view_object.type_of_incident = new App.Collections.CommaSeparateds(
+                    this.view_object.type_of_incident
                 );
 
                 this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
@@ -436,6 +463,8 @@
                 view_object.police_agencies = [];
 
                 view_object.police_officers = [];
+
+                view_object.type_of_incident = [];
 
                 view_object.total_incidents.forEach(function(model, index){
 
@@ -697,42 +726,27 @@
                             model.set("multiple_police_agency_calc", true);
                         };
 
-                        console.log(_this.id);
-
                         var parsed_officers = comma_values_to_array(_this.officer_name_and_badge_number);
 
-                        console.log(parsed_officers);
-
-                        // alphabet = alphabet.replace(/H.*S/, 'HS')
-
                         _.each(parsed_officers, function(value){
-                            view_object.police_officers.push(value.replace(/^\s+|\s+$/gm, ""));
+                            var output = value.replace(/\(.*?\)\s?/g, '');
+                            output = output.replace(/^\s+|\s+$/gm, "")
+                            view_object.police_officers.push(output);
+                        });
+
+                        var type_of_incident = comma_values_to_array(_this.type_of_incident);
+                        _.each(type_of_incident, function(value){
+                            var output = value.replace(/^\s+|\s+$/gm, "")
+                            view_object.type_of_incident.push(output);
                         });
 
                     };
 
                 });
 
-                // try to get frequency of police agencies
-                var counts = {};
-
-                _.each(view_object.police_agencies, function(value){
-                    counts[value] = counts[value] ? counts[value] + 1 : 1;
-                });
-
-                view_object.police_agencies = [];
-
-                _.each(counts, function(value, key, obj){
-                    var model = new App.Models.PoliceDepartment({
-                        name: key.replace(/^\s+|\s+$/gm, ""),
-                        quantity: value
-                    });
-                    view_object.police_agencies.push(model);
-                });
-                // try to get frequency of police agencies
-
-
-
+                view_object.police_agencies = create_models_from_comma_separated(view_object.police_agencies);
+                view_object.police_officers = create_models_from_comma_separated(view_object.police_officers);
+                view_object.type_of_incident = create_models_from_comma_separated(view_object.type_of_incident);
 
                 return view_object;
 
@@ -840,6 +854,8 @@
                     top_line_total: this.view_object.relevant_incidents.length,
                     top_line_stats: top_line_stats,
                     police_agencies: this.view_object.police_agencies.models,
+                    police_officers: this.view_object.police_officers.models,
+                    type_of_incident: this.view_object.type_of_incident.models,
                     years: this.view_object.years,
                     months: this.view_object.months,
                     days: this.view_object.days,
@@ -1289,6 +1305,33 @@
                             <h6 class="text-center">Police Agencies</h6>
                             <ul>
                                 <@ _.each(police_agencies, function(model){ @>
+                                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                                        <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
+                                    </div>
+                                <@ }); @>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <h6 class="text-center">Police Officers</h6>
+                            <ul>
+                                <@ _.each(police_officers, function(model){ @>
+                                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                                        <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
+                                    </div>
+                                <@ }); @>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <h6 class="text-center">Methods of Force Used</h6>
+                            <ul>
+                                <@ _.each(type_of_incident, function(model){ @>
                                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
                                         <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
                                     </div>
