@@ -3,8 +3,15 @@ class IncidentsController < ApplicationController
     layout "simple_frame"
 
     def index
-        @incidents = Incident.all
-        @transcriptions = Transcription.all
+
+        @user = current_user
+        if current_user.email == "wcterrill@gmail.com"
+            redirect_to incidents_statistics_path
+        else
+            @incidents = Incident.all
+            @transcriptions = Transcription.all
+        end
+
     end
 
     def statistics
