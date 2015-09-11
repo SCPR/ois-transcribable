@@ -870,7 +870,9 @@
 
                 obj_filter.relevant_scope = obj_filter.relevant_incidents.length;
 
-                obj_filter.total_incidents = this.view_object.total_incidents;
+                obj_filter.total_incidents = this.view_object.total_incidents.where({
+                    verified: true,
+                });
 
                 obj_filter.ethnic_data = this.view_object.ethnicities;
 
