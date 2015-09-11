@@ -10,11 +10,45 @@ class IncidentsController < ApplicationController
             @incidents = Incident.all
             @transcriptions = Transcription.all
         end
-
     end
 
     def statistics
         @incidents = Incident.all
+        container_of_officers = Array.new
+        container_of_officer_cases = Array.new
+        @relevant_incidents = @incidents.where("case_relevant = '1'")
+        @relevant_incidents.each do |item|
+            values = item.officer_name_and_badge_number.split(",")
+            values.each do |value|
+                clean_name = value.gsub(/\(.*\)/, "").strip
+                container_of_officers.push clean_name
+                officer_case_hash = Hash.new(0)
+                officer_case_hash["officer_name"] = clean_name
+                officer_case_hash["district_attorney_file_number"] = item.district_attorney_file_number
+                officer_case_hash["url"] = item.url
+                officer_case_hash["officer_police_agency"] = item.officer_police_agency
+                container_of_officer_cases.push officer_case_hash
+            end
+        end
+        officer_quantity = Hash.new(0)
+        container_of_officers.each do |officer|
+            officer_quantity[officer] += 1
+        end
+        final_container = Array.new
+        officer_quantity.each do |k, v|
+            final_hash = Hash.new(0)
+            final_hash["name"] = k
+            final_hash["quantity"] = v
+            final_hash["cases"] = Array.new
+            container_of_officer_cases.each do |item|
+                if k == item["officer_name"]
+                    this_case = {"district_attorney_file_number"=>item["district_attorney_file_number"], "officer_police_agency"=>item["officer_police_agency"], "url"=>item["url"]}
+                    final_hash["cases"].push this_case
+                end
+            end
+            final_container.push final_hash
+        end
+        @final_container = final_container
     end
 
     def show
