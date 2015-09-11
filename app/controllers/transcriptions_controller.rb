@@ -4,7 +4,7 @@ class TranscriptionsController < ActionController::Base
 
     def index
         @user = current_user
-        @transcriptions = Transcription.all
+        @transcriptions = Transcription.all.sort_by { :created_at }.reverse
         @incidents = Incident.all
         @record_count = Transcription.group(:district_attorney_file_number).count.sort_by { |k,v| v.to_s }.reverse
     end

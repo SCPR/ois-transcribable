@@ -20,7 +20,7 @@
                         <% end %>
                     of <%= link_to @incidents.size, transcriptions_path %> incidents.</h6>
                     <ul class="list-inline">
-                        <% if @transcriptions.count.to_f != 369 %>
+                        <% if "%.2f" % @transcribed_percent != "100.00" %>
                             <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
                         <% end %>
                     </ul>

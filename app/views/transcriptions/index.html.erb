@@ -5,9 +5,6 @@
             <li>Verify Transcriptions</li>
         </ol>
         <h1>Transcriptions#index</h1>
-        <!--
-        <li><%#= link_to "Download All Transcriptions", transcriptions_path(format: :csv), class: "btn btn-info" %></li>
-        -->
         <hr></hr>
         <div id="table-container">
             <table class="kpcc-table">
@@ -15,41 +12,29 @@
                     <th>Verified</th>
                     <th>Verified By</th>
                     <th>DA File Number</th>
-                    <th>Transcribed Quantity</th>
                     <th>Transcribed By</th>
                     <th>Transcribed Date</th>
                     <th>Delete</th>
-                    <th>Verify</th>
+                    <th>Verify/Edit</th>
                 </tr>
-                <% @record_count.each do |this| %>
-                    <% if this[1] > 1 %>
-                        <tr>
-                            <td><%= this[0] %></td>
-                            <td><%= this[1] %></td>
-                            <% @transcriptions.where(district_attorney_file_number: this[0]).find_each do |obj| %>
-                                <td><%= obj.email %></td>
-                                <td><%= obj.created_at.strftime("%m/%d/%Y") %></td>
-                                <td><%= link_to "Delete", transcription_path(obj), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></td>
-                                <td><%= link_to "Verify/Edit", edit_transcription_path(obj), class: "btn btn-success" %></td>
-                            <% end %>
-                        </tr>
-                    <% else %>
-                        <% @this_record = @transcriptions.find_by(district_attorney_file_number: this[0]) %>
-                            <tr>
-                                <% if @incidents.find_by(id: @this_record.incident_id).verified == true %>
-                                    <td style="color: green">&#10004;</td>
-                                <% else %>
-                                    <td style="color: red">&mdash;</td>
-                                <% end %>
-                                <td><%= @incidents.find_by(id: @this_record.incident_id).email %></td>
-                                <td><%= this[0] %></td>
-                                <td><%= this[1] %></td>
-                                <td><%= @this_record.email %></td>
-                                <td><%= @this_record.created_at.strftime("%m/%d/%Y") %></td>
-                                <td><%= link_to "Delete", transcription_path(@this_record), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></td>
-                                <td><%= link_to "Verify/Edit", edit_transcription_path(@this_record), class: "btn btn-success" %></li></td>
-                            </tr>
-                    <% end %>
+                <% @transcriptions.each do |this| %>
+                    <tr>
+                        <% if @incidents.find_by(id: this.incident_id).verified == true %>
+                            <td style="color: green">&#10004;</td>
+                        <% else %>
+                            <td style="color: red">&mdash;</td>
+                        <% end %>
+                        <td><%= @incidents.find_by(id: this.incident_id).email %></td>
+                        <td><%= this.district_attorney_file_number %></td>
+                        <td><%= this.email %></td>
+                        <td><%= this.created_at.strftime("%m/%d/%Y") %></td>
+                        <td><%= link_to "Delete", transcription_path(this.id), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></td>
+                        <% if @incidents.find_by(id: this.incident_id).verified == true %>
+                            <td><%= link_to "Edit", edit_transcription_path(this.id), class: "btn btn-warning" %></li></td>
+                        <% else %>
+                            <td><%= link_to "Verify", edit_transcription_path(this.id), class: "btn btn-success" %></li></td>
+                        <% end %>
+                    </tr>
                 <% end %>
             </table>
         </div>
