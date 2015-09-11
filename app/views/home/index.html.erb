@@ -6,9 +6,9 @@
         <h1>Cataloging Officer Involved Shootings</h1>
         <h3>Welcome <%= @user.email %></h3>
         <% if @user.email == "wcterrill@gmail.com" %>
-            <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @incidents.size %> incidents we've transcribed.</h6>
+            <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @verified.size %> incidents we've verified.</h6>
         <% else %>
-            <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @incidents.size %> incidents we've transcribed.</h6>
+            <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @verified.size %> incidents we've verified.</h6>
             <hr></hr>
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -18,7 +18,7 @@
                         <% else %>
                             <span style="color: red"><%= "%.2f" % @transcribed_percent %>%</span>
                         <% end %>
-                    of <%= link_to @transcriptions.size, transcriptions_path %> reports.</h6>
+                    of <%= link_to @incidents.size, transcriptions_path %> incidents.</h6>
                     <ul class="list-inline">
                         <% if @transcriptions.count.to_f != 369 %>
                             <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
