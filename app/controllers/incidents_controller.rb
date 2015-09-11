@@ -3,7 +3,6 @@ class IncidentsController < ApplicationController
     layout "simple_frame"
 
     def index
-
         @user = current_user
         if current_user.email == "wcterrill@gmail.com"
             redirect_to incidents_statistics_path
