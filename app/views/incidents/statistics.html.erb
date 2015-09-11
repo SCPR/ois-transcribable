@@ -122,15 +122,8 @@
                     name: key.replace(/^\s+|\s+$/gm, ""),
                     quantity: value
                 };
-
-                // var model = new App.Models.PoliceDepartment({
-                //     name: key.replace(/^\s+|\s+$/gm, ""),
-                //     quantity: value
-                // });
-
                 array_of_models.push(output);
             });
-
             return array_of_models;
         };
 
@@ -280,21 +273,24 @@
                     async: true
                 });
 
+                var officerCaseCollection = new App.Collections.CommaSeparateds(<%= raw @final_container.to_json %>);
+
                 var checkExist = setInterval(function() {
                     if (applicationCollection.length > 0 || coronerCollection.length > 0){
                         clearInterval(checkExist);
-                        _this.renderApplicationVisuals(applicationCollection, coronerCollection);
+                        _this.renderApplicationVisuals(applicationCollection, coronerCollection, officerCaseCollection);
                     }
                 }, 500);
             },
 
-            renderApplicationVisuals: function(applicationCollection, coronerCollection){
+            renderApplicationVisuals: function(applicationCollection, coronerCollection, officerCaseCollection){
                 if (this.applicationVisuals){
                     this.applicationVisuals.remove();
                 };
                 this.applicationVisuals = new App.Views.ApplicationVisuals({
                     total_incidents: applicationCollection,
                     demographic_data: coronerCollection,
+                    incidents_by_officers: officerCaseCollection,
                     container: ".data-filters"
                 });
                 return this.applicationVisuals;
@@ -315,7 +311,7 @@
 
                 this.view_object.template = template("my_template");
 
-                this.view_object = this.calculate_data_fields(this.view_object);
+                this.view_object = this.calculate_model_attributes(this.view_object);
 
                 this.view_object.relevant_incidents = new App.Collections.Incidents(
                     this.view_object.total_incidents.where({
@@ -323,12 +319,10 @@
                     })
                 );
 
+                this.view_object = this.created_calculated_collections(this.view_object);
+
                 this.view_object.police_agencies = new App.Collections.CommaSeparateds(
                     this.view_object.police_agencies
-                );
-
-                this.view_object.police_officers = new App.Collections.CommaSeparateds(
-                    this.view_object.police_officers
                 );
 
                 this.view_object.type_of_incident = new App.Collections.CommaSeparateds(
@@ -454,17 +448,13 @@
                     ]
                 }];
 
+                console.log(this.view_object);
+
                 this.render()
 
             },
 
-            calculate_data_fields: function(view_object){
-
-                view_object.police_agencies = [];
-
-                view_object.police_officers = [];
-
-                view_object.type_of_incident = [];
+            calculate_model_attributes: function(view_object){
 
                 view_object.total_incidents.forEach(function(model, index){
 
@@ -708,48 +698,47 @@
                         model.set("deadly_force_as_first_calc", true);
                     };
 
-                    // try to parse out police agencies and officers
-                    if (_this.case_relevant === true){
+                });
 
-                        var parsed_agency = comma_values_to_array(_this.officer_police_agency);
+                return view_object;
 
-                        _.each(parsed_agency, function(value){
-                            view_object.police_agencies.push(value.replace(/^\s+|\s+$/gm, ""));
-                        });
+            },
 
-                        if (parsed_agency.length === 1){
-                            model.set("officer_police_agency", parsed_agency[0].replace(/^\s+|\s+$/gm, ""));
-                            model.set("single_police_agency_calc", true);
-                            model.set("multiple_police_agency_calc", false);
-                        } else {
-                            model.set("single_police_agency_calc", false);
-                            model.set("multiple_police_agency_calc", true);
-                        };
+            created_calculated_collections: function(view_object){
 
-                        var parsed_officers = comma_values_to_array(_this.officer_name_and_badge_number);
+                view_object.police_agencies = [];
+                view_object.type_of_incident = [];
 
-                        _.each(parsed_officers, function(value){
-                            var output = value.replace(/\(.*?\)\s?/g, '');
-                            output = output.replace(/^\s+|\s+$/gm, "")
-                            view_object.police_officers.push(output);
-                        });
+                // loop through the relevant incidents
+                view_object.relevant_incidents.forEach(function(model, index){
 
-                        var type_of_incident = comma_values_to_array(_this.type_of_incident);
-                        _.each(type_of_incident, function(value){
-                            var output = value.replace(/^\s+|\s+$/gm, "")
-                            view_object.type_of_incident.push(output);
-                        });
+                    var _this = model.attributes;
 
+                    var parsed_agency = comma_values_to_array(_this.officer_police_agency);
+                    _.each(parsed_agency, function(value){
+                        view_object.police_agencies.push(value.replace(/^\s+|\s+$/gm, ""));
+                    });
+
+                    if (parsed_agency.length === 1){
+                        model.set("officer_police_agency", parsed_agency[0].replace(/^\s+|\s+$/gm, ""));
+                        model.set("single_police_agency_calc", true);
+                        model.set("multiple_police_agency_calc", false);
+                    } else {
+                        model.set("single_police_agency_calc", false);
+                        model.set("multiple_police_agency_calc", true);
                     };
+
+                    var type_of_incident = comma_values_to_array(_this.type_of_incident);
+                    _.each(type_of_incident, function(value){
+                        var output = value.replace(/^\s+|\s+$/gm, "")
+                        view_object.type_of_incident.push(output);
+                    });
 
                 });
 
                 view_object.police_agencies = create_models_from_comma_separated(view_object.police_agencies);
-                view_object.police_officers = create_models_from_comma_separated(view_object.police_officers);
                 view_object.type_of_incident = create_models_from_comma_separated(view_object.type_of_incident);
-
                 return view_object;
-
             },
 
             events: {
@@ -854,7 +843,7 @@
                     top_line_total: this.view_object.relevant_incidents.length,
                     top_line_stats: top_line_stats,
                     police_agencies: this.view_object.police_agencies.models,
-                    police_officers: this.view_object.police_officers.models,
+                    incidents_by_officers: this.view_object.incidents_by_officers.models,
                     type_of_incident: this.view_object.type_of_incident.models,
                     years: this.view_object.years,
                     months: this.view_object.months,
@@ -1298,11 +1287,9 @@
                             </table>
                         </div>
                     </div>
-
-
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">Police Agencies</h6>
+                            <h6 class="text-center">Incidents By Police Agencies</h6>
                             <ul>
                                 <@ _.each(police_agencies, function(model){ @>
                                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
@@ -1312,21 +1299,44 @@
                             </ul>
                         </div>
                     </div>
-
-
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">Police Officers</h6>
+                            <h6 class="text-center">Incidents By Police Officers</h6>
                             <ul>
-                                <@ _.each(police_officers, function(model){ @>
-                                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                                        <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
-                                    </div>
+                                <@ _.each(incidents_by_officers, function(model){ @>
+
+                                    <@ if (model.attributes.quantity === 3){ @>
+                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
+                                            <ul>
+                                                <@ _.each(model.attributes.cases, function(item){ @>
+                                                    <li><a href="<@= item.url @>" target="blank"><@= item.district_attorney_file_number @></a> (<@= item.officer_police_agency @>)</li>
+                                                <@ }); @>
+                                            </ul>
+                                        </div>
+                                    <@ } else if (model.attributes.quantity === 2){ @>
+                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
+                                            <ul>
+                                                <@ _.each(model.attributes.cases, function(item){ @>
+                                                    <li><a href="<@= item.url @>" target="blank"><@= item.district_attorney_file_number @></a> (<@= item.officer_police_agency @>)</li>
+                                                <@ }); @>
+                                            </ul>
+                                        </div>
+                                    <@ } else { @>
+                                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                                            <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
+                                            <ul>
+                                                <@ _.each(model.attributes.cases, function(item){ @>
+                                                    <li><a href="<@= item.url @>" target="blank"><@= item.district_attorney_file_number @></a> (<@= item.officer_police_agency @>)</li>
+                                                <@ }); @>
+                                            </ul>
+                                        </div>
+                                    <@ } @>
                                 <@ }); @>
                             </ul>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <h6 class="text-center">Methods of Force Used</h6>
@@ -1339,8 +1349,6 @@
                             </ul>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
