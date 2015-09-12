@@ -5,7 +5,7 @@
             <li>Edit Incident</li>
         </ol>
         <h1>Incidents#index</h1>
-        <p><strong>Looking for incidents statistics?</strong> <%= link_to "Try Here", incidents_statistics_path %> to view details about the <%= @incidents.size %> <%= link_to "incidents we've transcribed", incidents_statistics_path %>.</p>
+        <p><strong>Looking for incidents statistics?</strong> <%= link_to "Try Here", incidents_statistics_path %> to view details about the <%= @incidents_verified.size %> <%= link_to "incidents we've verified", incidents_statistics_path %>.</p>
         <hr></hr>
         <div id="table-container">
             <table class="kpcc-table">
@@ -18,7 +18,7 @@
                     <th>Edit</th>
                 </tr>
                 <% @incidents.each do |incident| %>
-                    <% @this_record = @incidents.find_by(id: incident.id) %>
+                    <%# @this_record = @incidents.find_by(id: incident.id) %>
                         <tr>
                             <% if incident.verified == true %>
                                 <td style="color: green">&#10004;</td>
@@ -29,7 +29,7 @@
                             <td><%= incident.updated_at.strftime("%m/%d/%Y") %></td>
                             <td><%= incident.district_attorney_file_number %></td>
                             <!--<td><%#= link_to "Delete", incident_path(@this_record), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></td>-->
-                            <td><%= link_to "Edit", edit_incident_path(@this_record), class: "btn btn-success" %></li></td>
+                            <td><%= link_to "Edit", edit_incident_path(incident.id), class: "btn btn-success" %></li></td>
                         </tr>
                 <% end %>
             </table>

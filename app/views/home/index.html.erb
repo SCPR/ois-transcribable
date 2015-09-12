@@ -22,6 +22,8 @@
                     <ul class="list-inline">
                         <% if "%.2f" % @transcribed_percent != "100.00" %>
                             <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
+                        <% else %>
+                            <li><%= link_to "Verify transcriptions", transcriptions_path(), class: "btn btn-info" %></li>
                         <% end %>
                     </ul>
                     <ul>
