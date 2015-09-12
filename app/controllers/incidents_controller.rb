@@ -7,7 +7,8 @@ class IncidentsController < ApplicationController
         if current_user.email == "wcterrill@gmail.com"
             redirect_to incidents_statistics_path
         else
-            @incidents = Incident.all
+            @incidents = Incident.all.sort_by { :updated_at }.reverse
+            @incidents_verified = Incident.all.where("verified = '1'")
             @transcriptions = Transcription.all
         end
     end
@@ -139,7 +140,6 @@ class IncidentsController < ApplicationController
             @incident.transcribed_count = 1
             @transcription.officer_responding_to_call = @incident.officer_responding_to_call
             @transcription.grabbed_officers_weapon = @incident.grabbed_officers_weapon
-            @transcription.email = @incident.email
             @incident.save
             @transcription.save
             redirect_to @incident
