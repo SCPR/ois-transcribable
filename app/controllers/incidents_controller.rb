@@ -136,6 +136,7 @@ class IncidentsController < ApplicationController
             @transcription.victim_unarmed = @incident.victim_unarmed
             @transcription.officer_couldnt_see_victims_hands = @incident.officer_couldnt_see_victims_hands
             @transcription.officer_routine_patrol = @incident.officer_routine_patrol
+            @incident.transcribed_count = 1
             @transcription.officer_responding_to_call = @incident.officer_responding_to_call
             @transcription.grabbed_officers_weapon = @incident.grabbed_officers_weapon
             @transcription.email = @incident.email

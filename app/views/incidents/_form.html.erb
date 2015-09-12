@@ -71,6 +71,18 @@
         </div>
 
         <div class="do_something">
+            <%= f.input :type_of_incident_number, class: "form-control", label: "Number of Uses For Force (1, 3?)" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :coroner_case_number, class: "form-control", label: "Coroner's Case Number" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :in_custody_record_key_number, class: "form-control", label: "In Custody Death Number" %>
+        </div>
+
+        <div class="do_something">
             <label class="checkbox-inline">
                 <%= f.input :multiple_officers, class: "form-control", label: "Were Multiple Officers Involved (Check box if true)" %>
             </label>
@@ -286,7 +298,13 @@
 
         <div class="do_something">
             <div class="field" id="notes">
-                <%= f.input :civillian_weapon, class: "form-control", label: "Type of Weapon Carried/Used By Victim" %>
+                <%= f.input :civillian_weapon, class: "form-control", label: "General Weapon Carried/Used By Victim" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :civillian_weapon_specific, class: "form-control", label: "Specific Weapon Carried/Used By Victim" %>
             </div>
         </div>
 
@@ -394,7 +412,11 @@
         <h5>Factual Information</h5>
 
         <div class="do_something">
-            <%= f.input :officer_shots_fired, class: "form-control", label: "Number of Shots Fired By Law Enforcement" %>
+            <%= f.input :officer_shots_fired, class: "form-control", label: "General Shots Fired By Law Enforcement" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :officer_shots_fired_specific, class: "form-control", label: "Specific Shots Fired By Law Enforcement" %>
         </div>
 
         <div class="do_something">
