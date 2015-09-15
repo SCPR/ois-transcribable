@@ -601,7 +601,7 @@
                     };
 
                     // set gender data
-                    if (_this.gender === null || _this.gender === undefined){
+                    if (_this.gender === null || _this.gender === undefined || _this.gender === ""){
                         model.set("gender", "na");
                     } else if (_this.gender === "MALE"){
                         model.set("gender", "male");
