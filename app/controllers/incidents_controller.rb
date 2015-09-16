@@ -53,7 +53,9 @@ class IncidentsController < ApplicationController
     end
 
     def classify_response
-        @incidents = Incident.where("case_relevant = '1'")
+        @incidents = Incident.where("case_relevant = '1'").order("led_to_response_category")
+        @completed = @incidents.where("led_to_response_category != 'nil'")
+        @completed_percent = (@completed.count.to_f / @incidents.count.to_f) * 100
     end
 
     def show

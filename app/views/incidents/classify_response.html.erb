@@ -5,12 +5,19 @@
             <li>Categorize Incident</li>
         </ol>
         <h1>Incidents#categorize</h1>
+        <p><%= @completed.size %> out of <%= @incidents.size %> (
+        <% if "%.2f" % @completed_percent == "100.00" %>
+            <span style="color: green"><%= "%.2f" % @completed_percent %>%</span>
+        <% else %>
+            <span style="color: red"><%= "%.2f" % @completed_percent %>%</span>
+        <% end %>
+        ) of the relevant incidents have been categorized.</p>
         <div id="table-container">
             <table class="kpcc-table">
                 <tr>
-                    <th>Categorized</th>
+                    <th style="width: 10%;">Categorized</th>
                     <th style="width: 10%;">DA File Number</th>
-                    <th style="width: 80%;">Underlying Crime</th>
+                    <th style="width: 60%;">Underlying Crime</th>
                     <th style="width: 10%;">Category</th>
                     <th style="width: 10%;">Submit</th>
                 </tr>
@@ -18,14 +25,14 @@
                     <%= simple_form_for(incident) do |item| %>
                         <tr>
                             <% if incident.led_to_response_category == nil %>
-                                <td style="color: red">&mdash;</td>
+                                <td style="width: 10%; color: red">&mdash;</td>
                             <% else %>
-                                <td style="color: green">&#10004;</td>
+                                <td style="width: 10%; color: green">&#10004;</td>
                             <% end %>
                             <td style="width: 10%;">
-                                <%= incident.district_attorney_file_number %>
+                                <a href="<%= incident.url %>" target="blank"><%= incident.district_attorney_file_number %></a>
                             </td>
-                            <td style="width: 70%;">
+                            <td style="width: 60%;">
                                 <%= incident.underlying_crime_leading_to_shooting %>
                             </td>
                             <td style="width: 10%;">
