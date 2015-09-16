@@ -30,13 +30,13 @@
                                 <td style="width: 10%; color: green">&#10004;</td>
                             <% end %>
                             <td style="width: 10%;">
-                                <a href="<%= incident.url %>" target="blank"><%= incident.district_attorney_file_number %></a>
+                                <a href="<%= edit_incident_path(incident.id) %>" target="blank"><%= incident.district_attorney_file_number %></a>
                             </td>
                             <td style="width: 60%;">
                                 <%= incident.underlying_crime_leading_to_shooting %>
                             </td>
                             <td style="width: 10%;">
-                                <%= item.input :led_to_response_category, collection: [" --select one-- ", "violent crime", "shots fired", "implied weapon is present", "domestic violence", "suicidal/wants to die", "suspicious or inquisitive cop", "lower-level crime", "traffic"], label: false, :default => 0 %>
+                                <%= item.input :led_to_response_category, collection: [" --select one-- ", "violent crime", "shots fired", "implied weapon is present", "domestic violence", "suicidal/wants to die", "general disturbance", "suspicious or inquisitive cop", "misdemeanor crime", "traffic violation"], label: false, :default => 0 %>
                             </td>
                             <td style="width: 10%;">
                                 <%= submit_tag "Submit", :class => "btn btn-success btn-lg btn-block", :id => "incidentsubmit"  %>
