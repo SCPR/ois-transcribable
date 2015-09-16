@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150812204127) do
+ActiveRecord::Schema.define(version: 20150916022040) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                                         null: false
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 20150812204127) do
     t.string   "type_of_incident_number",              limit: 255
     t.string   "coroner_case_number",                  limit: 255
     t.string   "in_custody_record_key_number",         limit: 255
+    t.string   "led_to_response_category",             limit: 255
   end
 
   create_table "transcriptions", force: :cascade do |t|
