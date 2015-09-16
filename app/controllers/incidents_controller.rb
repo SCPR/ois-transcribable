@@ -53,7 +53,7 @@ class IncidentsController < ApplicationController
     end
 
     def classify_response
-        @incidents = Incident.all
+        @incidents = Incident.where("case_relevant = '1'")
     end
 
     def show
