@@ -486,9 +486,8 @@
                 </div>
             </div>
         <% end %>
-
         <%= hidden_field_tag "incident_id", @incident.id %>
         <%= hidden_field_tag "transcription_id", @transcription.id %>
-
+        <%= hidden_field_tag :redirect_location, "/incidents/#{@incident.id}" %>
     </div>
 <% end %>

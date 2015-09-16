@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ol class="breadcrumb">
+            <li><%= link_to 'Home', controller: :home, action: :index %></li>
+            <li>Categorize Incident</li>
+        </ol>
+        <h1>Incidents#categorize</h1>
+        <div id="table-container">
+            <table class="kpcc-table">
+                <tr>
+                    <th>Categorized</th>
+                    <th style="width: 10%;">DA File Number</th>
+                    <th style="width: 80%;">Underlying Crime</th>
+                    <th style="width: 10%;">Category</th>
+                    <th style="width: 10%;">Submit</th>
+                </tr>
+                <% @incidents.each do |incident| %>
+                    <%= simple_form_for(incident) do |item| %>
+                        <tr>
+                            <% if incident.led_to_response_category == nil %>
+                                <td style="color: red">&mdash;</td>
+                            <% else %>
+                                <td style="color: green">&#10004;</td>
+                            <% end %>
+                            <td style="width: 10%;">
+                                <%= incident.district_attorney_file_number %>
+                            </td>
+                            <td style="width: 70%;">
+                                <%= incident.underlying_crime_leading_to_shooting %>
+                            </td>
+                            <td style="width: 10%;">
+                                <%= item.input :led_to_response_category, collection: [" --select one-- ", "violent crime", "shots fired", "implied weapon is present", "domestic violence", "suicidal/wants to die", "suspicious or inquisitive cop", "lower-level crime", "traffic"], label: false, :default => 0 %>
+                            </td>
+                            <td style="width: 10%;">
+                                <%= submit_tag "Submit", :class => "btn btn-success btn-lg btn-block", :id => "incidentsubmit"  %>
+                            </td>
+                        </tr>
+                        <%= hidden_field_tag "incident_id", incident.id %>
+                        <%= hidden_field_tag :redirect_location, "/incidents/classify-response" %>
+                    <% end %>
+                <% end %>
+            </table>
+        </div>
+    </div>
+</div>

@@ -52,6 +52,10 @@ class IncidentsController < ApplicationController
         @final_container = final_container
     end
 
+    def classify_response
+        @incidents = Incident.all
+    end
+
     def show
         @incident = Incident.find(params[:id])
         @transcription = Transcription.find_by district_attorney_file_number: @incident.district_attorney_file_number
@@ -142,7 +146,8 @@ class IncidentsController < ApplicationController
             @transcription.grabbed_officers_weapon = @incident.grabbed_officers_weapon
             @incident.save
             @transcription.save
-            redirect_to @incident
+            #redirect_to @incident
+            redirect_to params[:redirect_location]
         else
             render "edit"
         end

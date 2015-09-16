@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   get "/incidents/statistics" => "incidents#statistics"
 
+  get "/incidents/classify-response" => "incidents#classify_response"
+
   resources :incidents, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
 
   resources :transcriptions, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
