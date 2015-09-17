@@ -216,6 +216,7 @@
                 type_of_incident_number: null,
                 coroner_case_number: null,
                 in_custody_record_key_number: null,
+                led_to_response_category: null,
             },
         });
 
@@ -329,6 +330,8 @@
                     this.view_object.type_of_incident
                 );
 
+                this.view_object.response_categories = _.uniq(this.view_object.relevant_incidents.pluck("led_to_response_category")).sort();
+
                 this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
 
                 this.view_object.months = [
@@ -369,7 +372,8 @@
                     "25_34",
                     "35_44",
                     "45_54",
-                    "55_over"
+                    "55_over",
+                    "na"
                 ];
 
                 this.view_object.genders = _.uniq(this.view_object.relevant_incidents.pluck("gender")).sort();
@@ -448,9 +452,7 @@
                     ]
                 }];
 
-                console.log(this.view_object);
-
-                this.render()
+                this.render();
 
             },
 
@@ -579,6 +581,26 @@
                         model.set("nonfatal_calc", true);
                     };
 
+                    if (_this.led_to_response_category === "shots fired"){
+                        model.set("led_to_response_category", "implied weapon is present");
+                    };
+
+                    if (_this.led_to_response_category === "suicidal/wants to die"){
+                        model.set("led_to_response_category", "suicidal");
+                    };
+
+                    if (_this.led_to_response_category === "violent/serious crime"){
+                        model.set("led_to_response_category", "serious crime");
+                    };
+
+                    if (_this.led_to_response_category === "suspicious or inquisitive cop"){
+                        model.set("led_to_response_category", "suspicious cop");
+                    };
+
+                    if (_this.led_to_response_category != null){
+                        _this.led_to_response_category = _this.led_to_response_category.replace(/ /g,"-");
+                    };
+
                     /* try to set the demographic data */
                     var demographics = view_object.demographic_data.where({
                         districtattorneyfilenumber: _this.district_attorney_file_number
@@ -613,7 +635,8 @@
 
                     // set age data
                     if (_this.age === null || _this.age === undefined){
-                        model.set("age_range", "n/a");
+                        model.set("age_range", "na");
+                        model.set("age", "na");
                     } else {
                         var comparison_age = parseInt(_this.age);
                         if (comparison_age < 18){
@@ -629,7 +652,7 @@
                         } else if (comparison_age >= 55){
                             model.set("age_ranges", "55_over");
                         } else{
-                            model.set("age_ranges", "n/a");
+                            model.set("age_ranges", "na");
                         };
                     };
 
@@ -845,6 +868,7 @@
                     police_agencies: this.view_object.police_agencies.models,
                     incidents_by_officers: this.view_object.incidents_by_officers.models,
                     type_of_incident: this.view_object.type_of_incident.models,
+                    response_categories: this.view_object.response_categories,
                     years: this.view_object.years,
                     months: this.view_object.months,
                     days: this.view_object.days,
@@ -862,187 +886,168 @@
 
             construct_checkbox_filters: function(){
 
-                var obj_filter = {};
+                // build the initial object
+                var obj = {};
+                obj.active_checkboxes = [];
+                obj.selected_filters = {};
+                obj.total_initial = this.view_object.total_incidents.where({verified: true}).length;
+                obj.filtered = {};
+                obj.init = {};
+                obj.init.data = this.view_object.relevant_incidents;
+                obj.relevant_initial = obj.init.data.length;
+                obj.init.response = this.create_groups(obj.init.data, "led_to_response_category");
+                obj.init.times = this.create_groups(obj.init.data, "time_of_day");
+                obj.init.daily = this.create_groups(obj.init.data, "day_of_incident");
+                obj.init.monthly = this.create_groups(obj.init.data, "month_of_incident");
+                obj.init.yearly = this.create_groups(obj.init.data, "year_of_incident");
+                obj.init.gender = this.create_groups(obj.init.data, "gender");
+                obj.init.ethnic = this.create_groups(obj.init.data, "ethnicity");
+                obj.init.age = this.create_groups(obj.init.data, "age_ranges");
 
-                obj_filter.active_checkboxes = [];
-
-                obj_filter.relevant_incidents = this.view_object.relevant_incidents;
-
-                obj_filter.relevant_scope = obj_filter.relevant_incidents.length;
-
-                obj_filter.total_incidents = this.view_object.total_incidents.where({
-                    verified: true,
-                });
-
-                obj_filter.ethnic_data = this.view_object.ethnicities;
-
-                obj_filter.ethnic_group = this.view_object.relevant_incidents.groupBy(function(model){
-                    return model.get("ethnicity");
-                });
-
-                obj_filter.gender_data = this.view_object.genders;
-
-                obj_filter.gender_group = this.view_object.relevant_incidents.groupBy(function(model){
-                    return model.get("gender");
-                });
-
-                obj_filter.age_data = this.view_object.age_ranges;
-
-                obj_filter.age_group = this.view_object.relevant_incidents.groupBy(function(model){
-                    return model.get("age_ranges");
-                });
-
-                obj_filter.yearly_data = this.view_object.years;
-
-                obj_filter.yearly_group = this.view_object.relevant_incidents.groupBy(function(model){
-                    return model.get("year_of_incident");
-                });
-
-                obj_filter.monthly_data = this.view_object.months;
-
-                obj_filter.monthly_group = this.view_object.relevant_incidents.groupBy(function(model){
-                    return model.get("month_of_incident");
-                });
-
-                obj_filter.daily_data = this.view_object.days;
-
-                obj_filter.daily_group = this.view_object.relevant_incidents.groupBy(function(model){
-                    return model.get("day_of_incident");
-                });
-
-                obj_filter.time_data = this.view_object.time_of_day;
-
-                obj_filter.time_group = this.view_object.relevant_incidents.groupBy(function(model){
-                    return model.get("time_of_day");
-                });
-
+                // state when nothing is checked
                 if (!$("input:checkbox").is(":checked")){
-
-                    /* calculate overall statistics */
-                    $("td#all-incidents").html(obj_filter.total_incidents.length);
-                    $("td#relevant-incidents").html(obj_filter.relevant_incidents.length);
-
-                    this.present_table_data(obj_filter, "initial", null);
-                    this.present_table_data(obj_filter, "gender", "initial");
-                    this.present_table_data(obj_filter, "ethnic", "initial");
-                    this.present_table_data(obj_filter, "age", "initial");
-                    this.present_table_data(obj_filter, "yearly", "_group");
-                    this.present_table_data(obj_filter, "monthly", "_group");
-                    this.present_table_data(obj_filter, "daily", "_group");
-                    this.present_table_data(obj_filter, "time", "_group");
-
-                    /* change the color scheme on the table */
+                    this.display_data(obj, true);
                     $(".kpcc-table td.swap").css({color: "black"});
 
+                // state when filters are activated
                 } else {
 
                     $("input:checkbox").each(function(){
                         var $this = $(this);
                         if($this.is(":checked")){
                             var filter_id = $this.attr("id");
-                            obj_filter.active_checkboxes.push(filter_id);
+                            obj.active_checkboxes.push(filter_id);
                         }
                     });
 
-                    obj_filter.selected_filters = {};
-
-                    _.each(obj_filter.active_checkboxes, function(key){
-                        obj_filter.selected_filters[key] = true;
+                    _.each(obj.active_checkboxes, function(key){
+                        obj.selected_filters[key] = true;
                     });
 
-                    /* apply filters to relevant data */
-                    obj_filter.filtered_data = new App.Collections.Incidents(
-                        obj_filter.relevant_incidents.where(obj_filter.selected_filters)
+                    obj.filtered.data = new App.Collections.Incidents(
+                        obj.init.data.where(obj.selected_filters)
                     );
 
-                    /* adjust scope due to filters */
-                    obj_filter.relevant_scope = obj_filter.filtered_data.length;
+                    obj.total_filtered = obj.filtered.data.length;
 
-                    /* apply filters to get gender data */
-                    obj_filter.gender_filtered = obj_filter.filtered_data.groupBy(function(model){
-                        return model.get("gender");
-                    });
+                    obj.filtered.response = this.create_groups(obj.filtered.data, "led_to_response_category");
 
-                    /* apply filters to get gender data */
-                    obj_filter.ethnic_filtered = obj_filter.filtered_data.groupBy(function(model){
-                        return model.get("ethnicity");
-                    });
+                    obj.filtered.times = this.create_groups(obj.filtered.data, "time_of_day");
 
-                    /* apply filters to get gender data */
-                    obj_filter.age_filtered = obj_filter.filtered_data.groupBy(function(model){
-                        return model.get("age_ranges");
-                    });
+                    obj.filtered.daily = this.create_groups(obj.filtered.data, "day_of_incident");
 
-                    /* apply filters to get year by year data */
-                    obj_filter.yearly_filtered = obj_filter.filtered_data.groupBy(function(model){
-                        return model.get("year_of_incident");
-                    });
+                    obj.filtered.monthly = this.create_groups(obj.filtered.data, "month_of_incident");
 
-                    /* apply filters to get month by month data */
-                    obj_filter.monthly_filtered = obj_filter.filtered_data.groupBy(function(model){
-                        return model.get("month_of_incident");
-                    });
+                    obj.filtered.yearly = this.create_groups(obj.filtered.data, "year_of_incident");
 
-                    /* apply filters to get day by day data */
-                    obj_filter.daily_filtered = obj_filter.filtered_data.groupBy(function(model){
-                        return model.get("day_of_incident");
-                    });
+                    var is_fatal_checked = _.has(obj.selected_filters, "fatal");
 
-                    /* apply filters to get time of day data */
-                    obj_filter.time_filtered = obj_filter.filtered_data.groupBy(function(model){
-                        return model.get("time_of_day");
-                    });
-
-                    this.present_table_data(obj_filter, "overall", null)
-                    this.present_table_data(obj_filter, "yearly", "_filtered")
-                    this.present_table_data(obj_filter, "monthly", "_filtered")
-                    this.present_table_data(obj_filter, "daily", "_filtered")
-                    this.present_table_data(obj_filter, "time", "_filtered")
-
-                    var is_fatal_checked = _.has(obj_filter.selected_filters, "fatal");
                     if (is_fatal_checked === true){
-                        this.present_table_data(obj_filter, "gender", "_filtered")
-                        this.present_table_data(obj_filter, "ethnic", "_filtered")
-                        this.present_table_data(obj_filter, "age", "_filtered")
+                        obj.filtered.gender = this.create_groups(obj.filtered.data, "gender");
+                        obj.filtered.ethnic = this.create_groups(obj.filtered.data, "ethnicity");
+                        obj.filtered.age = this.create_groups(obj.filtered.data, "age_ranges");
                     };
+
+                    this.display_data(obj, false);
 
                 }
+
             },
 
-            present_table_data: function(obj_filter, category, scope){
-                if (category === "initial"){
-                    $("td#filtered-display").html(obj_filter.relevant_incidents.length + " of " + obj_filter.relevant_incidents.length + " <br /> " + percentify(obj_filter.relevant_incidents.length / obj_filter.relevant_scope) + "%");
-                } else if (category === "overall"){
-                    if (obj_filter.filtered_data.length){
-                        $("td#filtered-display").html(obj_filter.filtered_data.length + " of " + obj_filter.relevant_incidents.length + " <br /> " + percentify(obj_filter.filtered_data.length / obj_filter.relevant_incidents.length) + "%");
-                            $("td#filtered-display").css({color: "red"});
-                    } else {
-                        $("td#filtered-display").html("No Results Found");
-                        $("td#filtered-display").css({color: "rgba(0, 0, 0, 0.3)"});
-                    };
-                } else {
-                    if (scope === "initial"){
-                        obj_filter[category + "_data"].forEach(function(item){
-                            $("td#_" + item).html("--");
-                            $("td#_" + item).css({color: "rgba(0, 0, 0, 0.3)"});
-                        });
-                    } else {
-                        obj_filter[category + "_data"].forEach(function(item){
-                            if (obj_filter[category + scope][item] === undefined){
-                                $("td#_" + item).html("No Results Found");
-                                $("td#_" + item).css({color: "rgba(0, 0, 0, 0.3)"});
-                            } else {
-                                $("td#_" + item).html(obj_filter[category + scope][item].length + " of " + obj_filter.relevant_scope + " <br /> " + percentify(obj_filter[category + scope][item].length / obj_filter.relevant_scope) + "%");
-                                $("td#_" + item).css({color: "red"});
-                                if (category === "yearly"){
-                                    obj_filter[category + scope][item].forEach(function(model){
-                                        $("td#_" + item).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
+            display_data: function(obj, initial){
+                if (initial === true){
+                    $("td#all-incidents").html(obj.total_initial);
+                    $("td#relevant-incidents").html(obj.relevant_initial);
+                    $("td#filtered-display").html(obj.relevant_initial + " of " + obj.relevant_initial + " <br /> " + percentify(obj.relevant_initial / obj.relevant_initial) + "%");
+                    var keys = _.keys(obj.init);
+                    keys.forEach(function(item){
+                        var these = _.keys(obj.init[item]);
+                        if (item === "gender" || item === "ethnic" || item === "age"){
+                            these.forEach(function(value){
+                                $("td#_" + value).html(" -- ");
+                                $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
+                            });
+                        } else {
+                            these.forEach(function(value){
+                                var data = obj.init[item][value];
+                                if (data === undefined || data.length === 0){
+                                    $("td#_" + value).html(" -- ");
+                                    $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
+                                } else {
+                                    $("td#_" + value).html(data.length + " of " + obj.relevant_initial + " <br /> " + percentify(data.length / obj.relevant_initial) + "%");
+                                    $("td#_" + value).css({color: "red"});
+                                };
+                                if (item === "yearly"){
+                                    data.forEach(function(model){
+                                        $("td#_" + value).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
                                     });
                                 };
+                            });
+                        };
+                    });
+                } else {
+                    $("td#all-incidents").html(obj.total_initial);
+                    $("td#relevant-incidents").html(obj.relevant_initial);
+                    $("td#filtered-display").html(obj.total_filtered + " of " + obj.relevant_initial + " <br /> " + percentify(obj.total_filtered / obj.relevant_initial) + "%");
+                    $("td#filtered-display").css({color: "red"});
+                    var keys = _.keys(obj.init);
+                    keys.forEach(function(item){
+                        var those = _.keys(obj.init[item]);
+                        var these = _.keys(obj.filtered[item]);
+                        if (item === "gender" || item === "ethnic" || item === "age"){
+                            if (these.length){
+                                those.forEach(function(value){
+                                    var data = obj.filtered[item][value];
+                                    if (data === undefined || data.length <= 0){
+                                        $("td#_" + value).html(" -- ");
+                                        $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
+                                    } else {
+                                        $("td#_" + value).html(data.length + " of " + obj.total_filtered + " <br /> " + percentify(data.length / obj.total_filtered) + "%");
+                                        $("td#_" + value).css({color: "red"});
+                                    };
+                                });
+                            } else {
+                                those.forEach(function(value){
+                                    $("td#_" + value).html(" -- ");
+                                    $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
+                                });
+                            }
+                        } else {
+                            if (these.length){
+                                those.forEach(function(value){
+                                    var data = obj.filtered[item][value];
+                                    if (data === undefined || data.length <= 0){
+                                        $("td#_" + value).html(" -- ");
+                                        $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
+                                    } else {
+                                        $("td#_" + value).html(data.length + " of " + obj.total_filtered + " <br /> " + percentify(data.length / obj.total_filtered) + "%");
+                                        $("td#_" + value).css({color: "red"});
+                                    };
+                                    if (item === "yearly"){
+                                        if (data != undefined){
+                                            data.forEach(function(model){
+                                                console.log(model);
+                                                $("td#_" + value).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
+                                            });
+                                        };
+                                    };
+                                });
+                            } else {
+                                those.forEach(function(value){
+                                    $("td#_" + value).html(" -- ");
+                                    $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
+                                });
                             };
-                        });
-                    };
+                        };
+                    });
                 };
+            },
+
+            create_groups: function(object, key){
+                var output = object.groupBy(function(model){
+                    return model.get(key);
+                });
+                return output;
             },
 
             clear_checkbox_filters: function(){
@@ -1127,9 +1132,9 @@
                             <table class="kpcc-table">
                                 <thead>
                                     <tr>
-                                        <th style="text-align: center; width: 33%;">Reviewed Incidents</th>
+                                        <th style="text-align: center; width: 33%;">Total Incidents</th>
                                         <th style="text-align: center; width: 34%;">Filtered Results</th>
-                                        <th style="text-align: center; width: 33%;">On-Duty Shootings</th>
+                                        <th style="text-align: center; width: 33%;">Relevant Shootings</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1195,14 +1200,36 @@
                                 <thead>
                                     <tr>
                                         <@ _.each(age_ranges, function(age){ @>
-                                            <th style="text-align: center; width: 16.5%;"><@= age @></th>
+                                            <th style="text-align: center; width: 14.25%;"><@= age @></th>
                                         <@ }); @>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                     <@ _.each(age_ranges, function(age){ @>
-                                            <td class="swap" id="_<@= age @>" style="text-align: center; width: 16.5%;">--</td>
+                                        <td class="swap" id="_<@= age @>" style="text-align: center; width: 14.25%;">--</td>
+                                        <@ }); @>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <h6 class="text-center">Response Categories</h6>
+                            <table class="kpcc-table">
+                                <thead>
+                                    <tr>
+                                        <@ _.each(response_categories, function(category){ @>
+                                            <th style="text-align: center; width: 12.5%;"><@= category @></th>
+                                        <@ }); @>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <@ _.each(response_categories, function(category){ @>
+                                        <@ var div_id = category.replace(/ /g,"-"); @>
+                                        <td class="swap" id="_<@= div_id @>" style="text-align: center; width: 12.5%;">--</td>
                                         <@ }); @>
                                     </tr>
                                 </tbody>
