@@ -332,6 +332,17 @@
 
                 this.view_object.response_categories = _.uniq(this.view_object.relevant_incidents.pluck("led_to_response_category")).sort();
 
+                // this.view_object.filtered_agencies = [
+                //     "lasd",
+                //     "lapd",
+                //     "long-beach-pd",
+                //     "inglewood-pd",
+                //     "gardena-pd",
+                //     "hawthorne-pd",
+                //     "monterey-park-pd",
+                //     "south-gate-pd",
+                // ];
+
                 this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
 
                 this.view_object.months = [
@@ -408,6 +419,18 @@
                         {proper: "Officer On Surveillance", field: "officer_on_surveillance"},
                         {proper: "Officer On Undercover", field: "officer_on_undercover"},
                         {proper: "Charges Filed Against Officer", field: "officer_charges_filed"},
+                    ]
+                }, {
+                    type: "Agency Filters",
+                    filters: [
+                        {proper: "LA County Sheriff's Department", field: "los-angeles-county-sheriffs-department"},
+                        {proper: "LA Police Department", field: "los-angeles-police-department"},
+                        {proper: "Long Beach Police Department", field: "long-beach-police-department"},
+                        {proper: "Inglewood Police Department", field: "inglewood-police-department"},
+                        {proper: "Gardena Police Department", field: "gardena-police-department"},
+                        {proper: "Hawthorne Police Department", field: "hawthorne-police-department"},
+                        {proper: "Monterey Park Police Department", field: "monterey-park-police-department"},
+                        {proper: "South Gate Police Department", field: "south-gate-police-department"},
                     ]
                 }, {
                     type: "Victim Filters",
@@ -721,6 +744,37 @@
                         model.set("deadly_force_as_first_calc", true);
                     };
 
+                    if (_this.officer_police_agency.indexOf("Los Angeles County Sheriff's Department") === 0){
+                        model.set("los-angeles-county-sheriffs-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Los Angeles Police Department") === 0){
+                        model.set("los-angeles-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Long Beach Police Department") === 0){
+                        model.set("long-beach-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Inglewood Police Department") === 0){
+                        model.set("inglewood-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Gardena Police Department") === 0){
+                        model.set("gardena-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Hawthorne Police Department") === 0){
+                        model.set("hawthorne-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Monterey Park Police Department") === 0){
+                        model.set("monterey-park-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("South Gate Police Department") === 0){
+                        model.set("south-gate-police-department", true);
+                    };
                 });
 
                 return view_object;
@@ -911,7 +965,6 @@
 
                 // state when filters are activated
                 } else {
-
                     $("input:checkbox").each(function(){
                         var $this = $(this);
                         if($this.is(":checked")){
@@ -919,7 +972,6 @@
                             obj.active_checkboxes.push(filter_id);
                         }
                     });
-
                     _.each(obj.active_checkboxes, function(key){
                         obj.selected_filters[key] = true;
                     });
@@ -929,29 +981,19 @@
                     );
 
                     obj.total_filtered = obj.filtered.data.length;
-
                     obj.filtered.response = this.create_groups(obj.filtered.data, "led_to_response_category");
-
                     obj.filtered.times = this.create_groups(obj.filtered.data, "time_of_day");
-
                     obj.filtered.daily = this.create_groups(obj.filtered.data, "day_of_incident");
-
                     obj.filtered.monthly = this.create_groups(obj.filtered.data, "month_of_incident");
-
                     obj.filtered.yearly = this.create_groups(obj.filtered.data, "year_of_incident");
-
                     var is_fatal_checked = _.has(obj.selected_filters, "fatal");
-
                     if (is_fatal_checked === true){
                         obj.filtered.gender = this.create_groups(obj.filtered.data, "gender");
                         obj.filtered.ethnic = this.create_groups(obj.filtered.data, "ethnicity");
                         obj.filtered.age = this.create_groups(obj.filtered.data, "age_ranges");
                     };
-
                     this.display_data(obj, false);
-
                 }
-
             },
 
             display_data: function(obj, initial){
@@ -1026,7 +1068,6 @@
                                     if (item === "yearly"){
                                         if (data != undefined){
                                             data.forEach(function(model){
-                                                console.log(model);
                                                 $("td#_" + value).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
                                             });
                                         };
@@ -1236,6 +1277,7 @@
                             </table>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
                             <h6 class="text-center">Time of Day</h6>
