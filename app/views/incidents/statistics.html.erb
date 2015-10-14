@@ -229,13 +229,16 @@
 
         App.Models.Racial = Backbone.Model.extend({
             defaults: {
+                districtattorneyfilenumber: null,
+                lawenforcementagency: null,
+                casenumber: null,
+                firstname: null,
+                lastname: null,
                 dateofbirth: null,
                 age: null,
                 ethnicity: null,
                 gender: null,
-                dateofdeath: null,
-                placeofdeath: null,
-                manner: null,
+                dateofdeath: null
             }
         });
 
@@ -387,9 +390,10 @@
                     "na"
                 ];
 
-                this.view_object.genders = _.uniq(this.view_object.relevant_incidents.pluck("gender")).sort();
+                // hack to remove null option from unique count
+                this.view_object.genders = _.uniq(this.view_object.relevant_incidents.pluck("gender")).sort().slice(0, -1);
 
-                this.view_object.ethnicities = _.uniq(this.view_object.relevant_incidents.pluck("ethnicity")).sort();
+                this.view_object.ethnicities = _.uniq(this.view_object.relevant_incidents.pluck("ethnicity")).sort().slice(0, -1);
 
                 this.view_object.filters = [{
                     type: "Top Line Filters",
@@ -481,6 +485,8 @@
             },
 
             calculate_model_attributes: function(view_object){
+
+                var test_count = [];
 
                 view_object.total_incidents.forEach(function(model, index){
 
@@ -625,37 +631,48 @@
                         _this.led_to_response_category = _this.led_to_response_category.replace(/ /g,"-");
                     };
 
-                    /* try to set the demographic data */
+                    // /* try to set the demographic data */
                     var demographics = view_object.demographic_data.where({
                         districtattorneyfilenumber: _this.district_attorney_file_number
                     });
 
-                    if (demographics.length > 0){
-                        model.set(demographics[0].attributes);
-                    }
 
-                    if (_this.ethnicity === undefined){
-                        model.set("ethnicity", "na");
-                    } else if (_this.ethnicity === null){
-                        model.set("ethnicity", "na");
-                    } else if (_this.ethnicity === ""){
-                        model.set("ethnicity", "na");
-                    } else if (_this.ethnicity === "HISPANIC/LATIN AMERICAN"){
-                        model.set("ethnicity", "HISPANIC");
-                    } else if (_this.ethnicity === "MIDDLE EASTERN"){
-                        model.set("ethnicity", "MIDDLE-EASTERN");
+                    // need to fix our double fatal case
+                    if (demographics.length === 2){
+
+                        // console.log(_this);
+                        // console.log(demographics.length);
+                        // console.log(demographics);
+
+                        model.set(demographics[0].attributes);
+                    } else if (demographics.length === 1){
+                        model.set(demographics[0].attributes);
                     };
 
                     // set gender data
-                    if (_this.gender === null || _this.gender === undefined || _this.gender === ""){
-                        model.set("gender", "na");
-                    } else if (_this.gender === "MALE"){
+                    if (_this.gender === "MALE"){
                         model.set("gender", "male");
                         model.set("male", true);
                     } else if (_this.gender === "FEMALE"){
                         model.set("gender", "female");
                         model.set("female", true);
+                    } else {
+                        model.set("gender", null);
                     };
+
+                    // set ethnicity data
+                    if (_this.ethnicity === "HISPANIC/LATIN AMERICAN"){
+                        model.set("ethnicity", "HISPANIC");
+                    } else if (_this.ethnicity === "MIDDLE EASTERN"){
+                        model.set("ethnicity", "MIDDLE-EASTERN");
+                    } else if (_this.ethnicity === undefined){
+                        model.set("ethnicity", null);
+                    } else if (_this.ethnicity === ""){
+                        model.set("ethnicity", "NA");
+                        console.log(_this);
+                    };
+
+
 
                     // set age data
                     if (_this.age === null || _this.age === undefined){
@@ -679,6 +696,16 @@
                             model.set("age_ranges", "na");
                         };
                     };
+
+
+
+
+
+
+
+
+
+
 
                     // determine if armed
                     if (_this.victim_unarmed === false){
@@ -777,6 +804,8 @@
                         model.set("south-gate-police-department", true);
                     };
                 });
+
+                console.log(test_count.length);
 
                 return view_object;
 
@@ -1093,6 +1122,9 @@
                 var output = object.groupBy(function(model){
                     return model.get(key);
                 });
+
+                console.log(output);
+
                 return output;
             },
 
