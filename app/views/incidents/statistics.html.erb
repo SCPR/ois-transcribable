@@ -398,6 +398,7 @@
                         {proper: "Was Use Of Force Non-Fatal", field: "nonfatal_calc"},
                         {proper: "Victim Was Armed", field: "victim_armed_calc"},
                         {proper: "Victim Was Unarmed", field: "victim_unarmed"},
+                        {proper: "Victim Carried Replica, Nonfunctional, Toy Or Blank Gun", field: "victim_gunlike"},
                         {proper: "Victim Armed With Firearm/Gun", field: "armed_with_firearm_calc"},
                         {proper: "Victim Armed With Other Weapon", field: "armed_with_other_calc"},
                         {proper: "Victim Fired Weapon", field: "victim_fired_weapon"},
@@ -696,7 +697,6 @@
                             "officer's weapon",
                             "shotgun",
                             "rifle",
-                            // "replica",
                         ];
 
                         var length = array_of_weapons.length;
@@ -731,6 +731,7 @@
                         model.set("victim_unarmed", null);
                         model.set("armed_with_firearm_calc", null)
                         model.set("armed_with_other_calc", null);
+                        model.set("victim_gunlike", true);
                     };
 
                     // find single officer incidents
@@ -838,12 +839,20 @@
                     nonfatal_calc: true
                 });
 
+                top_line_stats["Deadly Force as First Response"] = data.where({
+                    deadly_force_as_first_calc: true
+                });
+
                 top_line_stats["Armed"] = data.where({
                     victim_armed_calc: true
                 });
 
                 top_line_stats["Unarmed"] = data.where({
                     victim_unarmed: true
+                });
+
+                top_line_stats["Replica, Nonfunctional, Toy Or Blank Gun"] = data.where({
+                    victim_gunlike: true
                 });
 
                 top_line_stats["Armed With Firearm/Gun"] = data.where({
@@ -860,10 +869,6 @@
 
                 top_line_stats["Pointed Weapon"] = data.where({
                     victim_pointed_weapon: true
-                });
-
-                top_line_stats["Deadly Force as First Response"] = data.where({
-                    deadly_force_as_first_calc: true
                 });
 
                 top_line_stats["Ignored Officer Commands"] = data.where({
