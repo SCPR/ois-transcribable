@@ -387,13 +387,12 @@
                     "35_44",
                     "45_54",
                     "55_over",
-                    "na"
+                    "no_age"
                 ];
 
-                // hack to remove null option from unique count
-                this.view_object.genders = _.uniq(this.view_object.relevant_incidents.pluck("gender")).sort().slice(0, -1);
+                this.view_object.genders = _.uniq(this.view_object.relevant_incidents.pluck("gender")).sort();
 
-                this.view_object.ethnicities = _.uniq(this.view_object.relevant_incidents.pluck("ethnicity")).sort().slice(0, -1);
+                this.view_object.ethnicities = _.uniq(this.view_object.relevant_incidents.pluck("ethnicity")).sort();
 
                 this.view_object.filters = [{
                     type: "Top Line Filters",
@@ -446,6 +445,19 @@
                         {proper: "Mention Of Victim Mental Illness", field: "victim_mentally_ill"},
                     ]
                 }, {
+                    type: "Response Filters",
+                    filters: [
+                        {proper: "Domestic Violence", field: "domestic_violence"},
+                        {proper: "General Disturbance", field: "general_disturbance"},
+                        {proper: "Implied Weapon Is Present", field: "implied_weapon_is_present"},
+                        {proper: "Lower Level Crime", field: "lower_level_crime"},
+                        {proper: "Serious Crime", field: "serious_crime"},
+                        {proper: "Suicidal", field: "suicidal"},
+                        {proper: "Suspicious Cop", field: "suspicious_cop"},
+                        {proper: "Traffic Violation", field: "traffic_violation"},
+                    ]
+                }, {
+
                     type: "Incident Filters",
                     filters: [
                         {proper: "Car Stop", field: "car_stop"},
@@ -628,14 +640,14 @@
                     };
 
                     if (_this.led_to_response_category != null){
-                        _this.led_to_response_category = _this.led_to_response_category.replace(/ /g,"-");
+                        _this.led_to_response_category = _this.led_to_response_category.replace(/ /g,"_");
+                        model.set(_this.led_to_response_category, true);
                     };
 
                     // /* try to set the demographic data */
                     var demographics = view_object.demographic_data.where({
                         districtattorneyfilenumber: _this.district_attorney_file_number
                     });
-
 
                     // need to fix our double fatal case
                     if (demographics.length === 2){
@@ -650,34 +662,44 @@
                     };
 
                     // set gender data
+                    // if fatal and no data then === null
+                    // if not fatal and no data then === undefined
                     if (_this.gender === "MALE"){
                         model.set("gender", "male");
                         model.set("male", true);
                     } else if (_this.gender === "FEMALE"){
                         model.set("gender", "female");
                         model.set("female", true);
+                    } else if (_this.gender === null){
+                        model.set("gender", "no_gender");
+                        model.set("male", false);
+                        model.set("female", false);
                     } else {
-                        model.set("gender", null);
+                        model.set("gender", "no_gender");
+                        model.set("male", false);
+                        model.set("female", false);
                     };
 
                     // set ethnicity data
+                    // if fatal and no data then === null
+                    // if not fatal and no data then === undefined
+
                     if (_this.ethnicity === "HISPANIC/LATIN AMERICAN"){
                         model.set("ethnicity", "HISPANIC");
                     } else if (_this.ethnicity === "MIDDLE EASTERN"){
                         model.set("ethnicity", "MIDDLE-EASTERN");
-                    } else if (_this.ethnicity === undefined){
-                        model.set("ethnicity", null);
-                    } else if (_this.ethnicity === ""){
-                        model.set("ethnicity", "NA");
-                        console.log(_this);
+                    } else if (_this.ethnicity){
+                        model.set("ethnicity", _this.ethnicity);
+                    } else if (_this.ethnicity === null){
+                        model.set("ethnicity", "no_data");
+                    } else {
+                        model.set("ethnicity", undefined);
                     };
 
-
-
                     // set age data
-                    if (_this.age === null || _this.age === undefined){
-                        model.set("age_range", "na");
-                        model.set("age", "na");
+                    if (_this.age === undefined){
+                        model.set("age_ranges", null);
+                        model.set("age", null);
                     } else {
                         var comparison_age = parseInt(_this.age);
                         if (comparison_age < 18){
@@ -693,19 +715,9 @@
                         } else if (comparison_age >= 55){
                             model.set("age_ranges", "55_over");
                         } else{
-                            model.set("age_ranges", "na");
+                            model.set("age_ranges", "no_age");
                         };
                     };
-
-
-
-
-
-
-
-
-
-
 
                     // determine if armed
                     if (_this.victim_unarmed === false){
@@ -999,6 +1011,7 @@
 
                 // state when filters are activated
                 } else {
+
                     $("input:checkbox").each(function(){
                         var $this = $(this);
                         if($this.is(":checked")){
@@ -1006,6 +1019,7 @@
                             obj.active_checkboxes.push(filter_id);
                         }
                     });
+
                     _.each(obj.active_checkboxes, function(key){
                         obj.selected_filters[key] = true;
                     });
@@ -1122,9 +1136,6 @@
                 var output = object.groupBy(function(model){
                     return model.get(key);
                 });
-
-                console.log(output);
-
                 return output;
             },
 
@@ -1232,7 +1243,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                            <h6 class="text-center">Gender</h6>
+                            <h6 class="text-center">Gender (Add one to Male because #14-0703 has two fatalities;)</h6>
                             <table class="kpcc-table">
                                 <thead>
                                     <tr>
@@ -1251,20 +1262,24 @@
                             </table>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                            <h6 class="text-center">Ethnicity (Case #14-0703 has two fatalities;)</h6>
+                            <h6 class="text-center">Ethnicity (Add one to Caucasian because #14-0703 has two fatalities;)</h6>
                             <table class="kpcc-table">
                                 <thead>
                                     <tr>
                                         <@ var width = 100 / ethnicities.length @>
                                         <@ _.each(ethnicities, function(ethnicity){ @>
-                                            <th style="text-align: center; width: <@= width @>%;"><@= ethnicity @></th>
+                                            <@ if (ethnicity != undefined) { @>
+                                                <th style="text-align: center; width: <@= width @>%;"><@= ethnicity @></th>
+                                            <@ } @>
                                         <@ }); @>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <@ _.each(ethnicities, function(ethnicity){ @>
-                                            <td class="swap" id="_<@= ethnicity @>" style="text-align: center; width: <@= width @>%;">--</td>
+                                            <@ if (ethnicity != undefined) { @>
+                                                <td class="swap" id="_<@= ethnicity @>" style="text-align: center; width: <@= width @>%;">--</td>
+                                            <@ } @>
                                         <@ }); @>
                                     </tr>
                                 </tbody>
@@ -1273,7 +1288,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">Ages</h6>
+                            <h6 class="text-center">Ages (Add one to 25_34 because #14-0703 has two fatalities;)</h6>
                             <table class="kpcc-table">
                                 <thead>
                                     <tr>
