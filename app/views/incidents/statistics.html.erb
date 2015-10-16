@@ -498,8 +498,6 @@
 
             calculate_model_attributes: function(view_object){
 
-                var test_count = [];
-
                 view_object.total_incidents.forEach(function(model, index){
 
                     var _this = model.attributes;
@@ -815,9 +813,36 @@
                     if (_this.officer_police_agency.indexOf("South Gate Police Department") === 0){
                         model.set("south-gate-police-department", true);
                     };
-                });
 
-                console.log(test_count.length);
+                    if (_this.case_relevant === true){
+                        var separated_civilian = comma_values_to_array(_this.civilian_name);
+                        model.set("number_shot", separated_civilian.length);
+                        if (_this.fatal === true){
+                            if (_this.district_attorney_file_number === "#14-0703"){
+                                model.set("number_fatal", _this.number_shot);
+                                model.set("number_nonfatal", 0);
+                            } else if (_this.district_attorney_file_number === "#13-0391"){
+                                model.set("number_fatal", 1);
+                                model.set("number_nonfatal", 1);
+                            } else if (_this.district_attorney_file_number === "#12-0513"){
+                                model.set("number_fatal", 1);
+                                model.set("number_nonfatal", 1);
+                            } else if (_this.district_attorney_file_number === "#14-0428"){
+                                model.set("number_fatal", 1);
+                                model.set("number_nonfatal", 1);
+                            } else if (_this.district_attorney_file_number === "#14-0227"){
+                                model.set("number_fatal", 1);
+                                model.set("number_nonfatal", 1);
+                            } else {
+                                model.set("number_fatal", 1);
+                                model.set("number_nonfatal", 0);
+                            };
+                        } else {
+                            model.set("number_fatal", 0);
+                            model.set("number_nonfatal", _this.number_shot);
+                        };
+                    };
+                });
 
                 return view_object;
 
@@ -994,6 +1019,15 @@
                 obj.filtered = {};
                 obj.init = {};
                 obj.init.data = this.view_object.relevant_incidents;
+
+
+                obj.total_people = obj.init.data.reduce(function(memo, num){
+                    return memo + num.get("number_shot")
+                }, 0);
+                console.log(obj.total_people);
+
+
+
                 obj.relevant_initial = obj.init.data.length;
                 obj.init.response = this.create_groups(obj.init.data, "led_to_response_category");
                 obj.init.times = this.create_groups(obj.init.data, "time_of_day");
@@ -1008,7 +1042,6 @@
                 if (!$("input:checkbox").is(":checked")){
                     this.display_data(obj, true);
                     $(".kpcc-table td.swap").css({color: "black"});
-
                 // state when filters are activated
                 } else {
 
@@ -1027,8 +1060,13 @@
                     obj.filtered.data = new App.Collections.Incidents(
                         obj.init.data.where(obj.selected_filters)
                     );
-
                     obj.total_filtered = obj.filtered.data.length;
+
+
+                    // obj.total_people = _.reduce([1, 2, 3], function(memo, num){ return memo + num; }, 0);
+                    // console.log(obj.total_people);
+
+
                     obj.filtered.response = this.create_groups(obj.filtered.data, "led_to_response_category");
                     obj.filtered.times = this.create_groups(obj.filtered.data, "time_of_day");
                     obj.filtered.daily = this.create_groups(obj.filtered.data, "day_of_incident");
@@ -1047,8 +1085,10 @@
             display_data: function(obj, initial){
                 if (initial === true){
                     $("td#all-incidents").html(obj.total_initial);
+                    $("td#relevant-people").html(obj.total_people);
                     $("td#relevant-incidents").html(obj.relevant_initial);
-                    $("td#filtered-display").html(obj.relevant_initial + " of " + obj.relevant_initial + " <br /> " + percentify(obj.relevant_initial / obj.relevant_initial) + "%");
+                    $("td#filtered-people").html(obj.total_people + " of " + obj.total_people + "<br />people<br /> " + percentify(obj.total_people / obj.total_people) + "%");
+                    $("td#filtered-display").html(obj.relevant_initial + " of " + obj.relevant_initial + "<br />incidents<br /> " + percentify(obj.relevant_initial / obj.relevant_initial) + "%");
                     var keys = _.keys(obj.init);
                     keys.forEach(function(item){
                         var these = _.keys(obj.init[item]);
@@ -1064,12 +1104,17 @@
                                     $("td#_" + value).html(" -- ");
                                     $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
                                 } else {
-                                    $("td#_" + value).html(data.length + " of " + obj.relevant_initial + " <br /> " + percentify(data.length / obj.relevant_initial) + "%");
+                                    $("td#_" + value).html(data.length + " of " + obj.relevant_initial + "<br />incidents <br /> " + percentify(data.length / obj.relevant_initial) + "%");
                                     $("td#_" + value).css({color: "red"});
                                 };
                                 if (item === "yearly"){
                                     data.forEach(function(model){
-                                        $("td#_" + value).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
+                                        var separated_civilian = comma_values_to_array(model.attributes.civilian_name);
+                                        if (separated_civilian.length > 1){
+                                            $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>* " + separated_civilian[0] + "<br />*" + separated_civilian[1] + "</a>");
+                                        } else if (separated_civilian.length === 1){
+                                            $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>" + separated_civilian[0] + "</a>");
+                                        };
                                     });
                                 };
                             });
@@ -1078,7 +1123,7 @@
                 } else {
                     $("td#all-incidents").html(obj.total_initial);
                     $("td#relevant-incidents").html(obj.relevant_initial);
-                    $("td#filtered-display").html(obj.total_filtered + " of " + obj.relevant_initial + " <br /> " + percentify(obj.total_filtered / obj.relevant_initial) + "%");
+                    $("td#filtered-display").html(obj.total_filtered + " of " + obj.relevant_initial + "<br />incidents<br /> " + percentify(obj.total_filtered / obj.relevant_initial) + "%");
                     $("td#filtered-display").css({color: "red"});
                     var keys = _.keys(obj.init);
                     keys.forEach(function(item){
@@ -1092,7 +1137,7 @@
                                         $("td#_" + value).html(" -- ");
                                         $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
                                     } else {
-                                        $("td#_" + value).html(data.length + " of " + obj.total_filtered + " <br /> " + percentify(data.length / obj.total_filtered) + "%");
+                                        $("td#_" + value).html(data.length + " of " + obj.total_filtered + "<br />incidents<br /> " + percentify(data.length / obj.total_filtered) + "%");
                                         $("td#_" + value).css({color: "red"});
                                     };
                                 });
@@ -1110,13 +1155,18 @@
                                         $("td#_" + value).html(" -- ");
                                         $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
                                     } else {
-                                        $("td#_" + value).html(data.length + " of " + obj.total_filtered + " <br /> " + percentify(data.length / obj.total_filtered) + "%");
+                                        $("td#_" + value).html(data.length + " of " + obj.total_filtered + "<br />incidents<br /> " + percentify(data.length / obj.total_filtered) + "%");
                                         $("td#_" + value).css({color: "red"});
                                     };
                                     if (item === "yearly"){
                                         if (data != undefined){
                                             data.forEach(function(model){
-                                                $("td#_" + value).append("<br /><hr></hr>" + "<a href = '" + model.attributes.url + "' target='_blank'>" + model.attributes.civilian_name + "</a>");
+                                                var separated_civilian = comma_values_to_array(model.attributes.civilian_name);
+                                                if (separated_civilian.length > 1){
+                                                    $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>* " + separated_civilian[0] + "<br />*" + separated_civilian[1] + "</a>");
+                                                } else if (separated_civilian.length === 1){
+                                                    $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>" + separated_civilian[0] + "</a>");
+                                                };
                                             });
                                         };
                                     };
@@ -1198,7 +1248,7 @@
                                 <h5><@= filter.type @></h5>
                                 <@ _.each(filter.filters, function(checkbox){ @>
                                     <div class="checkbox col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                                        <label class="checkbox-inline" for="<@= checkbox @>">
+                                        <label class="checkbox-inline" for="<@= checkbox.field @>">
                                             <input type="checkbox" id="<@= checkbox.field @>" value="<@= checkbox.field @>"> <@= checkbox.proper @>
                                         </label>
                                     </div>
@@ -1221,21 +1271,27 @@
                             <table class="kpcc-table">
                                 <thead>
                                     <tr>
-                                        <th style="text-align: center; width: 33%;">Total Incidents</th>
-                                        <th style="text-align: center; width: 34%;">Filtered Results</th>
-                                        <th style="text-align: center; width: 33%;">Relevant Shootings</th>
+                                        <th style="text-align: center; width: 20%;">Relevant People</th>
+                                        <th style="text-align: center; width: 20%;">Filtered People</th>
+                                        <th style="text-align: center; width: 20%;">Total Incidents</th>
+                                        <th style="text-align: center; width: 20%;">Filtered Incidents</th>
+                                        <th style="text-align: center; width: 20%;">Relevant Incidents</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td id="all-incidents" style="text-align: center; width: 33%;"></td>
-                                        <td style="width: 34%;"></td>
-                                        <td id="relevant-incidents" style="text-align: center; width: 33%;"></td>
+                                        <td id="relevant-people" style="text-align: center; width: 20%;"></td>
+                                        <td style="text-align: center; width: 20%;"></td>
+                                        <td id="all-incidents" style="text-align: center; width: 20%;"></td>
+                                        <td style="text-align: center; width: 20%;"></td>
+                                        <td id="relevant-incidents" style="text-align: center; width: 20%;"></td>
                                     </tr>
                                     <tr>
-                                        <td style="width: 33%;"></td>
-                                        <td class="swap" id="filtered-display" style="text-align: center; width: 34%;"></td>
-                                        <td style="width: 33%;"></td>
+                                        <td style="text-align: center; width: 20%;"></td>
+                                        <td class="swap" id="filtered-people" style="text-align: center; width: 20%;"></td>
+                                        <td style="text-align: center; width: 20%;"></td>
+                                        <td class="swap" id="filtered-display" style="text-align: center; width: 20%;"></td>
+                                        <td style="text-align: center; width: 20%;"></td>
                                     </tr>
                                 </tbody>
                             </table>
