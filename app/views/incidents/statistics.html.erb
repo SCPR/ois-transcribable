@@ -309,6 +309,18 @@
 
             el: ".data-filters",
 
+
+            // * Will affect numbers as both people shot have data-points associated with them
+            //     * #11-0252
+            //     * #11-0365
+            //     * #11-0364
+            //     * #12-0689
+            //     * #13-0027
+            //     * #13-0391
+            //     * #14-0428
+            //     * #14-0227
+
+
             initialize: function(object){
 
                 this.view_object = object;
@@ -410,6 +422,8 @@
                         {proper: "Victim Ignored Officer Commands", field: "victim_ignored_officer_commands"},
                         {proper: "Mention Of Waistband", field: "mention_of_waistband_in_report"},
                         {proper: "Mention Of Couldn't See Victims Hands", field: "officer_couldnt_see_victims_hands"},
+                        {proper: "Multiple Civilians Shot", field: "multiple_shot"},
+                        {proper: "Multiple Civilians Killed", field: "multiple_killed"},
                     ]
                 }, {
                     type: "Officer Filters",
@@ -457,13 +471,12 @@
                         {proper: "Traffic Violation", field: "traffic_violation"},
                     ]
                 }, {
-
                     type: "Incident Filters",
                     filters: [
                         {proper: "Car Stop", field: "car_stop"},
                         {proper: "Pursuit Occurred", field: "pursuit_occurred"},
                         {proper: "Single Officer Shot", field: "single_officer_calc"},
-                        {proper: "Multiple Officers Shot", field: "multiple_officers"},
+                        {proper: "Multiple Officers Fired Weapons", field: "multiple_officers"},
                         {proper: "Victim Grabbed Officers Weapon", field: "grabbed_officers_weapon"},
                         {proper: "Officer Claimed Vehicle Used as Weapon", field: "vehicle_as_weapon"},
                         {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
@@ -817,10 +830,16 @@
                     if (_this.case_relevant === true){
                         var separated_civilian = comma_values_to_array(_this.civilian_name);
                         model.set("number_shot", separated_civilian.length);
+
+                        if (_this.number_shot > 1){
+                            model.set("multiple_shot", true);
+                        };
+
                         if (_this.fatal === true){
                             if (_this.district_attorney_file_number === "#14-0703"){
                                 model.set("number_fatal", _this.number_shot);
                                 model.set("number_nonfatal", 0);
+                                model.set("multiple_killed", true);
                             } else if (_this.district_attorney_file_number === "#13-0391"){
                                 model.set("number_fatal", 1);
                                 model.set("number_nonfatal", 1);
@@ -949,11 +968,19 @@
                     officer_couldnt_see_victims_hands: true
                 });
 
-                top_line_stats["Single Officer Shot"] = data.where({
+                top_line_stats["Multiple Civilians Shot"] = data.where({
+                    multiple_shot: true
+                });
+
+                top_line_stats["Multiple Civilians Killed"] = data.where({
+                    multiple_killed: true
+                });
+
+                top_line_stats["Single Officer Fired Weapon"] = data.where({
                     single_officer_calc: true
                 });
 
-                top_line_stats["Multiple Officers Shot"] = data.where({
+                top_line_stats["Multiple Officers Fired Weapons"] = data.where({
                     multiple_officers: true
                 });
 
@@ -1019,15 +1046,9 @@
                 obj.filtered = {};
                 obj.init = {};
                 obj.init.data = this.view_object.relevant_incidents;
-
-
                 obj.total_people = obj.init.data.reduce(function(memo, num){
                     return memo + num.get("number_shot")
                 }, 0);
-                console.log(obj.total_people);
-
-
-
                 obj.relevant_initial = obj.init.data.length;
                 obj.init.response = this.create_groups(obj.init.data, "led_to_response_category");
                 obj.init.times = this.create_groups(obj.init.data, "time_of_day");
@@ -1061,12 +1082,6 @@
                         obj.init.data.where(obj.selected_filters)
                     );
                     obj.total_filtered = obj.filtered.data.length;
-
-
-                    // obj.total_people = _.reduce([1, 2, 3], function(memo, num){ return memo + num; }, 0);
-                    // console.log(obj.total_people);
-
-
                     obj.filtered.response = this.create_groups(obj.filtered.data, "led_to_response_category");
                     obj.filtered.times = this.create_groups(obj.filtered.data, "time_of_day");
                     obj.filtered.daily = this.create_groups(obj.filtered.data, "day_of_incident");
@@ -1077,6 +1092,19 @@
                         obj.filtered.gender = this.create_groups(obj.filtered.data, "gender");
                         obj.filtered.ethnic = this.create_groups(obj.filtered.data, "ethnicity");
                         obj.filtered.age = this.create_groups(obj.filtered.data, "age_ranges");
+
+
+                        obj.filtered_people = obj.filtered.data.reduce(function(memo, num){
+                            return memo + num.get("number_fatal")
+                        }, 0);
+
+
+                    } else {
+                        obj.filtered_people = obj.filtered.data.reduce(function(memo, num){
+                            return memo + num.get("number_shot")
+                        }, 0);
+
+
                     };
                     this.display_data(obj, false);
                 }
@@ -1087,7 +1115,9 @@
                     $("td#all-incidents").html(obj.total_initial);
                     $("td#relevant-people").html(obj.total_people);
                     $("td#relevant-incidents").html(obj.relevant_initial);
-                    $("td#filtered-people").html(obj.total_people + " of " + obj.total_people + "<br />people<br /> " + percentify(obj.total_people / obj.total_people) + "%");
+
+                    // $("td#filtered-people").html(obj.total_people + " of " + obj.total_people + "<br />people<br /> " + percentify(obj.total_people / obj.total_people) + "%");
+
                     $("td#filtered-display").html(obj.relevant_initial + " of " + obj.relevant_initial + "<br />incidents<br /> " + percentify(obj.relevant_initial / obj.relevant_initial) + "%");
                     var keys = _.keys(obj.init);
                     keys.forEach(function(item){
@@ -1123,6 +1153,10 @@
                 } else {
                     $("td#all-incidents").html(obj.total_initial);
                     $("td#relevant-incidents").html(obj.relevant_initial);
+
+                    // $("td#filtered-people").html(obj.filtered_people + " of " + obj.total_people + "<br />people<br /> " + percentify(obj.filtered_people / obj.total_people) + "%");
+                    // $("td#filtered-people").css({color: "red"});
+
                     $("td#filtered-display").html(obj.total_filtered + " of " + obj.relevant_initial + "<br />incidents<br /> " + percentify(obj.total_filtered / obj.relevant_initial) + "%");
                     $("td#filtered-display").css({color: "red"});
                     var keys = _.keys(obj.init);
@@ -1235,7 +1269,7 @@
                             <@ _.each(top_line_stats, function(value, key){ @>
                                 <@ var percent = toFixedPercent(value.length, top_line_total); @>
                                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                                    <li><strong><@= key @></strong>:<br />&nbsp;&nbsp;<em><@= value.length @> of <@= top_line_total @> (<@= percent @>%)</em></li>
+                                    <li><strong><@= key @></strong>:<br />&nbsp;&nbsp;<em><@= value.length @> incidents out of <@= top_line_total @> (<@= percent @>%)</em></li>
                                 </div>
                             <@ }); @>
                         </ul>
@@ -1271,7 +1305,7 @@
                             <table class="kpcc-table">
                                 <thead>
                                     <tr>
-                                        <th style="text-align: center; width: 20%;">Relevant People</th>
+                                        <th style="text-align: center; width: 20%;">Total People</th>
                                         <th style="text-align: center; width: 20%;">Filtered People</th>
                                         <th style="text-align: center; width: 20%;">Total Incidents</th>
                                         <th style="text-align: center; width: 20%;">Filtered Incidents</th>
