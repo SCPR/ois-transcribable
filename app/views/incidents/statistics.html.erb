@@ -428,9 +428,9 @@
                     "no_age"
                 ];
 
-                this.view_object.genders = _.uniq(this.view_object.relevant_incidents.pluck("gender")).sort();
+                this.view_object.genders = _.uniq(this.view_object.relevant_people.pluck("gender")).sort();
 
-                this.view_object.ethnicities = _.uniq(this.view_object.relevant_incidents.pluck("ethnicity")).sort();
+                this.view_object.ethnicities = _.uniq(this.view_object.relevant_people.pluck("ethnicity")).sort();
 
                 this.view_object.filters = [{
                     type: "Top Line Filters",
@@ -546,27 +546,27 @@
                         model.set("nonfatal_calc", true);
                     };
 
+                    /* try to set the demographic data */
 
-                    // /* try to set the demographic data */
                     var demographics = view_object.demographic_data.where({
                         districtattorneyfilenumber: _this.district_attorney_file_number
                     });
 
-                    // need to fix our double fatal case
+                    /* need to fix our double fatal case */
+
                     if (demographics.length === 2){
-
-                        // console.log(_this);
-                        // console.log(demographics.length);
-                        // console.log(demographics);
-
+                        console.log(_this);
+                        console.log(demographics.length);
+                        console.log(demographics);
                         model.set(demographics[0].attributes);
                     } else if (demographics.length === 1){
                         model.set(demographics[0].attributes);
                     };
 
-                    // set gender data
-                    // if fatal and no data then === null
-                    // if not fatal and no data then === undefined
+                    /* set gender data */
+                    /* if fatal and no data then === null */
+                    /* if not fatal and no data then === undefined */
+
                     if (_this.gender === "MALE"){
                         model.set("gender", "male");
                         model.set("male", true);
@@ -583,9 +583,9 @@
                         model.set("female", false);
                     };
 
-                    // set ethnicity data
-                    // if fatal and no data then === null
-                    // if not fatal and no data then === undefined
+                    /* set ethnicity data */
+                    /* if fatal and no data then === null */
+                    /* if not fatal and no data then === undefined */
 
                     if (_this.ethnicity === "HISPANIC/LATIN AMERICAN"){
                         model.set("ethnicity", "HISPANIC");
@@ -599,7 +599,8 @@
                         model.set("ethnicity", undefined);
                     };
 
-                    // set age data
+                    /* set age data */
+
                     if (_this.age === undefined){
                         model.set("age_ranges", null);
                         model.set("age", null);
@@ -817,26 +818,27 @@
                         model.set(_this.led_to_response_category, true);
                     };
 
-                    // /* try to set the demographic data */
+                    /* try to set the demographic data */
+
                     // var demographics = view_object.demographic_data.where({
                     //     districtattorneyfilenumber: _this.district_attorney_file_number
                     // });
 
-                    // need to fix our double fatal case
+                    /* need to fix our double fatal case */
+
                     // if (demographics.length === 2){
-
-                        // console.log(_this);
-                        // console.log(demographics.length);
-                        // console.log(demographics);
-
+                    //     console.log(_this);
+                    //     console.log(demographics.length);
+                    //     console.log(demographics);
                     //     model.set(demographics[0].attributes);
                     // } else if (demographics.length === 1){
                     //     model.set(demographics[0].attributes);
                     // };
 
-                    // set gender data
-                    // if fatal and no data then === null
-                    // if not fatal and no data then === undefined
+                    /* set gender data */
+                    /* if fatal and no data then === null */
+                    /* if not fatal and no data then === undefined */
+
                     // if (_this.gender === "MALE"){
                     //     model.set("gender", "male");
                     //     model.set("male", true);
@@ -853,9 +855,9 @@
                     //     model.set("female", false);
                     // };
 
-                    // set ethnicity data
-                    // if fatal and no data then === null
-                    // if not fatal and no data then === undefined
+                    /* set ethnicity data */
+                    /* if fatal and no data then === null */
+                    /* if not fatal and no data then === undefined */
 
                     // if (_this.ethnicity === "HISPANIC/LATIN AMERICAN"){
                     //     model.set("ethnicity", "HISPANIC");
@@ -869,7 +871,7 @@
                     //     model.set("ethnicity", undefined);
                     // };
 
-                    // set age data
+                    /* set age data */
                     // if (_this.age === undefined){
                     //     model.set("age_ranges", null);
                     //     model.set("age", null);
@@ -1217,12 +1219,14 @@
                 obj.init.daily = this.create_groups(obj.init.incident_data, "day_of_incident");
                 obj.init.monthly = this.create_groups(obj.init.incident_data, "month_of_incident");
                 obj.init.yearly = this.create_groups(obj.init.incident_data, "year_of_incident");
+
                 /* shifts demographics to people */
                 obj.init.gender = this.create_groups(obj.init.people_data, "gender");
                 obj.init.ethnic = this.create_groups(obj.init.people_data, "ethnicity");
                 obj.init.age = this.create_groups(obj.init.people_data, "age_ranges");
                 obj.relevant_incidents_initial = obj.init.incident_data.length;
                 obj.relevant_people_initial = obj.init.people_data.length;
+
                 if (!$("input:checkbox").is(":checked")){
                     this.display_data(obj, true);
                     $(".kpcc-table td.swap").css({color: "black"});
@@ -1299,7 +1303,7 @@
                                 $("td#_" + value).html(" -- ");
                                 $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
                             } else {
-                                $("td#_" + value).html(data.length + " of " + obj.relevant_incidents_initial + "<br />incidents <br /> " + percentify(data.length / obj.relevant_incidents_initial) + "%");
+                                $("td#_" + value).html(data.length + " of " + obj.relevant_people_initial + "<br />incidents <br /> " + percentify(data.length / obj.relevant_people_initial) + "%");
                                 $("td#_" + value).css({color: "red"});
                             };
                             if (item === "yearly"){
