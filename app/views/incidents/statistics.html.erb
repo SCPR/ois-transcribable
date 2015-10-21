@@ -537,6 +537,7 @@
 
             calculate_model_attributes: function(view_object){
                 view_object.total_people.forEach(function(model, index){
+
                     var _this = model.attributes;
 
                     // was this a non-fatal incident
@@ -546,22 +547,13 @@
                         model.set("nonfatal_calc", true);
                     };
 
-                    /* try to set the demographic data */
-
                     var demographics = view_object.demographic_data.where({
                         districtattorneyfilenumber: _this.district_attorney_file_number
                     });
 
-                    /* need to fix our double fatal case */
-
-                    if (demographics.length === 2){
-                        console.log(_this);
-                        console.log(demographics.length);
-                        console.log(demographics);
+                    if (demographics.length){
                         model.set(demographics[0].attributes);
-                    } else if (demographics.length === 1){
-                        model.set(demographics[0].attributes);
-                    };
+                    }
 
                     /* set gender data */
                     /* if fatal and no data then === null */
@@ -817,82 +809,6 @@
                         _this.led_to_response_category = _this.led_to_response_category.replace(/ /g,"_");
                         model.set(_this.led_to_response_category, true);
                     };
-
-                    /* try to set the demographic data */
-
-                    // var demographics = view_object.demographic_data.where({
-                    //     districtattorneyfilenumber: _this.district_attorney_file_number
-                    // });
-
-                    /* need to fix our double fatal case */
-
-                    // if (demographics.length === 2){
-                    //     console.log(_this);
-                    //     console.log(demographics.length);
-                    //     console.log(demographics);
-                    //     model.set(demographics[0].attributes);
-                    // } else if (demographics.length === 1){
-                    //     model.set(demographics[0].attributes);
-                    // };
-
-                    /* set gender data */
-                    /* if fatal and no data then === null */
-                    /* if not fatal and no data then === undefined */
-
-                    // if (_this.gender === "MALE"){
-                    //     model.set("gender", "male");
-                    //     model.set("male", true);
-                    // } else if (_this.gender === "FEMALE"){
-                    //     model.set("gender", "female");
-                    //     model.set("female", true);
-                    // } else if (_this.gender === null){
-                    //     model.set("gender", "no_gender");
-                    //     model.set("male", false);
-                    //     model.set("female", false);
-                    // } else {
-                    //     model.set("gender", "no_gender");
-                    //     model.set("male", false);
-                    //     model.set("female", false);
-                    // };
-
-                    /* set ethnicity data */
-                    /* if fatal and no data then === null */
-                    /* if not fatal and no data then === undefined */
-
-                    // if (_this.ethnicity === "HISPANIC/LATIN AMERICAN"){
-                    //     model.set("ethnicity", "HISPANIC");
-                    // } else if (_this.ethnicity === "MIDDLE EASTERN"){
-                    //     model.set("ethnicity", "MIDDLE-EASTERN");
-                    // } else if (_this.ethnicity){
-                    //     model.set("ethnicity", _this.ethnicity);
-                    // } else if (_this.ethnicity === null){
-                    //     model.set("ethnicity", "no_data");
-                    // } else {
-                    //     model.set("ethnicity", undefined);
-                    // };
-
-                    /* set age data */
-                    // if (_this.age === undefined){
-                    //     model.set("age_ranges", null);
-                    //     model.set("age", null);
-                    // } else {
-                    //     var comparison_age = parseInt(_this.age);
-                    //     if (comparison_age < 18){
-                    //         model.set("age_ranges", "under_18");
-                    //     } else if (comparison_age >= 18 && comparison_age <= 24){
-                    //         model.set("age_ranges", "18_24");
-                    //     } else if (comparison_age >= 25 && comparison_age <= 34){
-                    //         model.set("age_ranges", "25_34");
-                    //     } else if (comparison_age >= 35 && comparison_age <= 44){
-                    //         model.set("age_ranges", "35_44");
-                    //     } else if (comparison_age >= 45 && comparison_age <= 54){
-                    //         model.set("age_ranges", "45_54");
-                    //     } else if (comparison_age >= 55){
-                    //         model.set("age_ranges", "55_over");
-                    //     } else{
-                    //         model.set("age_ranges", "no_age");
-                    //     };
-                    // };
 
                     // determine if armed
                     if (_this.victim_unarmed === false){
