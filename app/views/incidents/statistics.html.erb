@@ -1288,7 +1288,7 @@
                                     $("td#_" + value).html(" -- ");
                                     $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
                                 } else {
-                                    $("td#_" + value).html(data.length + " of " + obj.total_incidents_filtered + "<br />people<br /> " + percentify(data.length / obj.total_incidents_filtered) + "%");
+                                    $("td#_" + value).html(data.length + " of " + obj.total_people_filtered + "<br />people<br /> " + percentify(data.length / obj.total_people_filtered) + "%");
                                     $("td#_" + value).css({color: "red"});
                                 };
                             });
