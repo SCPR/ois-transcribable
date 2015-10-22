@@ -540,6 +540,44 @@
 
                     var _this = model.attributes;
 
+                    var law_enforcement_agency = view_object.total_incidents.where({
+                        district_attorney_file_number: _this.district_attorney_file_number
+                    });
+
+                    model.set("officer_police_agency", law_enforcement_agency[0].attributes.officer_police_agency);
+
+                    if (_this.officer_police_agency.indexOf("Los Angeles County Sheriff's Department") === 0){
+                        model.set("los-angeles-county-sheriffs-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Los Angeles Police Department") === 0){
+                        model.set("los-angeles-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Long Beach Police Department") === 0){
+                        model.set("long-beach-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Inglewood Police Department") === 0){
+                        model.set("inglewood-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Gardena Police Department") === 0){
+                        model.set("gardena-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Hawthorne Police Department") === 0){
+                        model.set("hawthorne-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("Monterey Park Police Department") === 0){
+                        model.set("monterey-park-police-department", true);
+                    };
+
+                    if (_this.officer_police_agency.indexOf("South Gate Police Department") === 0){
+                        model.set("south-gate-police-department", true);
+                    };
+
                     // was this a non-fatal incident
                     if (_this.fatal === true){
                         model.set("nonfatal_calc", false);
