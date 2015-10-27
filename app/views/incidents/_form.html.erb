@@ -180,6 +180,8 @@
 
         <div class="do_something">
             <%= f.input :general_location_of_incident, class: "form-control", label: "Location Of Incident (street address if available)" %>
+
+            <%= f.input :led_to_response_category, collection: [" --select one-- ", "violent/serious crime", "shots fired", "implied weapon is present", "domestic violence", "suicidal/wants to die", "general disturbance", "suspicious or inquisitive cop", "lower-level crime", "traffic violation"], label: false, :default => 0, class: "form-control", label: "Incident Category" %>
         </div>
 
         <div class="row">
