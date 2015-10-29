@@ -444,10 +444,10 @@
                         {proper: "Victim Armed With Other Weapon", field: "armed_with_other_calc"},
                         {proper: "Victim Fired Weapon", field: "victim_fired_weapon"},
                         {proper: "Victim Pointed Weapon", field: "victim_pointed_weapon"},
-                        {proper: "Deadly Force as First Response", field: "deadly_force_as_first_calc"},
+                        // {proper: "Deadly Force as First Response", field: "deadly_force_as_first_calc"},
                         {proper: "Victim Ignored Officer Commands", field: "victim_ignored_officer_commands"},
-                        {proper: "Mention Of Waistband", field: "mention_of_waistband_in_report"},
-                        {proper: "Mention Of Couldn't See Victims Hands", field: "officer_couldnt_see_victims_hands"},
+                        {proper: "Reached for Waistband/Pants", field: "mention_of_waistband_in_report"},
+                        {proper: "Officer Couldn't See Victims Hands", field: "officer_couldnt_see_victims_hands"},
                         {proper: "Multiple Civilians Shot", field: "multiple_shot"},
                         {proper: "Multiple Civilians Killed", field: "multiple_killed"},
                     ]
@@ -481,8 +481,8 @@
                     filters: [
                         {proper: "Victim Arrested", field: "victim_arrested"},
                         {proper: "Victim Identified As Gang Member", field: "victim_gang_member"},
-                        {proper: "Mention Of Victim Intoxication", field: "victim_intoxicated"},
-                        {proper: "Mention Of Victim Mental Illness", field: "victim_mentally_ill"},
+                        {proper: "Signs Victim Was Impaired", field: "victim_intoxicated"},
+                        {proper: "Signs of Victim Mental Illness", field: "victim_mentally_ill"},
                     ]
                 }, {
                     type: "Response Filters",
@@ -909,9 +909,9 @@
 
                     _this.type_of_incident_number = parseInt(_this.type_of_incident_number);
 
-                    if (_this.type_of_incident_number === 1){
-                        model.set("deadly_force_as_first_calc", true);
-                    };
+                    // if (_this.type_of_incident_number === 1){
+                    //     model.set("deadly_force_as_first_calc", true);
+                    // };
 
                     if (_this.officer_police_agency.indexOf("Los Angeles County Sheriff's Department") === 0){
                         model.set("los-angeles-county-sheriffs-department", true);
@@ -1047,9 +1047,9 @@
                     nonfatal_calc: true
                 });
 
-                top_line_stats["Deadly Force as First Response"] = data.where({
-                    deadly_force_as_first_calc: true
-                });
+                // top_line_stats["Deadly Force as First Response"] = data.where({
+                //     deadly_force_as_first_calc: true
+                // });
 
                 top_line_stats["Armed"] = data.where({
                     victim_armed_calc: true
