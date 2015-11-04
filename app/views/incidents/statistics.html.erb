@@ -831,6 +831,10 @@
                         model.set("led_to_response_category", "implied weapon is present");
                     };
 
+                    if (_this.led_to_response_category === "lower-level crime"){
+                        model.set("led_to_response_category", "lower level crime");
+                    };
+
                     if (_this.led_to_response_category === "suicidal/wants to die"){
                         model.set("led_to_response_category", "suicidal");
                     };
