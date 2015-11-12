@@ -1,0 +1,392 @@
+<%= simple_form_for @people, url: people_path do |f| %>
+
+    <%= submit_tag "Submit The Edited Information", :class => "btn btn-success btn-lg btn-block", :id => "peoplesubmit"  %>
+
+    <div class="overflow form-fields">
+        <% if @people.errors.any? %>
+            <div id="error_explanation">
+                <h6><%= pluralize(@people.errors.count, "error") %> prohibited this person from being saved:</h6>
+                <ul>
+                    <% @people.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                    <% end %>
+                </ul>
+            </div>
+        <% end %>
+
+        <div class="do_something">
+            <div class="field" id="person_gender">
+            <%= f.input :person_gender, class: "form-control", label: "person_gender" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :date_of_incident, class: "form-control", as: :date, start_year: Date.today.year - 15, end_year: Date.today.year, order: [:month, :day,  :year], label: "date_of_incident" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :person_date_of_death, class: "form-control", as: :date, start_year: Date.today.year - 15, end_year: Date.today.year, order: [:month, :day,  :year], label: "person_date_of_death" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :person_date_of_birth, class: "form-control", as: :date, start_year: Date.today.year - 90, end_year: Date.today.year, order: [:month, :day,  :year], label: "person_date_of_birth" %>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :district_attorney_file_number, class: "form-control", label: "District Attorney File Number (In LA County it's the J.S.I.D File Number)" %>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_weapon">
+                <%= f.input :person_weapon, class: "form-control", label: "General Weapon Carried/Used By Person" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_weapon_specific">
+                <%= f.input :person_weapon_specific, class: "form-control", label: "Specific Weapon Carried/Used By Person" %>
+            </div>
+        </div>
+
+
+        <div class="do_something">
+            <div class="field" id="reason_for_shooting">
+                <%= f.input :reason_for_shooting, class: "form-control", label: "reason_for_shooting" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_place_of_death">
+                <%= f.input :person_place_of_death, class: "form-control", label: "person_place_of_death" %>
+            </div>
+        </div>
+
+
+        <div class="do_something">
+            <div class="field" id="person_ethnicity">
+            <%= f.input :person_ethnicity, class: "form-control", label: "person_ethnicity" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_manner">
+            <%= f.input :person_manner, class: "form-control", label: "person_manner" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_cause_a">
+            <%= f.input :person_cause_a, class: "form-control", label: "person_cause_a" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_cause_b">
+            <%= f.input :person_cause_b, class: "form-control", label: "person_cause_b" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="pperson_cause_c">
+            <%= f.input :person_cause_c, class: "form-control", label: "person_cause_c" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_cause_d">
+            <%= f.input :person_cause_d, class: "form-control", label: "person_cause_d" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_other_significant_causes">
+            <%= f.input :person_other_significant_causes, class: "form-control", label: "person_other_significant_cause" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_investigator">
+            <%= f.input :person_investigator, class: "form-control", label: "person_investigator" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_dme">
+            <%= f.input :person_dme, class: "form-control", label: "person_dme" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_toxicology_status">
+            <%= f.input :person_toxicology_status, class: "form-control", label: ":person_toxicology_status" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_media_reports_link">
+            <%= f.input :person_media_reports_link, class: "form-control", label: "person_media_reports_link" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_case_status">
+            <%= f.input :person_case_status, class: "form-control", label: "person_case_status" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_body_status">
+            <%= f.input :person_body_status, class: "form-control", label: "person_body_status" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="person_age">
+            <%= f.input :person_age, class: "form-control", label: "person_age" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="in_custody_record_key_number">
+            <%= f.input :in_custody_record_key_number, class: "form-control", label: "in_custody_record_key_number" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="coroner_district_attorney_file_number">
+            <%= f.input :coroner_district_attorney_file_number, class: "form-control", label: "coroner_district_attorney_file_number" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="case_number">
+            <%= f.input :case_number, class: "form-control", label: "case_number" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="year_of_incident">
+            <%= f.input :year_of_incident, class: "form-control", label: "year_of_incident" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="coroner_police_agency">
+            <%= f.input :coroner_police_agency, class: "form-control", label: "coroner_police_agency" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="officer_police_agency">
+            <%= f.input :officer_police_agency, class: "form-control", label: "officer_police_agency" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="drugs">
+            <%= f.input :drugs, class: "form-control", label: "drugs" %>
+            </div>
+        </div>
+
+
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :person_arrested, class: "form-control", label: "Person Arrested (sCheck box if true)" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :person_case_number, class: "form-control", label: "Case Number If Person Arrested" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :person_charges_filed, class: "form-control", label: "Charges If Person Charged" %>
+            </div>
+        </div>
+
+        <div class="do_something">
+            <%= f.input :person_name, class: "form-control", label: "Name" %>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :case_relevant, class: "form-control", label: "Was Use Of Force Incident?" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+                <%= f.input :fatal, class: "form-control", label: "Was Use Of Force Fatal" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_intoxicated, class: "form-control", label: "person_intoxicated" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :marijuana_alone, class: "form-control", label: "marijuana_alone" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :case_doubled_up, class: "form-control", label: "case_doubled_up" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_shot, class: "form-control", label: "person_shot" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :nonfatal_calc, class: "form-control", label: "nonfatal_calc" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :armed_with_firearm_calc, class: "form-control", label: "armed_with_firearm_calc" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :armed_with_other_calc, class: "form-control", label: "armed_with_other_calc" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :vehicle_as_weapon, class: "form-control", label: "vehicle_as_weapon" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :mention_of_waistband_in_report, class: "form-control", label: "mention_of_waistband_in_report" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :pursuit_occurred, class: "form-control", label: "pursuit_occurred" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_gang_member, class: "form-control", label: "person_gang_member" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_ignored_officer_commands, class: "form-control", label: "person_ignored_officer_commands" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_weapon_recovered, class: "form-control", label: "person_weapon_recovered" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_initiated_physical_threat, class: "form-control", label: "person_initiated_physical_threat" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_mentally_ill, class: "form-control", label: "person_mentally_ill" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_fired_weapon, class: "form-control", label: "person_fired_weapon" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_pointed_weapon, class: "form-control", label: "person_pointed_weapon" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_shot_in_back, class: "form-control", label: "person_shot_in_back" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_shot_in_head, class: "form-control", label: "person_shot_in_head" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_unarmed, class: "form-control", label: "person_unarmed" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :person_armed_calc, class: "form-control", label: "person_armed_calc" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :officer_couldnt_see_persons_hands, class: "form-control", label: "officer_couldnt_see_persons_hands" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :grabbed_officers_weapon, class: "form-control", label: "grabbed_officers_weapon" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :law_enforcement_related, class: "form-control", label: "law_enforcement_related" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :officer_involved, class: "form-control", label: "officer_involved" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <label class="checkbox-inline">
+            <%= f.input :in_custody, class: "form-control", label: "in_custody" %>
+            </label>
+        </div>
+
+        <div class="do_something">
+            <div class="field" id="notes">
+                <%= f.input :notes, class: "form-control", label: "notes" %>
+            </div>
+        </div>
+
+        <%= hidden_field_tag "people_id", @people.id %>
+
+    </div>
+<% end %>
