@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
     <li><%= link_to 'Home', controller: :home, action: :index %></li>
     <li><%= link_to "View Transcriptions", transcriptions_path() %></li>
-    <li>Verifying <%= @incident.url %></li>
+    <li>Verifying <%= @incident.incident_url %></li>
 </ol>
 
 <% if flash[:alert] %>

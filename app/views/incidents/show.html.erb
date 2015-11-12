@@ -7,7 +7,7 @@
         </ol>
         <h1>Incidents#show</h1>
         <ul>
-            <li><h6><%= link_to @incident.district_attorney_file_number, @incident.url %></h6></li>
+            <li><h6><%= link_to @incident.district_attorney_file_number, @incident.incident_url %></h6></li>
             <ul>
                 <li><h6>Transcribed by <%= @transcription.email %></h6></li>
                 <li><h6>Verified by <%= @incident.email %></h6></li>

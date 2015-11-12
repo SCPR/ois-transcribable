@@ -146,13 +146,13 @@
                 created_at: null,
                 updated_at: null,
                 url: null,
-                civilian_name: null,
+                person_name: null,
                 district_attorney_file_number: null,
                 district_attorney_county: null,
                 district_attorney_prepared_report: null,
                 general_location_of_incident: null,
                 type_of_incident: null,
-                civillian_weapon: null,
+                person_weapon: null,
                 officer_shots_fired: null,
                 da_on_scene: null,
                 da_investigator_on_scene: null,
@@ -165,22 +165,22 @@
                 what_happened: null,
                 underlying_crime_leading_to_shooting: null,
                 how_situation_escalated: null,
-                victim_case_number: null,
+                person_case_number: null,
                 officer_special_unit: null,
                 officer_charges_filed_yes_detail: null,
-                victim_charges_filed: null,
+                person_charges_filed: null,
                 date_of_incident: null,
                 district_attorney_date_of_letter: null,
                 verified: null,
                 multiple_officers: null,
                 car_stop: null,
-                believed_civillian_armed: null,
+                believed_person_armed: null,
                 potential_police_video: null,
                 potential_civillian_video: null,
                 mention_of_waistband_in_report: null,
                 fatal: null,
                 case_relevant: null,
-                victim_arrested: null,
+                person_arrested: null,
                 officer_charges_filed: null,
                 officer_self_defense: null,
                 officer_defense_of_civillians: null,
@@ -190,28 +190,28 @@
                 officer_on_surveillance: null,
                 officer_on_undercover: null,
                 pursuit_occurred: null,
-                victim_gang_member: null,
-                victim_ignored_officer_commands: null,
-                victim_weapon_recovered: null,
-                victim_initiated_physical_threat: null,
-                victim_intoxicated: null,
-                victim_mentally_ill: null,
+                person_gang_member: null,
+                person_ignored_officer_commands: null,
+                person_weapon_recovered: null,
+                person_initiated_physical_threat: null,
+                person_intoxicated: null,
+                person_mentally_ill: null,
                 civilian_witnesses: null,
-                victim_fired_weapon: null,
-                victim_pointed_weapon: null,
+                person_fired_weapon: null,
+                person_pointed_weapon: null,
                 officer_injured: null,
                 flag_for_followup: null,
-                victim_shot_in_back: null,
+                person_shot_in_back: null,
                 applied_lawful_force: null,
-                victim_shot_in_head: null,
-                victim_unarmed: null,
-                officer_couldnt_see_victims_hands: null,
+                person_shot_in_head: null,
+                person_unarmed: null,
+                officer_couldnt_see_persons_hands: null,
                 officer_routine_patrol: null,
                 transcribed_count: null,
                 officer_responding_to_call: null,
                 grabbed_officers_weapon: null,
                 email: null,
-                civillian_weapon_specific: null,
+                person_weapon_specific: null,
                 officer_shots_fired_specific: null,
                 type_of_incident_number: null,
                 coroner_case_number: null,
@@ -223,7 +223,7 @@
         App.Collections.Incidents = Backbone.Collection.extend({
             model: App.Models.Incident,
             comparator: function(model) {
-                return model.get("civilian_name");
+                return model.get("person_name");
             }
         });
 
@@ -231,30 +231,30 @@
             defaults: {
                 case_relevant: null,
                 doubled_up: null,
-                civilian_name: null,
+                person_name: null,
                 district_attorney_file_number: null,
-                civillian_weapon: null,
-                victim_case_number: null,
-                victim_charges_filed: null,
+                person_weapon: null,
+                person_case_number: null,
+                person_charges_filed: null,
                 mention_of_waistband_in_report: null,
-                victim_shot: null,
+                person_shot: null,
                 fatal: null,
-                victim_arrested: null,
+                person_arrested: null,
                 pursuit_occurred: null,
-                victim_gang_member: null,
-                victim_ignored_officer_commands: null,
-                victim_weapon_recovered: null,
-                victim_initiated_physical_threat: null,
-                victim_intoxicated: null,
-                victim_mentally_ill: null,
-                victim_fired_weapon: null,
-                victim_pointed_weapon: null,
-                victim_shot_in_back: null,
-                victim_shot_in_head: null,
-                victim_unarmed: null,
-                officer_couldnt_see_victims_hands: null,
+                person_gang_member: null,
+                person_ignored_officer_commands: null,
+                person_weapon_recovered: null,
+                person_initiated_physical_threat: null,
+                person_intoxicated: null,
+                person_mentally_ill: null,
+                person_fired_weapon: null,
+                person_pointed_weapon: null,
+                person_shot_in_back: null,
+                person_shot_in_head: null,
+                person_unarmed: null,
+                officer_couldnt_see_persons_hands: null,
                 grabbed_officers_weapon: null,
-                civillian_weapon_specific: null,
+                person_weapon_specific: null,
                 coroner_case_number: null,
             }
         });
@@ -262,7 +262,7 @@
         App.Collections.Persons = Backbone.Collection.extend({
             model: App.Models.Person,
             comparator: function(model) {
-                return model.get("civilian_name");
+                return model.get("person_name");
             },
             url: "/people_data.json"
         });
@@ -437,17 +437,17 @@
                     filters: [
                         {proper: "Was Use Of Force Fatal", field: "fatal"},
                         {proper: "Was Use Of Force Non-Fatal", field: "nonfatal_calc"},
-                        {proper: "Victim Was Armed", field: "victim_armed_calc"},
-                        {proper: "Victim Was Unarmed", field: "victim_unarmed"},
-                        {proper: "Victim Carried Replica, Nonfunctional, Toy Or Blank Gun", field: "victim_gunlike"},
-                        {proper: "Victim Armed With Firearm/Gun", field: "armed_with_firearm_calc"},
-                        {proper: "Victim Armed With Other Weapon", field: "armed_with_other_calc"},
-                        {proper: "Victim Fired Weapon", field: "victim_fired_weapon"},
-                        {proper: "Victim Pointed Weapon", field: "victim_pointed_weapon"},
+                        {proper: "Person Was Armed", field: "person_armed_calc"},
+                        {proper: "Person Was Unarmed", field: "person_unarmed"},
+                        {proper: "Person Carried Replica, Nonfunctional, Toy Or Blank Gun", field: "person_gunlike"},
+                        {proper: "Person Armed With Firearm/Gun", field: "armed_with_firearm_calc"},
+                        {proper: "Person Armed With Other Weapon", field: "armed_with_other_calc"},
+                        {proper: "Person Fired Weapon", field: "person_fired_weapon"},
+                        {proper: "Person Pointed Weapon", field: "person_pointed_weapon"},
                         // {proper: "Deadly Force as First Response", field: "deadly_force_as_first_calc"},
-                        {proper: "Victim Ignored Officer Commands", field: "victim_ignored_officer_commands"},
+                        {proper: "Person Ignored Officer Commands", field: "person_ignored_officer_commands"},
                         {proper: "Reached for Waistband/Pants", field: "mention_of_waistband_in_report"},
-                        {proper: "Officer Couldn't See Victims Hands", field: "officer_couldnt_see_victims_hands"},
+                        {proper: "Officer Couldn't See Persons Hands", field: "officer_couldnt_see_persons_hands"},
                         {proper: "Multiple Civilians Shot", field: "multiple_shot"},
                         {proper: "Multiple Civilians Killed", field: "multiple_killed"},
                     ]
@@ -477,12 +477,12 @@
                         {proper: "South Gate Police Department", field: "south-gate-police-department"},
                     ]
                 }, {
-                    type: "Victim Filters",
+                    type: "Person Filters",
                     filters: [
-                        {proper: "Victim Arrested", field: "victim_arrested"},
-                        {proper: "Victim Identified As Gang Member", field: "victim_gang_member"},
-                        {proper: "Signs Victim Was Impaired", field: "victim_intoxicated"},
-                        {proper: "Signs of Victim Mental Illness", field: "victim_mentally_ill"},
+                        {proper: "Person Arrested", field: "person_arrested"},
+                        {proper: "Person Identified As Gang Member", field: "person_gang_member"},
+                        {proper: "Signs Person Was Impaired", field: "person_intoxicated"},
+                        {proper: "Signs of Person Mental Illness", field: "person_mentally_ill"},
                     ]
                 }, {
                     type: "Response Filters",
@@ -503,14 +503,14 @@
                         {proper: "Pursuit Occurred", field: "pursuit_occurred"},
                         {proper: "Single Officer Shot", field: "single_officer_calc"},
                         {proper: "Multiple Officers Fired Weapons", field: "multiple_officers"},
-                        {proper: "Victim Grabbed Officers Weapon", field: "grabbed_officers_weapon"},
+                        {proper: "Person Grabbed Officers Weapon", field: "grabbed_officers_weapon"},
                         {proper: "Officer Claimed Vehicle Used as Weapon", field: "vehicle_as_weapon"},
-                        {proper: "Victim Weapon Recovered", field: "victim_weapon_recovered"},
-                        {proper: "Believed Victim Was Armed", field: "believed_civillian_armed"},
+                        {proper: "Person Weapon Recovered", field: "person_weapon_recovered"},
+                        {proper: "Believed Person Was Armed", field: "believed_person_armed"},
                         {proper: "Officer Injured", field: "officer_injured"},
-                        {proper: "Victim Initiated Physical Threat", field: "victim_initiated_physical_threat"},
-                        {proper: "Victim Shot In Back", field: "victim_shot_in_back"},
-                        {proper: "Victim Shot In Head", field: "victim_shot_in_head"},
+                        {proper: "Person Initiated Physical Threat", field: "person_initiated_physical_threat"},
+                        {proper: "Person Shot In Back", field: "person_shot_in_back"},
+                        {proper: "Person Shot In Head", field: "person_shot_in_head"},
                         {proper: "Potential Civillian Video", field: "potential_civillian_video"},
                         {proper: "Civilian Witnesses", field: "civilian_witnesses"},
                     ]
@@ -656,7 +656,7 @@
                     // did they have a firearm
                     model.set("armed_with_firearm_calc", false)
 
-                    if (_this.civillian_weapon != null){
+                    if (_this.person_weapon != null){
 
                         var array_of_weapons = [
                             "assault weapon",
@@ -670,7 +670,7 @@
                         var length = array_of_weapons.length;
 
                         while(length--){
-                            if (_this.civillian_weapon.indexOf(array_of_weapons[length]) != -1){
+                            if (_this.person_weapon.indexOf(array_of_weapons[length]) != -1){
                                 model.set("armed_with_firearm_calc", true)
                             }
                         }
@@ -678,14 +678,14 @@
                     };
 
                     // shot because cop claims they tried to run them over with a car
-                    if (_this.civillian_weapon === "vehicle"){
-                        model.set("victim_unarmed", true);
+                    if (_this.person_weapon === "vehicle"){
+                        model.set("person_unarmed", true);
                         model.set("vehicle_as_weapon", true);
-                        model.set("civillian_weapon", null);
+                        model.set("person_weapon", null);
                     };
 
                     // did they have a weapon
-                    if (_this.victim_armed_calc === true){
+                    if (_this.person_armed_calc === true){
                         if (_this.armed_with_firearm_calc === false){
                             model.set("armed_with_other_calc", true);
                         }
@@ -694,12 +694,12 @@
                     };
 
                     // did they have a replica or toy gun
-                    if (_this.civillian_weapon === "replica, nonfunctional, toy or blank gun"){
-                        model.set("victim_armed_calc", null);
-                        model.set("victim_unarmed", null);
+                    if (_this.person_weapon === "replica, nonfunctional, toy or blank gun"){
+                        model.set("person_armed_calc", null);
+                        model.set("person_unarmed", null);
                         model.set("armed_with_firearm_calc", null)
                         model.set("armed_with_other_calc", null);
-                        model.set("victim_gunlike", true);
+                        model.set("person_gunlike", true);
                     };
 
                 });
@@ -853,14 +853,14 @@
                     };
 
                     // determine if armed
-                    if (_this.victim_unarmed === false){
-                        model.set("victim_armed_calc", true);
+                    if (_this.person_unarmed === false){
+                        model.set("person_armed_calc", true);
                     };
 
                     // did they have a firearm
                     model.set("armed_with_firearm_calc", false)
 
-                    if (_this.civillian_weapon != null){
+                    if (_this.person_weapon != null){
 
                         var array_of_weapons = [
                             "assault weapon",
@@ -874,7 +874,7 @@
                         var length = array_of_weapons.length;
 
                         while(length--){
-                            if (_this.civillian_weapon.indexOf(array_of_weapons[length]) != -1){
+                            if (_this.person_weapon.indexOf(array_of_weapons[length]) != -1){
                                 model.set("armed_with_firearm_calc", true)
                             }
                         }
@@ -882,14 +882,14 @@
                     };
 
                     // shot because cop claims they tried to run them over with a car
-                    if (_this.civillian_weapon === "vehicle"){
-                        model.set("victim_unarmed", true);
+                    if (_this.person_weapon === "vehicle"){
+                        model.set("person_unarmed", true);
                         model.set("vehicle_as_weapon", true);
-                        model.set("civillian_weapon", null);
+                        model.set("person_weapon", null);
                     };
 
                     // did they have a weapon
-                    if (_this.victim_armed_calc === true){
+                    if (_this.person_armed_calc === true){
                         if (_this.armed_with_firearm_calc === false){
                             model.set("armed_with_other_calc", true);
                         }
@@ -898,12 +898,12 @@
                     };
 
                     // did they have a replica or toy gun
-                    if (_this.civillian_weapon === "replica, nonfunctional, toy or blank gun"){
-                        model.set("victim_armed_calc", null);
-                        model.set("victim_unarmed", null);
+                    if (_this.person_weapon === "replica, nonfunctional, toy or blank gun"){
+                        model.set("person_armed_calc", null);
+                        model.set("person_unarmed", null);
                         model.set("armed_with_firearm_calc", null)
                         model.set("armed_with_other_calc", null);
-                        model.set("victim_gunlike", true);
+                        model.set("person_gunlike", true);
                     };
 
                     // find single officer incidents
@@ -950,7 +950,7 @@
                     };
 
                     if (_this.case_relevant === true){
-                        var separated_civilian = comma_values_to_array(_this.civilian_name);
+                        var separated_civilian = comma_values_to_array(_this.person_name);
                         model.set("number_shot", separated_civilian.length);
 
                         if (_this.number_shot > 1){
@@ -1056,15 +1056,15 @@
                 // });
 
                 top_line_stats["Armed"] = data.where({
-                    victim_armed_calc: true
+                    person_armed_calc: true
                 });
 
                 top_line_stats["Unarmed"] = data.where({
-                    victim_unarmed: true
+                    person_unarmed: true
                 });
 
                 top_line_stats["Replica, Nonfunctional, Toy Or Blank Gun"] = data.where({
-                    victim_gunlike: true
+                    person_gunlike: true
                 });
 
                 top_line_stats["Armed With Firearm/Gun"] = data.where({
@@ -1076,23 +1076,23 @@
                 });
 
                 top_line_stats["Fired Weapon"] = data.where({
-                    victim_fired_weapon: true
+                    person_fired_weapon: true
                 });
 
                 top_line_stats["Pointed Weapon"] = data.where({
-                    victim_pointed_weapon: true
+                    person_pointed_weapon: true
                 });
 
                 top_line_stats["Ignored Officer Commands"] = data.where({
-                    victim_ignored_officer_commands: true
+                    person_ignored_officer_commands: true
                 });
 
                 top_line_stats["Mention Of Waistband"] = data.where({
                     mention_of_waistband_in_report: true
                 });
 
-                top_line_stats["Couldn't See Victims Hands"] = data.where({
-                    officer_couldnt_see_victims_hands: true
+                top_line_stats["Couldn't See Persons Hands"] = data.where({
+                    officer_couldnt_see_persons_hands: true
                 });
 
                 top_line_stats["Multiple Civilians Shot"] = data.where({
@@ -1113,32 +1113,32 @@
 
                 // pointed and fired firearm at an officer
                 top_line_stats["Pointed & Fired Firearm"] = data.where({
-                    victim_pointed_weapon: true,
-                    victim_fired_weapon: true
+                    person_pointed_weapon: true,
+                    person_fired_weapon: true
                 });
 
                 // ignored commands and demonstrated symptoms of intoxication
                 top_line_stats["Ignored Commands/Symptoms Of Intoxication"] = data.where({
-                    victim_ignored_officer_commands: true,
-                    victim_intoxicated: true
+                    person_ignored_officer_commands: true,
+                    person_intoxicated: true
                 });
 
                 // ignored commands and demonstrated symptoms of mentally illness
                 top_line_stats["Ignored Commands/Symptoms of Mental Illness"] = data.where({
-                    victim_ignored_officer_commands: true,
-                    victim_mentally_ill: true
+                    person_ignored_officer_commands: true,
+                    person_mentally_ill: true
                 });
 
                 // reaching for waistband and unarmed
                 top_line_stats["Reaching For Waistband & Unarmed"] = data.where({
-                    victim_unarmed: true,
+                    person_unarmed: true,
                     mention_of_waistband_in_report: true
                 });
 
                 // mentally ill and unarmed
                 top_line_stats["Unarmed & Symptoms of Mental Illness"] = data.where({
-                    victim_unarmed: true,
-                    victim_mentally_ill: true
+                    person_unarmed: true,
+                    person_mentally_ill: true
                 });
 
                 var my_data = {
@@ -1266,7 +1266,7 @@
                             };
                             if (item === "yearly"){
                                 data.forEach(function(model){
-                                    var separated_civilian = comma_values_to_array(model.attributes.civilian_name);
+                                    var separated_civilian = comma_values_to_array(model.attributes.person_name);
                                     if (separated_civilian.length > 1){
                                         $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>* " + separated_civilian[0] + "<br />*" + separated_civilian[1] + "</a>");
                                     } else if (separated_civilian.length === 1){
@@ -1316,7 +1316,7 @@
                                 if (item === "yearly"){
                                     if (data != undefined){
                                         data.forEach(function(model){
-                                            var separated_civilian = comma_values_to_array(model.attributes.civilian_name);
+                                            var separated_civilian = comma_values_to_array(model.attributes.person_name);
                                             if (separated_civilian.length > 1){
                                                 $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>* " + separated_civilian[0] + "<br />*" + separated_civilian[1] + "</a>");
                                             } else if (separated_civilian.length === 1){
@@ -1352,7 +1352,7 @@
 
             demo_filters: function(){
                 $("input:checkbox[id^=fatal]").attr("checked", true);
-                $("input:checkbox[id^=victim_unarmed]").attr("checked", true);
+                $("input:checkbox[id^=person_unarmed]").attr("checked", true);
                 $("input:checkbox[id^=multiple_officers]").attr("checked", true);
                 this.construct_checkbox_filters();
             },
@@ -1379,7 +1379,7 @@
                 <p>This tool provides a series of true/false filters that allows you to explore the Use of Force Data we have transcribed. The data is based on declination memos that are filed by the Los Angeles District Attorney's Office after Use of Force cases. The declination memos were filed between Jan. 1, 2010 to March 30, 2015.</p>
                 <p>This data only shows the number of Use of Force cases reviewed by the Los Angeles District Attorney's Office in that timeframe. It is not the total number of cases.</p>
                 <p>Use any combination of filters to ask questions of the data, see the results by year, and get links to the cases relevant to your query.</p>
-                <p><strong>An example</strong>: Lets say I wanted to see all <em>Fatal incidents</em> in which the <em>Victim Was Unarmed</em> and there were <em>Multiple Officers Involved</em>. Well, you would check the <a id="demo-filters" href="javascript:void(0)">appropriate boxes</a>.</p>
+                <p><strong>An example</strong>: Lets say I wanted to see all <em>Fatal incidents</em> in which the <em>Person Was Unarmed</em> and there were <em>Multiple Officers Involved</em>. Well, you would check the <a id="demo-filters" href="javascript:void(0)">appropriate boxes</a>.</p>
                 <p>From January 2001 to present, JSID has rolled out to 1,331 officer-involved-shooting incidents. I do not have the number of closing letters issued since many cases are still pending. Those are OIS incidents that have occurred in Los Angeles County.</p>
                 <p>There has been no on-duty officer charged with a crime in an OIS incident since 2005. In fact, the last on-duty officer charged was in September 2000 when LAPD Officer Ronald Orosco shot an unarmed African American man in the back following a traffic stop while Officer Orosco was on duty. Orosco was charged in September 2000 in case BA240008. He pleaded to one count of shooting at an occupied motor vehicle. He was sentenced to five years in state prison on Oct. 29, 2001.</p>
                 <div class="row">

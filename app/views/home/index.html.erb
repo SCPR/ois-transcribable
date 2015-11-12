@@ -3,36 +3,48 @@
         <ol class="breadcrumb">
             <li>Home</li>
         </ol>
-        <h1>Cataloging Officer Involved Shootings</h1>
+        <h1>Officer Involved - The Application</h1>
         <h3>Welcome <%= @user.email %></h3>
         <% if @user.email == "wcterrill@gmail.com" %>
-            <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @verified.size %> incidents we've verified.</h6>
+
+            <% if @verified.size == 0 %>
+                <h6>We haven't verified any incidents.</h6>
+            <% else %>
+                <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @verified.size %> incidents we've verified.</h6>
+            <% end %>
+
+        <% elsif @verified.size == 0 %>
+            <h6>We haven't verified any incidents. You should transcribe or verify some</h6>
         <% else %>
             <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @verified.size %> incidents we've verified.</h6>
-            <hr></hr>
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <h6>Transcriptions &ndash; We've transcribed
-                        <% if "%.2f" % @transcribed_percent == "100.00" %>
-                            <span style="color: green"><%= "%.2f" % @transcribed_percent %>%</span>
-                        <% else %>
-                            <span style="color: red"><%= "%.2f" % @transcribed_percent %>%</span>
-                        <% end %>
-                    of <%= link_to @incidents.size, transcriptions_path %> incidents.</h6>
-                    <ul class="list-inline">
-                        <% if "%.2f" % @transcribed_percent != "100.00" %>
-                            <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
-                        <% else %>
-                            <li><%= link_to "Verify transcriptions", transcriptions_path(), class: "btn btn-info" %></li>
-                        <% end %>
-                    </ul>
-                    <ul>
-                        <% @transcribed_scoreboard.each do |user| %>
-                            <li><strong><%= user[0] %></strong> has entered <em><%= user[1].size %></em> transcriptions</li>
-                        <% end %>
-                    </ul>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <% end %>
+        <hr></hr>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <h6>Transcriptions &ndash; We've transcribed
+                    <% if "%.2f" % @transcribed_percent == "100.00" %>
+                        <span style="color: green"><%= "%.2f" % @transcribed_percent %>%</span>
+                    <% else %>
+                        <span style="color: red"><%= "%.2f" % @transcribed_percent %>%</span>
+                    <% end %>
+                of <%= link_to @incidents.size, transcriptions_path %> incidents.</h6>
+                <ul class="list-inline">
+                    <% if "%.2f" % @transcribed_percent != "100.00" %>
+                        <li><%= link_to "New transcription", new_transcription_path(), class: "btn btn-info" %></li>
+                    <% else %>
+                        <li><%= link_to "Verify transcriptions", transcriptions_path(), class: "btn btn-info" %></li>
+                    <% end %>
+                </ul>
+                <ul>
+                    <% @transcribed_scoreboard.each do |user| %>
+                        <li><strong><%= user[0] %></strong> has entered <em><%= user[1].size %></em> transcriptions</li>
+                    <% end %>
+                </ul>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <% if "%.2f" % @transcribed_percent == "0.00" %>
+                    <h6>We've haven't transcribed any incidents.</h6>
+                <% else %>
                     <h6>Incidents &ndash; We've verified
                         <% if "%.2f" % @verified_percent == "100.00" %>
                             <span style="color: green"><%= "%.2f" % @verified_percent %>%</span>
@@ -50,9 +62,9 @@
                             <li><strong><%= user[0] %></strong> has verified <em><%= user[1].size %></em> transcriptions</li>
                         <% end %>
                     </ul>
-                </div>
+                <% end %>
             </div>
-        <% end %>
+        </div>
     </div>
 </div>
 <div class="row">
