@@ -21,5 +21,13 @@ class RemoveFieldNameFromIncident < ActiveRecord::Migration
     remove_column :incidents, :officer_couldnt_see_persons_hands
     remove_column :incidents, :grabbed_officers_weapon
     remove_column :incidents, :person_weapon_specific
+    remove_column :incidents, :officer_unknown
+    remove_column :incidents, :applied_lawful_force
+    remove_column :incidents, :believed_person_armed
+    remove_column :incidents, :coroner_case_number
+    remove_column :incidents, :in_custody_record_key_number
+    remove_column :incidents, :district_attorney_conclusion
+    rename_column :incidents, :url, :incident_url
+    change_column :incidents, :officer_special_unit, :string
   end
 end

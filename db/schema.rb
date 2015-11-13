@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151112225401) do
+ActiveRecord::Schema.define(version: 20151112224410) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                                         null: false
@@ -25,7 +25,6 @@ ActiveRecord::Schema.define(version: 20151112225401) do
     t.string   "officer_shots_fired",                  limit: 255
     t.string   "da_on_scene",                          limit: 255
     t.string   "da_investigator_on_scene",             limit: 255
-    t.text     "district_attorney_conclusion",         limit: 65535
     t.text     "narrative_notes",                      limit: 65535
     t.text     "autopsy_notes",                        limit: 65535
     t.text     "conclusion_notes",                     limit: 65535
@@ -34,14 +33,13 @@ ActiveRecord::Schema.define(version: 20151112225401) do
     t.text     "what_happened",                        limit: 65535
     t.text     "underlying_crime_leading_to_shooting", limit: 65535
     t.text     "how_situation_escalated",              limit: 65535
-    t.text     "officer_special_unit",                 limit: 65535
+    t.string   "officer_special_unit",                 limit: 255
     t.text     "officer_charges_filed_yes_detail",     limit: 65535
     t.datetime "date_of_incident"
     t.datetime "district_attorney_date_of_letter"
     t.boolean  "verified",                             limit: 1,     default: false, null: false
     t.boolean  "multiple_officers",                    limit: 1
     t.boolean  "car_stop",                             limit: 1
-    t.boolean  "believed_person_armed",                limit: 1
     t.boolean  "potential_police_video",               limit: 1
     t.boolean  "potential_civillian_video",            limit: 1
     t.boolean  "fatal",                                limit: 1
@@ -50,22 +48,18 @@ ActiveRecord::Schema.define(version: 20151112225401) do
     t.boolean  "officer_self_defense",                 limit: 1
     t.boolean  "officer_defense_of_civillians",        limit: 1
     t.boolean  "officer_defense_of_officers",          limit: 1
-    t.boolean  "officer_unknown",                      limit: 1
     t.boolean  "officer_serving_warrant",              limit: 1
     t.boolean  "officer_on_surveillance",              limit: 1
     t.boolean  "officer_on_undercover",                limit: 1
     t.boolean  "civilian_witnesses",                   limit: 1
     t.boolean  "officer_injured",                      limit: 1
     t.boolean  "flag_for_followup",                    limit: 1
-    t.boolean  "applied_lawful_force",                 limit: 1
     t.boolean  "officer_routine_patrol",               limit: 1
     t.integer  "transcribed_count",                    limit: 4,     default: 0
     t.boolean  "officer_responding_to_call",           limit: 1
     t.string   "email",                                limit: 255
     t.string   "officer_shots_fired_specific",         limit: 255
     t.string   "type_of_incident_number",              limit: 255
-    t.string   "coroner_case_number",                  limit: 255
-    t.string   "in_custody_record_key_number",         limit: 255
     t.string   "led_to_response_category",             limit: 255
   end
 

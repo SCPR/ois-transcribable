@@ -1,7 +1,11 @@
 <ol class="breadcrumb">
     <li><%= link_to 'Home', controller: :home, action: :index %></li>
     <li><%= link_to "Edit Incidents", incidents_path() %></li>
-    <li>Verifying <%= @incident.incident_url %></li>
+    <% if !@incident.new_record? %>
+        <li>Transcribing <%= @incident.incident_url %></li>
+    <% else %>
+        <li>Verifying <%= @incident.incident_url %></li>
+    <% end %>
 </ol>
 
 <% if flash[:alert] %>
