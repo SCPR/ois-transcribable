@@ -92,7 +92,7 @@ class IncidentsController < ApplicationController
 
         puts @incident
 
-        @peoples = @incident.peoples
+        @peoples = @incident.people
         @transcription = Transcription.find_by district_attorney_file_number: @incident.district_attorney_file_number
     end
 

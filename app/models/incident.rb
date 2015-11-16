@@ -5,7 +5,7 @@ class Incident < ActiveRecord::Base
 
     #validates :district_attorney_file_number, uniqueness:true, allow_blank: true, allow_nil: true
     has_many :transcriptions
-    has_many :peoples, primary_key: "district_attorney_file_number", foreign_key: "district_attorney_file_number"
+    has_many :people, primary_key: "district_attorney_file_number", foreign_key: "district_attorney_file_number"
 
     # def split_url
     #     my_string_array = self.url.split("https://www.documentcloud.org/documents/")
