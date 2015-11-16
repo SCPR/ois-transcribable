@@ -7,8 +7,24 @@
         </ol>
     </div>
 </div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <p>This tool provides a series of true/false filters that allows you to explore the Use of Force Data we have transcribed. The data is based on declination memos that are filed by the Los Angeles District Attorney's Office after Use of Force cases. The declination memos were filed between Jan. 1, 2010 to March 30, 2015.</p>
+        <p>This data only shows the number of Use of Force cases reviewed by the Los Angeles District Attorney's Office in that timeframe. It is not the total number of cases.</p>
+        <p>Use any combination of filters to ask questions of the data, see the results by year, and get links to the cases relevant to your query.</p>
+        <p><strong>An example</strong>: Lets say I wanted to see all <em>Fatal incidents</em> in which the <em>Person Was Unarmed</em> and there were <em>Multiple Officers Involved</em>. Well, you would check the <a id="demo-filters" href="javascript:void(0)">appropriate boxes</a>.</p>
+        <h6>Misc.</h6>
+        <p>From January 2001 to present, JSID has rolled out to 1,331 officer-involved-shooting incidents. I do not have the number of closing letters issued since many cases are still pending. Those are OIS incidents that have occurred in Los Angeles County.</p>
+        <p>There has been no on-duty officer charged with a crime in an OIS incident since 2005. In fact, the last on-duty officer charged was in September 2000 when LAPD Officer Ronald Orosco shot an unarmed African American man in the back following a traffic stop while Officer Orosco was on duty. Orosco was charged in September 2000 in case BA240008. He pleaded to one count of shooting at an occupied motor vehicle. He was sentenced to five years in state prison on Oct. 29, 2001.</p>
+    </div>
+</div>
 
-<div class="row data-filters"></div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="data-filters"></div>
+    </div>
+</div>
+
 <script>
     (function(){
 
@@ -32,6 +48,13 @@
         window.percentify = function(value){
             var value = value * 100
             return parseFloat(value.toFixed(2));
+        };
+
+        window.create_groups = function(object, key){
+            var output = object.groupBy(function(model){
+                return model.get(key);
+            });
+            return output;
         };
 
         window.toFixedPercent = function(part, whole){
@@ -142,149 +165,91 @@
 
         App.Models.Incident = Backbone.Model.extend({
             defaults: {
-                id: null,
-                created_at: null,
-                updated_at: null,
-                url: null,
-                person_name: null,
-                district_attorney_file_number: null,
-                district_attorney_county: null,
-                district_attorney_prepared_report: null,
-                general_location_of_incident: null,
-                type_of_incident: null,
-                person_weapon: null,
-                officer_shots_fired: null,
-                da_on_scene: null,
-                da_investigator_on_scene: null,
-                district_attorney_conclusion: null,
-                narrative_notes: null,
-                autopsy_notes: null,
-                conclusion_notes: null,
-                officer_name_and_badge_number: null,
-                officer_police_agency: null,
-                what_happened: null,
-                underlying_crime_leading_to_shooting: null,
-                how_situation_escalated: null,
-                person_case_number: null,
-                officer_special_unit: null,
-                officer_charges_filed_yes_detail: null,
-                person_charges_filed: null,
-                date_of_incident: null,
-                district_attorney_date_of_letter: null,
-                verified: null,
-                multiple_officers: null,
                 car_stop: null,
-                believed_person_armed: null,
-                potential_police_video: null,
-                potential_civillian_video: null,
-                mention_of_waistband_in_report: null,
-                fatal: null,
                 case_relevant: null,
-                person_arrested: null,
+                civilian_witnesses: null,
+                da_investigator_on_scene: null,
+                da_on_scene: null,
+                date_of_incident: null,
+                district_attorney_county: null,
+                district_attorney_date_of_letter: null,
+                district_attorney_file_number: null,
+                district_attorney_prepared_report: null,
+                flag_for_followup: null,
+                general_location_of_incident: null,
+                led_to_response_category: null,
+                multiple_officers: null,
                 officer_charges_filed: null,
-                officer_self_defense: null,
                 officer_defense_of_civillians: null,
                 officer_defense_of_officers: null,
-                officer_unknown: null,
-                officer_serving_warrant: null,
+                officer_injured: null,
+                officer_name_and_badge_number: null,
                 officer_on_surveillance: null,
                 officer_on_undercover: null,
-                pursuit_occurred: null,
-                person_gang_member: null,
-                person_ignored_officer_commands: null,
-                person_weapon_recovered: null,
-                person_initiated_physical_threat: null,
-                person_intoxicated: null,
-                person_mentally_ill: null,
-                civilian_witnesses: null,
-                person_fired_weapon: null,
-                person_pointed_weapon: null,
-                officer_injured: null,
-                flag_for_followup: null,
-                person_shot_in_back: null,
-                applied_lawful_force: null,
-                person_shot_in_head: null,
-                person_unarmed: null,
-                officer_couldnt_see_persons_hands: null,
-                officer_routine_patrol: null,
-                transcribed_count: null,
+                officer_police_agency: null,
                 officer_responding_to_call: null,
-                grabbed_officers_weapon: null,
-                email: null,
-                person_weapon_specific: null,
+                officer_routine_patrol: null,
+                officer_self_defense: null,
+                officer_serving_warrant: null,
+                officer_shots_fired: null,
                 officer_shots_fired_specific: null,
+                peoples: null,
+                potential_civillian_video: null,
+                potential_police_video: null,
+                type_of_incident: null,
                 type_of_incident_number: null,
-                coroner_case_number: null,
-                in_custody_record_key_number: null,
-                led_to_response_category: null,
+                verified: null,
             },
         });
 
         App.Collections.Incidents = Backbone.Collection.extend({
             model: App.Models.Incident,
             comparator: function(model) {
-                return model.get("person_name");
-            }
+                return model.get("district_attorney_file_number");
+            },
+            url: "/incidents/data"
         });
 
-        App.Models.Person = Backbone.Model.extend({
+        App.Models.People = Backbone.Model.extend({
             defaults: {
-                case_relevant: null,
-                doubled_up: null,
                 person_name: null,
                 district_attorney_file_number: null,
+                incident_url: null,
                 person_weapon: null,
-                person_case_number: null,
-                person_charges_filed: null,
-                mention_of_waistband_in_report: null,
-                person_shot: null,
-                fatal: null,
-                person_arrested: null,
-                pursuit_occurred: null,
-                person_gang_member: null,
-                person_ignored_officer_commands: null,
-                person_weapon_recovered: null,
-                person_initiated_physical_threat: null,
+                person_ethnicity: null,
+                person_gender: null,
+                person_age: null,
                 person_intoxicated: null,
+                fatal: null,
+                nonfatal_calc: null,
+                armed_with_firearm_calc: null,
+                armed_with_other_calc: null,
+                vehicle_as_weapon: null,
+                mention_of_waistband_in_report: null,
+                pursuit_occurred: null,
+                person_ignored_officer_commands: null,
                 person_mentally_ill: null,
                 person_fired_weapon: null,
                 person_pointed_weapon: null,
-                person_shot_in_back: null,
-                person_shot_in_head: null,
                 person_unarmed: null,
+                person_armed_calc: null,
                 officer_couldnt_see_persons_hands: null,
                 grabbed_officers_weapon: null,
-                person_weapon_specific: null,
-                coroner_case_number: null,
-            }
-        });
-
-        App.Collections.Persons = Backbone.Collection.extend({
-            model: App.Models.Person,
-            comparator: function(model) {
-                return model.get("person_name");
+                person_initiated_physical_threat: null,
+                person_weapon_recovered: null,
+                vehicle_as_weapon: null,
+                person_shot_in_back: null,
+                person_shot_in_head: null,
+                person_arrested: null,
+                person_gang_member: null,
             },
-            url: "/people_data.json"
         });
 
-        App.Models.Racial = Backbone.Model.extend({
-            defaults: {
-                districtattorneyfilenumber: null,
-                lawenforcementagency: null,
-                casenumber: null,
-                firstname: null,
-                lastname: null,
-                dateofbirth: null,
-                age: null,
-                ethnicity: null,
-                gender: null,
-                dateofdeath: null
-            }
-        });
-
-        App.Collections.Racials = Backbone.Collection.extend({
-            model: App.Models.Racial,
-            url: "/coroners_data.json"
+        App.Collections.Peoples = Backbone.Collection.extend({
+            model: App.Models.People,
+            comparator: function(model) {
+                return model.get("district_attorney_file_number");
+            },
         });
 
         App.Models.CommaSeparated = Backbone.Model.extend({
@@ -309,38 +274,43 @@
 
             fetchData: function(){
                 var _this = this;
-                var inciColl = new App.Collections.Incidents(<%= raw @incidents.to_json %>);
-
-                var peopleColl = new App.Collections.Persons();
-                peopleColl.fetch({
+                var incidents = new App.Collections.Incidents();
+                incidents.fetch({
                     async: false
                 });
-
-                var coronerColl = new App.Collections.Racials();
-                coronerColl.fetch({
-                    async: false
-                });
-
-                var officerColl = new App.Collections.CommaSeparateds(<%= raw @final_container.to_json %>);
-
                 var checkExist = setInterval(function() {
-                    if (inciColl.length > 0 || peopleColl.length > 0 || coronerColl.length > 0){
+                    if (incidents.length > 0){
                         clearInterval(checkExist);
-                        _this.renderApplicationVisuals(inciColl, peopleColl, coronerColl, officerColl);
+                        _this.renderApplicationVisuals(incidents);
                     }
                 }, 500);
             },
 
-            renderApplicationVisuals: function(inciColl, peopleColl, coronerColl, officerColl){
+            renderApplicationVisuals: function(incidents){
                 if (this.applicationVisuals){
                     this.applicationVisuals.remove();
                 };
+                var array_of_people = [];
+                incidents.forEach(function(model, index){
+                    var _this = model.attributes;
+                    _this.peoples.forEach(function(item, index){
+                        array_of_people.push(item);
+                    });
+                });
+                var peoples = new App.Collections.Peoples(array_of_people);
+                peoples.forEach(function(model, index){
+                    var _this = model.attributes;
+                    var incident_specifics = incidents.where({
+                        district_attorney_file_number: _this.district_attorney_file_number
+                    });
+                    if (incident_specifics.length){
+                        model.set(incident_specifics[0].attributes);
+                    };
+                    model.unset("peoples");
+                });
                 this.applicationVisuals = new App.Views.ApplicationVisuals({
-                    total_incidents: inciColl,
-                    total_people: peopleColl,
-                    demographic_data: coronerColl,
-                    incidents_by_officers: officerColl,
-                    container: ".data-filters"
+                    total_incidents: incidents,
+                    total_peoples: peoples
                 });
                 return this.applicationVisuals;
             },
@@ -362,362 +332,140 @@
                     })
                 );
 
-                this.view_object.relevant_people = new App.Collections.Persons(
-                    this.view_object.total_people.where({
-                        case_relevant: true
-                    })
+                this.view_object.relevant_people = new App.Collections.Peoples(
+                   this.view_object.total_peoples.where({
+                       case_relevant: true
+                   })
                 );
 
                 this.view_object = this.calculate_model_attributes(this.view_object);
 
-                this.view_object = this.created_calculated_collections(this.view_object);
-
-                this.view_object = this.associate_people_with_incident(this.view_object);
-
-                this.view_object.police_agencies = new App.Collections.CommaSeparateds(
-                    this.view_object.police_agencies
-                );
-
-                this.view_object.type_of_incident = new App.Collections.CommaSeparateds(
-                    this.view_object.type_of_incident
-                );
-
-                this.view_object.response_categories = _.uniq(this.view_object.relevant_incidents.pluck("led_to_response_category")).sort();
-
-                this.view_object.years = _.uniq(this.view_object.relevant_incidents.pluck("year_of_incident")).sort();
-
-                this.view_object.months = [
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "Jun",
-                    "Jul",
-                    "Aug",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Dec"
-                ];
-
-                this.view_object.days = [
-                    "Sunday",
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday"
-                ];
-
-                this.view_object.time_of_day = [
-                    "_midnight_to_6_am",
-                    "_6_am_to_noon",
-                    "_noon_to_6_pm",
-                    "_6_pm_to_midnight",
-                ];
-
-                this.view_object.age_ranges = [
-                    "under_18",
-                    "18_24",
-                    "25_34",
-                    "35_44",
-                    "45_54",
-                    "55_over",
-                    "no_age"
-                ];
-
-                this.view_object.genders = _.uniq(this.view_object.relevant_people.pluck("gender")).sort();
-
-                this.view_object.ethnicities = _.uniq(this.view_object.relevant_people.pluck("ethnicity")).sort();
-
                 this.view_object.filters = [{
-                    type: "Top Line Filters",
-                    filters: [
-                        {proper: "Was Use Of Force Fatal", field: "fatal"},
-                        {proper: "Was Use Of Force Non-Fatal", field: "nonfatal_calc"},
-                        {proper: "Person Was Armed", field: "person_armed_calc"},
-                        {proper: "Person Was Unarmed", field: "person_unarmed"},
-                        {proper: "Person Carried Replica, Nonfunctional, Toy Or Blank Gun", field: "person_gunlike"},
-                        {proper: "Person Armed With Firearm/Gun", field: "armed_with_firearm_calc"},
-                        {proper: "Person Armed With Other Weapon", field: "armed_with_other_calc"},
-                        {proper: "Person Fired Weapon", field: "person_fired_weapon"},
-                        {proper: "Person Pointed Weapon", field: "person_pointed_weapon"},
-                        // {proper: "Deadly Force as First Response", field: "deadly_force_as_first_calc"},
-                        {proper: "Person Ignored Officer Commands", field: "person_ignored_officer_commands"},
-                        {proper: "Reached for Waistband/Pants", field: "mention_of_waistband_in_report"},
-                        {proper: "Officer Couldn't See Persons Hands", field: "officer_couldnt_see_persons_hands"},
-                        {proper: "Multiple Civilians Shot", field: "multiple_shot"},
-                        {proper: "Multiple Civilians Killed", field: "multiple_killed"},
+                    type: "peoples",
+                    proper: "Top Line",
+                    radio_buttons: [],
+                    checkboxes: [
+                        {opt: "Was Use Of Force Fatal", opt_field: "fatal"},
+                        {opt: "Was Use Of Force Non-Fatal", opt_field: "nonfatal_calc"},
+                        {opt: "Person Was Armed", opt_field: "person_armed_calc"},
+                        {opt: "Person Was Unarmed", opt_field: "person_unarmed"},
+                        {opt: "Neither Armed or Unarmed", opt_field: "not_armed_or_unarmed"},
+                        {opt: "Person Armed With Firearm/Gun", opt_field: "armed_with_firearm_calc"},
+                        {opt: "Person Armed With Other Weapon", opt_field: "armed_with_other_calc"},
+                        {opt: "Person Grabbed Officers Weapon", opt_field: "grabbed_officers_weapon"},
+                        {opt: "Person Threatened With Weapon", opt_field: "person_initiated_physical_threat"},
+                        {opt: "Person Pointed Firearm", opt_field: "person_pointed_weapon"},
+                        {opt: "Person Fired Firearm", opt_field: "person_fired_weapon"},
+                        {opt: "Person Weapon Recovered", opt_field: "person_weapon_recovered"},
+                        {opt: "Person Ignored Officer Commands", opt_field: "person_ignored_officer_commands"},
+                        {opt: "Reached for Waistband/Pants", opt_field: "mention_of_waistband_in_report"},
+                        {opt: "Officer Couldn't See Persons Hands", opt_field: "officer_couldnt_see_persons_hands"},
+                        {opt: "Signs of Drug/Alcohol Impairment", opt_field: "person_intoxicated"},
+                        {opt: "Signs of Mental Illness", opt_field: "person_mentally_ill"},
+                        {opt: "Officer Claimed Vehicle Used as Weapon", opt_field: "vehicle_as_weapon"},
+                        {opt: "Person Shot In Back", opt_field: "person_shot_in_back"},
+                        {opt: "Person Shot In Head", opt_field: "person_shot_in_head"},
+                        {opt: "Pursuit Occurred", opt_field: "pursuit_occurred"},
+                        {opt: "Person Arrested", opt_field: "person_arrested"},
+                        {opt: "Person Identified As Gang Member", opt_field: "person_gang_member"},
                     ]
                 }, {
-                    type: "Officer Filters",
-                    filters: [
-                        {proper: "Officer Self Defense", field: "officer_self_defense"},
-                        {proper: "Officer Defense Of Officers", field: "officer_defense_of_officers"},
-                        {proper: "Officer Defense Of Civillians", field: "officer_defense_of_civillians"},
-                        {proper: "Officer Responding to Call", field: "officer_responding_to_call"},
-                        {proper: "Officer On Routine Patrol", field: "officer_routine_patrol"},
-                        {proper: "Officer Serving Warrant", field: "officer_serving_warrant"},
-                        {proper: "Officer On Surveillance", field: "officer_on_surveillance"},
-                        {proper: "Officer On Undercover", field: "officer_on_undercover"},
-                        {proper: "Charges Filed Against Officer", field: "officer_charges_filed"},
+                    type: "peoples",
+                    proper: "Agency",
+                    radio_buttons: [],
+                    checkboxes: [
+                        {opt: "LA County Sheriff's Department", opt_field: "los-angeles-county-sheriffs-department"},
+                        {opt: "LA Police Department", opt_field: "los-angeles-police-department"},
+                        {opt: "Long Beach Police Department", opt_field: "long-beach-police-department"},
+                        {opt: "Inglewood Police Department", opt_field: "inglewood-police-department"},
+                        {opt: "Gardena Police Department", opt_field: "gardena-police-department"},
+                        {opt: "Hawthorne Police Department", opt_field: "hawthorne-police-department"},
+                        {opt: "Monterey Park Police Department", opt_field: "monterey-park-police-department"},
+                        {opt: "South Gate Police Department", opt_field: "south-gate-police-department"},
                     ]
                 }, {
-                    type: "Agency Filters",
-                    filters: [
-                        {proper: "LA County Sheriff's Department", field: "los-angeles-county-sheriffs-department"},
-                        {proper: "LA Police Department", field: "los-angeles-police-department"},
-                        {proper: "Long Beach Police Department", field: "long-beach-police-department"},
-                        {proper: "Inglewood Police Department", field: "inglewood-police-department"},
-                        {proper: "Gardena Police Department", field: "gardena-police-department"},
-                        {proper: "Hawthorne Police Department", field: "hawthorne-police-department"},
-                        {proper: "Monterey Park Police Department", field: "monterey-park-police-department"},
-                        {proper: "South Gate Police Department", field: "south-gate-police-department"},
+                    type: "incidents",
+                    proper: "Officer",
+                    radio_buttons: [],
+                    checkboxes: [
+                        {opt: "Officer Self Defense", opt_field: "officer_self_defense"},
+                        {opt: "Officer Defense Of Officers", opt_field: "officer_defense_of_officers"},
+                        {opt: "Officer Defense Of Civillians", opt_field: "officer_defense_of_civillians"},
+                        {opt: "Officer Responding to Call", opt_field: "officer_responding_to_call"},
+                        {opt: "Officer On Routine Patrol", opt_field: "officer_routine_patrol"},
+                        {opt: "Officer Serving Warrant", opt_field: "officer_serving_warrant"},
+                        {opt: "Officer On Surveillance", opt_field: "officer_on_surveillance"},
+                        {opt: "Officer On Undercover", opt_field: "officer_on_undercover"},
+                        {opt: "Charges Filed Against Officer", opt_field: "officer_charges_filed"},
+                        // {opt: "Deadly Force as First Response", opt_field: "deadly_force_as_first_calc"},
+                        // {opt: "Multiple Civilians Shot", opt_field: "multiple_shot"},
+                        // {opt: "Multiple Civilians Killed", opt_field: "multiple_killed"},
                     ]
                 }, {
-                    type: "Person Filters",
-                    filters: [
-                        {proper: "Person Arrested", field: "person_arrested"},
-                        {proper: "Person Identified As Gang Member", field: "person_gang_member"},
-                        {proper: "Signs Person Was Impaired", field: "person_intoxicated"},
-                        {proper: "Signs of Person Mental Illness", field: "person_mentally_ill"},
+                    type: "incidents",
+                    proper: "Response",
+                    radio_buttons: [],
+                    checkboxes: [
+                        {opt: "Domestic Violence", opt_field: "domestic_violence"},
+                        {opt: "General Disturbance", opt_field: "general_disturbance"},
+                        {opt: "Implied Weapon Is Present", opt_field: "implied_weapon_is_present"},
+                        {opt: "Lower Level Crime", opt_field: "lower_level_crime"},
+                        {opt: "Serious Crime", opt_field: "serious_crime"},
+                        {opt: "Suicidal", opt_field: "suicidal"},
+                        {opt: "Suspicious Cop", opt_field: "suspicious_cop"},
+                        {opt: "Traffic Violation", opt_field: "traffic_violation"},
                     ]
                 }, {
-                    type: "Response Filters",
-                    filters: [
-                        {proper: "Domestic Violence", field: "domestic_violence"},
-                        {proper: "General Disturbance", field: "general_disturbance"},
-                        {proper: "Implied Weapon Is Present", field: "implied_weapon_is_present"},
-                        {proper: "Lower Level Crime", field: "lower_level_crime"},
-                        {proper: "Serious Crime", field: "serious_crime"},
-                        {proper: "Suicidal", field: "suicidal"},
-                        {proper: "Suspicious Cop", field: "suspicious_cop"},
-                        {proper: "Traffic Violation", field: "traffic_violation"},
+                    type: "incidents",
+                    proper: "Incident",
+                    radio_buttons: [],
+                    checkboxes: [
+                        {opt: "Single Officer Shot", opt_field: "single_officer_calc"},
+                        {opt: "Multiple Officers Fired Weapons", opt_field: "multiple_officers"},
+                        // {opt: "Believed Person Was Armed", opt_field: "believed_person_armed"},
+                        {opt: "Car Stop", opt_field: "car_stop"},
+                        {opt: "Officer Injured", opt_field: "officer_injured"},
+                        {opt: "Potential Civillian Video", opt_field: "potential_civillian_video"},
+                        {opt: "Civilian Witnesses", opt_field: "civilian_witnesses"},
                     ]
                 }, {
-                    type: "Incident Filters",
-                    filters: [
-                        {proper: "Car Stop", field: "car_stop"},
-                        {proper: "Pursuit Occurred", field: "pursuit_occurred"},
-                        {proper: "Single Officer Shot", field: "single_officer_calc"},
-                        {proper: "Multiple Officers Fired Weapons", field: "multiple_officers"},
-                        {proper: "Person Grabbed Officers Weapon", field: "grabbed_officers_weapon"},
-                        {proper: "Officer Claimed Vehicle Used as Weapon", field: "vehicle_as_weapon"},
-                        {proper: "Person Weapon Recovered", field: "person_weapon_recovered"},
-                        {proper: "Believed Person Was Armed", field: "believed_person_armed"},
-                        {proper: "Officer Injured", field: "officer_injured"},
-                        {proper: "Person Initiated Physical Threat", field: "person_initiated_physical_threat"},
-                        {proper: "Person Shot In Back", field: "person_shot_in_back"},
-                        {proper: "Person Shot In Head", field: "person_shot_in_head"},
-                        {proper: "Potential Civillian Video", field: "potential_civillian_video"},
-                        {proper: "Civilian Witnesses", field: "civilian_witnesses"},
-                    ]
-                }, {
-                    type: "Time Filters",
-                    filters: [
-                        {proper: "Midnight to 6 a.m.", field: "_midnight_to_6_am"},
-                        {proper: "6 a.m. to Noon", field: "_6_am_to_noon"},
-                        {proper: "Noon to 6 p.m.", field: "_noon_to_6_pm"},
-                        {proper: "6 p.m. to midnight", field: "_6_pm_to_midnight"},
-                        {proper: "Sunday", field: "sunday"},
-                        {proper: "Monday", field: "monday"},
-                        {proper: "Tuesday", field: "tuesday"},
-                        {proper: "Wednesday", field: "wednesday"},
-                        {proper: "Thursday", field: "thursday"},
-                        {proper: "Friday", field: "friday"},
-                        {proper: "Saturday", field: "saturday"},
+                    type: "incidents",
+                    proper: "Time",
+                    radio_buttons: [],
+                    checkboxes: [
+                        {opt: "Midnight to 6 a.m.", opt_field: "_midnight_to_6_am"},
+                        {opt: "6 a.m. to Noon", opt_field: "_6_am_to_noon"},
+                        {opt: "Noon to 6 p.m.", opt_field: "_noon_to_6_pm"},
+                        {opt: "6 p.m. to midnight", opt_field: "_6_pm_to_midnight"},
+                        {opt: "Sunday", opt_field: "sunday"},
+                        {opt: "Monday", opt_field: "monday"},
+                        {opt: "Tuesday", opt_field: "tuesday"},
+                        {opt: "Wednesday", opt_field: "wednesday"},
+                        {opt: "Thursday", opt_field: "thursday"},
+                        {opt: "Friday", opt_field: "friday"},
+                        {opt: "Saturday", opt_field: "saturday"},
                     ]
                 }];
-
+                var grouped_filters = _.groupBy(this.view_object.filters, function(item){
+                    return item.type;
+                });
+                this.view_object.filter_types = _.keys(grouped_filters)
                 this.render();
-
             },
 
             calculate_model_attributes: function(view_object){
-                view_object.total_people.forEach(function(model, index){
-
+                view_object.genders = [];
+                view_object.ethnicities = [];
+                view_object.responses = [];
+                view_object.relevant_people.forEach(function(model, index){
                     var _this = model.attributes;
-
-                    var law_enforcement_agency = view_object.total_incidents.where({
-                        district_attorney_file_number: _this.district_attorney_file_number
-                    });
-
-                    model.set("officer_police_agency", law_enforcement_agency[0].attributes.officer_police_agency);
-
-                    if (_this.officer_police_agency.indexOf("Los Angeles County Sheriff's Department") === 0){
-                        model.set("los-angeles-county-sheriffs-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Los Angeles Police Department") === 0){
-                        model.set("los-angeles-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Long Beach Police Department") === 0){
-                        model.set("long-beach-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Inglewood Police Department") === 0){
-                        model.set("inglewood-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Gardena Police Department") === 0){
-                        model.set("gardena-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Hawthorne Police Department") === 0){
-                        model.set("hawthorne-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Monterey Park Police Department") === 0){
-                        model.set("monterey-park-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("South Gate Police Department") === 0){
-                        model.set("south-gate-police-department", true);
-                    };
-
-                    // was this a non-fatal incident
-                    if (_this.fatal === true){
-                        model.set("nonfatal_calc", false);
-                    } else {
-                        model.set("nonfatal_calc", true);
-                    };
-
-                    var demographics = view_object.demographic_data.where({
-                        districtattorneyfilenumber: _this.district_attorney_file_number
-                    });
-
-                    if (demographics.length){
-                        model.set(demographics[0].attributes);
-                    }
-
-                    /* set gender data */
-                    /* if fatal and no data then === null */
-                    /* if not fatal and no data then === undefined */
-
-                    if (_this.gender === "MALE"){
-                        model.set("gender", "male");
-                        model.set("male", true);
-                    } else if (_this.gender === "FEMALE"){
-                        model.set("gender", "female");
-                        model.set("female", true);
-                    } else if (_this.gender === null){
-                        model.set("gender", "no_gender");
-                        model.set("male", false);
-                        model.set("female", false);
-                    } else {
-                        model.set("gender", "no_gender");
-                        model.set("male", false);
-                        model.set("female", false);
-                    };
-
-                    /* set ethnicity data */
-                    /* if fatal and no data then === null */
-                    /* if not fatal and no data then === undefined */
-
-                    if (_this.ethnicity === "HISPANIC/LATIN AMERICAN"){
-                        model.set("ethnicity", "HISPANIC");
-                    } else if (_this.ethnicity === "MIDDLE EASTERN"){
-                        model.set("ethnicity", "MIDDLE-EASTERN");
-                    } else if (_this.ethnicity){
-                        model.set("ethnicity", _this.ethnicity);
-                    } else if (_this.ethnicity === null){
-                        model.set("ethnicity", "no_data");
-                    } else {
-                        model.set("ethnicity", undefined);
-                    };
-
-                    /* set age data */
-
-                    if (_this.age === undefined){
-                        model.set("age_ranges", null);
-                        model.set("age", null);
-                    } else {
-                        var comparison_age = parseInt(_this.age);
-                        if (comparison_age < 18){
-                            model.set("age_ranges", "under_18");
-                        } else if (comparison_age >= 18 && comparison_age <= 24){
-                            model.set("age_ranges", "18_24");
-                        } else if (comparison_age >= 25 && comparison_age <= 34){
-                            model.set("age_ranges", "25_34");
-                        } else if (comparison_age >= 35 && comparison_age <= 44){
-                            model.set("age_ranges", "35_44");
-                        } else if (comparison_age >= 45 && comparison_age <= 54){
-                            model.set("age_ranges", "45_54");
-                        } else if (comparison_age >= 55){
-                            model.set("age_ranges", "55_over");
-                        } else{
-                            model.set("age_ranges", "no_age");
-                        };
-                    };
-
-                    // did they have a firearm
-                    model.set("armed_with_firearm_calc", false)
-
-                    if (_this.person_weapon != null){
-
-                        var array_of_weapons = [
-                            "assault weapon",
-                            "handgun",
-                            "firearm",
-                            "officer's weapon",
-                            "shotgun",
-                            "rifle",
-                        ];
-
-                        var length = array_of_weapons.length;
-
-                        while(length--){
-                            if (_this.person_weapon.indexOf(array_of_weapons[length]) != -1){
-                                model.set("armed_with_firearm_calc", true)
-                            }
-                        }
-
-                    };
-
-                    // shot because cop claims they tried to run them over with a car
-                    if (_this.person_weapon === "vehicle"){
-                        model.set("person_unarmed", true);
-                        model.set("vehicle_as_weapon", true);
-                        model.set("person_weapon", null);
-                    };
-
-                    // did they have a weapon
-                    if (_this.person_armed_calc === true){
-                        if (_this.armed_with_firearm_calc === false){
-                            model.set("armed_with_other_calc", true);
-                        }
-                    } else {
-                        model.set("armed_with_other_calc", false);
-                    };
-
-                    // did they have a replica or toy gun
-                    if (_this.person_weapon === "replica, nonfunctional, toy or blank gun"){
-                        model.set("person_armed_calc", null);
-                        model.set("person_unarmed", null);
-                        model.set("armed_with_firearm_calc", null)
-                        model.set("armed_with_other_calc", null);
-                        model.set("person_gunlike", true);
-                    };
-
-                });
-
-                view_object.total_incidents.forEach(function(model, index){
-
-                    var _this = model.attributes;
-
                     // create a year of incident measure
-                    model.set("year_of_incident", parse_year(_this.date_of_incident));
-
+                    model.set("incident_year", parse_year(_this.date_of_incident));
                     // create a month of incident measure
-                    model.set("month_of_incident", parse_month_of_year(_this.date_of_incident));
-
+                    model.set("incident_month", parse_month_of_year(_this.date_of_incident));
                     // create a day of the week measure
-                    model.set("day_of_incident", parse_day_of_week(_this.date_of_incident));
-
-                    if (_this.day_of_incident === "Sunday"){
+                    model.set("incident_day", parse_day_of_week(_this.date_of_incident));
+                    if (_this.incident_day === "Sunday"){
                         model.set("sunday", true);
                         model.set("monday", false);
                         model.set("tuesday", false);
@@ -725,7 +473,7 @@
                         model.set("thursday", false);
                         model.set("friday", false);
                         model.set("saturday", false);
-                    } else if (_this.day_of_incident === "Monday"){
+                    } else if (_this.incident_day === "Monday"){
                         model.set("sunday", false);
                         model.set("monday", true);
                         model.set("tuesday", false);
@@ -733,7 +481,7 @@
                         model.set("thursday", false);
                         model.set("friday", false);
                         model.set("saturday", false);
-                    } else if (_this.day_of_incident === "Tuesday"){
+                    } else if (_this.incident_day === "Tuesday"){
                         model.set("sunday", false);
                         model.set("monday", false);
                         model.set("tuesday", true);
@@ -741,7 +489,7 @@
                         model.set("thursday", false);
                         model.set("friday", false);
                         model.set("saturday", false);
-                    } else if (_this.day_of_incident === "Wednesday"){
+                    } else if (_this.incident_day === "Wednesday"){
                         model.set("sunday", false);
                         model.set("monday", false);
                         model.set("tuesday", false);
@@ -749,7 +497,7 @@
                         model.set("thursday", false);
                         model.set("friday", false);
                         model.set("saturday", false);
-                    } else if (_this.day_of_incident === "Thursday"){
+                    } else if (_this.incident_day === "Thursday"){
                         model.set("sunday", false);
                         model.set("monday", false);
                         model.set("tuesday", false);
@@ -757,7 +505,7 @@
                         model.set("thursday", true);
                         model.set("friday", false);
                         model.set("saturday", false);
-                    } else if (_this.day_of_incident === "Friday"){
+                    } else if (_this.incident_day === "Friday"){
                         model.set("sunday", false);
                         model.set("monday", false);
                         model.set("tuesday", false);
@@ -765,7 +513,7 @@
                         model.set("thursday", false);
                         model.set("friday", true);
                         model.set("saturday", false);
-                    } else if (_this.day_of_incident === "Saturday"){
+                    } else if (_this.incident_day === "Saturday"){
                         model.set("sunday", false);
                         model.set("monday", false);
                         model.set("tuesday", false);
@@ -782,10 +530,8 @@
                         model.set("friday", undefined);
                         model.set("saturday", undefined);
                     };
-
                     // create a time of the day measure
                     model.set("time_of_day", parse_time_of_day(_this.date_of_incident));
-
                     if (_this.time_of_day === "_midnight_to_6_am"){
                         model.set("_midnight_to_6_am", true);
                         model.set("_6_am_to_noon", false);
@@ -812,542 +558,480 @@
                         model.set("_noon_to_6_pm", undefined);
                         model.set("_6_pm_to_midnight", undefined);
                     };
-
+                    /* set gender data */
+                    if (_this.person_gender != null || _this.person_gender != undefined){
+                        if (_this.person_gender === "MALE"){
+                            model.set("person_gender", "male");
+                            model.set("person_male", true);
+                            view_object.genders.push(_this.person_gender);
+                        } else if (_this.person_gender === "FEMALE"){
+                            model.set("person_gender", "female");
+                            model.set("person_female", true);
+                            view_object.genders.push(_this.person_gender);
+                        } else {
+                            model.set("person_gender", null);
+                            model.set("person_male", false);
+                            model.set("person_female", false);
+                        };
+                    };
+                    /* set ethnicity data */
+                    model.set("no_ethnicity", true);
+                    if (_this.fatal === true){
+                        if (_this.person_ethnicity != null || _this.person_ethnicity != undefined){
+                            if (_this.person_ethnicity === "HISPANIC/LATIN AMERICAN"){
+                                model.set("person_ethnicity", "latino");
+                            } else if (_this.person_ethnicity === "MIDDLE EASTERN"){
+                                model.set("person_ethnicity", "mid-eastn");
+                            };
+                            model.set("person_ethnicity", _this.person_ethnicity.toLowerCase());
+                            model.set(_this.person_ethnicity, true);
+                        } else {
+                            model.set("person_ethnicity", "na");
+                        }
+                    } else {
+                        model.set("person_ethnicity", "na");
+                    };
+                    view_object.ethnicities.push(_this.person_ethnicity);
+                    /* set age data */
+                    if (_this.person_age === undefined || _this.person_age === null){
+                        model.set("age_ranges", "na");
+                        model.set("person_age", "na");
+                    } else {
+                        var comparison_age = parseInt(_this.person_age);
+                        if (comparison_age < 18){
+                            model.set("age_ranges", "under_18");
+                        } else if (comparison_age >= 18 && comparison_age <= 24){
+                            model.set("age_ranges", "18_24");
+                        } else if (comparison_age >= 25 && comparison_age <= 34){
+                            model.set("age_ranges", "25_34");
+                        } else if (comparison_age >= 35 && comparison_age <= 44){
+                            model.set("age_ranges", "35_44");
+                        } else if (comparison_age >= 45 && comparison_age <= 54){
+                            model.set("age_ranges", "45_54");
+                        } else if (comparison_age >= 55){
+                            model.set("age_ranges", "55_over");
+                        } else{
+                            model.set("age_ranges", "na");
+                        };
+                    };
+                    if (_this.officer_police_agency.indexOf("Los Angeles County Sheriff's Department") === 0){
+                        model.set("los-angeles-county-sheriffs-department", true);
+                    };
+                    if (_this.officer_police_agency.indexOf("Los Angeles Police Department") === 0){
+                        model.set("los-angeles-police-department", true);
+                    };
+                    if (_this.officer_police_agency.indexOf("Long Beach Police Department") === 0){
+                        model.set("long-beach-police-department", true);
+                    };
+                    if (_this.officer_police_agency.indexOf("Inglewood Police Department") === 0){
+                        model.set("inglewood-police-department", true);
+                    };
+                    if (_this.officer_police_agency.indexOf("Gardena Police Department") === 0){
+                        model.set("gardena-police-department", true);
+                    };
+                    if (_this.officer_police_agency.indexOf("Hawthorne Police Department") === 0){
+                        model.set("hawthorne-police-department", true);
+                    };
+                    if (_this.officer_police_agency.indexOf("Monterey Park Police Department") === 0){
+                        model.set("monterey-park-police-department", true);
+                    };
+                    if (_this.officer_police_agency.indexOf("South Gate Police Department") === 0){
+                        model.set("south-gate-police-department", true);
+                    };
+                    if (_this.person_unarmed === null && _this.person_armed_calc === null){
+                        model.set("not_armed_or_unarmed", true);
+                    };
                     // tell us if the da that went to the scene also completed the report
                     if (_this.da_on_scene != null && _this.district_attorney_prepared_report != null){
                         model.set("da_the_same_calc", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
                     } else {
                         model.set("da_the_same_calc", null);
                     };
-
-                    // was this a non-fatal incident
-                    if (_this.fatal === true){
-                        model.set("nonfatal_calc", false);
-                    } else {
-                        model.set("nonfatal_calc", true);
+                    if (_this.led_to_response_category === "implied weapon is present"){
+                        model.set("led_to_response_category", "weapon implied");
                     };
-
                     if (_this.led_to_response_category === "shots fired"){
-                        model.set("led_to_response_category", "implied weapon is present");
+                        model.set("led_to_response_category", "weapon implied");
                     };
-
                     if (_this.led_to_response_category === "lower-level crime"){
-                        model.set("led_to_response_category", "lower level crime");
+                        model.set("led_to_response_category", "lower level");
                     };
-
                     if (_this.led_to_response_category === "suicidal/wants to die"){
                         model.set("led_to_response_category", "suicidal");
                     };
-
                     if (_this.led_to_response_category === "violent/serious crime"){
-                        model.set("led_to_response_category", "serious crime");
+                        model.set("led_to_response_category", "serious");
                     };
-
+                    if (_this.led_to_response_category === "general disturbance"){
+                        model.set("led_to_response_category", "disturbance");
+                    };
                     if (_this.led_to_response_category === "suspicious or inquisitive cop"){
                         model.set("led_to_response_category", "suspicious cop");
                     };
-
                     if (_this.led_to_response_category != null){
                         _this.led_to_response_category = _this.led_to_response_category.replace(/ /g,"_");
                         model.set(_this.led_to_response_category, true);
                     };
+                    view_object.responses.push(_this.led_to_response_category);
 
-                    // determine if armed
-                    if (_this.person_unarmed === false){
-                        model.set("person_armed_calc", true);
-                    };
-
-                    // did they have a firearm
-                    model.set("armed_with_firearm_calc", false)
-
-                    if (_this.person_weapon != null){
-
-                        var array_of_weapons = [
-                            "assault weapon",
-                            "handgun",
-                            "firearm",
-                            "officer's weapon",
-                            "shotgun",
-                            "rifle",
-                        ];
-
-                        var length = array_of_weapons.length;
-
-                        while(length--){
-                            if (_this.person_weapon.indexOf(array_of_weapons[length]) != -1){
-                                model.set("armed_with_firearm_calc", true)
-                            }
-                        }
-
-                    };
-
-                    // shot because cop claims they tried to run them over with a car
-                    if (_this.person_weapon === "vehicle"){
-                        model.set("person_unarmed", true);
-                        model.set("vehicle_as_weapon", true);
-                        model.set("person_weapon", null);
-                    };
-
-                    // did they have a weapon
-                    if (_this.person_armed_calc === true){
-                        if (_this.armed_with_firearm_calc === false){
-                            model.set("armed_with_other_calc", true);
-                        }
-                    } else {
-                        model.set("armed_with_other_calc", false);
-                    };
-
-                    // did they have a replica or toy gun
-                    if (_this.person_weapon === "replica, nonfunctional, toy or blank gun"){
-                        model.set("person_armed_calc", null);
-                        model.set("person_unarmed", null);
-                        model.set("armed_with_firearm_calc", null)
-                        model.set("armed_with_other_calc", null);
-                        model.set("person_gunlike", true);
-                    };
-
-                    // find single officer incidents
-                    if (_this.multiple_officers === false){
-                        model.set("single_officer_calc", true);
-                    };
-
-                    _this.type_of_incident_number = parseInt(_this.type_of_incident_number);
-
-                    // if (_this.type_of_incident_number === 1){
-                    //     model.set("deadly_force_as_first_calc", true);
-                    // };
-
-                    if (_this.officer_police_agency.indexOf("Los Angeles County Sheriff's Department") === 0){
-                        model.set("los-angeles-county-sheriffs-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Los Angeles Police Department") === 0){
-                        model.set("los-angeles-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Long Beach Police Department") === 0){
-                        model.set("long-beach-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Inglewood Police Department") === 0){
-                        model.set("inglewood-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Gardena Police Department") === 0){
-                        model.set("gardena-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Hawthorne Police Department") === 0){
-                        model.set("hawthorne-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("Monterey Park Police Department") === 0){
-                        model.set("monterey-park-police-department", true);
-                    };
-
-                    if (_this.officer_police_agency.indexOf("South Gate Police Department") === 0){
-                        model.set("south-gate-police-department", true);
-                    };
-
-                    if (_this.case_relevant === true){
-                        var separated_civilian = comma_values_to_array(_this.person_name);
-                        model.set("number_shot", separated_civilian.length);
-
-                        if (_this.number_shot > 1){
-                            model.set("multiple_shot", true);
-                        };
-
-                        if (_this.fatal === true){
-                            if (_this.district_attorney_file_number === "#14-0703"){
-                                model.set("number_fatal", _this.number_shot);
-                                model.set("number_nonfatal", 0);
-                                model.set("multiple_killed", true);
-                            } else if (_this.district_attorney_file_number === "#13-0391"){
-                                model.set("number_fatal", 1);
-                                model.set("number_nonfatal", 1);
-                            } else if (_this.district_attorney_file_number === "#12-0513"){
-                                model.set("number_fatal", 1);
-                                model.set("number_nonfatal", 1);
-                            } else if (_this.district_attorney_file_number === "#14-0428"){
-                                model.set("number_fatal", 1);
-                                model.set("number_nonfatal", 1);
-                            } else if (_this.district_attorney_file_number === "#14-0227"){
-                                model.set("number_fatal", 1);
-                                model.set("number_nonfatal", 1);
-                            } else {
-                                model.set("number_fatal", 1);
-                                model.set("number_nonfatal", 0);
-                            };
-                        } else {
-                            model.set("number_fatal", 0);
-                            model.set("number_nonfatal", _this.number_shot);
-                        };
-                    };
                 });
-                return view_object;
-            },
 
-            created_calculated_collections: function(view_object){
-                view_object.police_agencies = [];
-                view_object.type_of_incident = [];
-                view_object.relevant_incidents.forEach(function(model, index){
-                    var _this = model.attributes;
-                    var parsed_agency = comma_values_to_array(_this.officer_police_agency);
-                    _.each(parsed_agency, function(value){
-                        view_object.police_agencies.push(value.replace(/^\s+|\s+$/gm, ""));
-                    });
-                    if (parsed_agency.length === 1){
-                        model.set("officer_police_agency", parsed_agency[0].replace(/^\s+|\s+$/gm, ""));
-                        model.set("single_police_agency_calc", true);
-                        model.set("multiple_police_agency_calc", false);
-                    } else {
-                        model.set("single_police_agency_calc", false);
-                        model.set("multiple_police_agency_calc", true);
-                    };
-                    var type_of_incident = comma_values_to_array(_this.type_of_incident);
-                    _.each(type_of_incident, function(value){
-                        var output = value.replace(/^\s+|\s+$/gm, "")
-                        view_object.type_of_incident.push(output);
-                    });
-                });
-                view_object.police_agencies = create_models_from_comma_separated(view_object.police_agencies);
-                view_object.type_of_incident = create_models_from_comma_separated(view_object.type_of_incident);
-                return view_object;
-            },
+                view_object.months = [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec"
+                ];
 
-            associate_people_with_incident: function(view_object){
-                var people = view_object.total_people;
-                view_object.relevant_incidents.forEach(function(model, index){
-                    var people_array = [];
-                    var associated_people = people.where({
-                        district_attorney_file_number: model.attributes.district_attorney_file_number
-                    });
-                    associated_people.forEach(function(model, index){
-                        people_array.push(model.attributes);
-                    });
-                    model.set("associated_people_count", people_array.length);
-                    model.set("associated_people", people_array);
-                });
+                view_object.days = [
+                    "Sunday",
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday"
+                ];
+
+                view_object.times = [
+                    "_midnight_to_6_am",
+                    "_6_am_to_noon",
+                    "_noon_to_6_pm",
+                    "_6_pm_to_midnight",
+                ];
+
+                view_object.age_ranges = [
+                    "under_18",
+                    "18_24",
+                    "25_34",
+                    "35_44",
+                    "45_54",
+                    "55_over",
+                    "na"
+                ];
+
+                view_object.responses = _.uniq(view_object.responses).sort();
+                view_object.years = _.uniq(view_object.relevant_people.pluck("incident_year")).sort();
+                view_object.genders = _.uniq(view_object.genders).sort();
+                view_object.ethnicities = _.uniq(view_object.ethnicities).sort();
                 return view_object;
             },
 
             events: {
-                "click [type='checkbox']": "construct_checkbox_filters",
+                "click [type='radio']": "construct_filtered_data",
+                "click [type='checkbox']": "construct_filtered_data",
                 "click #clear-filters": "clear_checkbox_filters",
                 "click #demo-filters": "demo_filters"
             },
 
             render: function(){
 
-                var data = this.view_object.relevant_incidents;
+                this.view_object.top_line_stats = {};
 
-                var top_line_stats = {};
-
-                top_line_stats["Use Of Force Fatal"] = data.where({
+                this.view_object.top_line_stats["Use Of Force Fatal"] = this.view_object.relevant_people.where({
                     fatal: true
                 });
 
-                top_line_stats["Use Of Force Non-Fatal"] = data.where({
+                this.view_object.top_line_stats["Use Of Force Non-Fatal"] = this.view_object.relevant_people.where({
                     nonfatal_calc: true
                 });
 
-                // top_line_stats["Deadly Force as First Response"] = data.where({
-                //     deadly_force_as_first_calc: true
-                // });
-
-                top_line_stats["Armed"] = data.where({
+                this.view_object.top_line_stats["Armed"] = this.view_object.relevant_people.where({
                     person_armed_calc: true
                 });
 
-                top_line_stats["Unarmed"] = data.where({
+                this.view_object.top_line_stats["Unarmed"] = this.view_object.relevant_people.where({
                     person_unarmed: true
                 });
 
-                top_line_stats["Replica, Nonfunctional, Toy Or Blank Gun"] = data.where({
+                this.view_object.top_line_stats["Replica, Nonfunctional, Toy Or Blank Gun"] = this.view_object.relevant_people.where({
                     person_gunlike: true
                 });
 
-                top_line_stats["Armed With Firearm/Gun"] = data.where({
+                this.view_object.top_line_stats["Armed With Firearm/Gun"] = this.view_object.relevant_people.where({
                     armed_with_firearm_calc: true
                 });
 
-                top_line_stats["Armed With Other Weapon"] = data.where({
+                this.view_object.top_line_stats["Armed With Other Weapon"] = this.view_object.relevant_people.where({
                     armed_with_other_calc: true
                 });
 
-                top_line_stats["Fired Weapon"] = data.where({
+                this.view_object.top_line_stats["Fired Weapon"] = this.view_object.relevant_people.where({
                     person_fired_weapon: true
                 });
 
-                top_line_stats["Pointed Weapon"] = data.where({
+                this.view_object.top_line_stats["Pointed Weapon"] = this.view_object.relevant_people.where({
                     person_pointed_weapon: true
                 });
 
-                top_line_stats["Ignored Officer Commands"] = data.where({
+                this.view_object.top_line_stats["Ignored Officer Commands"] = this.view_object.relevant_people.where({
                     person_ignored_officer_commands: true
                 });
 
-                top_line_stats["Mention Of Waistband"] = data.where({
+                this.view_object.top_line_stats["Mention Of Waistband"] = this.view_object.relevant_people.where({
                     mention_of_waistband_in_report: true
                 });
 
-                top_line_stats["Couldn't See Persons Hands"] = data.where({
+                this.view_object.top_line_stats["Couldn't See Persons Hands"] = this.view_object.relevant_people.where({
                     officer_couldnt_see_persons_hands: true
                 });
 
-                top_line_stats["Multiple Civilians Shot"] = data.where({
-                    multiple_shot: true
-                });
-
-                top_line_stats["Multiple Civilians Killed"] = data.where({
-                    multiple_killed: true
-                });
-
-                top_line_stats["Single Officer Fired Weapon"] = data.where({
-                    single_officer_calc: true
-                });
-
-                top_line_stats["Multiple Officers Fired Weapons"] = data.where({
-                    multiple_officers: true
-                });
-
                 // pointed and fired firearm at an officer
-                top_line_stats["Pointed & Fired Firearm"] = data.where({
+                this.view_object.top_line_stats["Pointed & Fired Firearm"] = this.view_object.relevant_people.where({
                     person_pointed_weapon: true,
                     person_fired_weapon: true
                 });
 
                 // ignored commands and demonstrated symptoms of intoxication
-                top_line_stats["Ignored Commands/Symptoms Of Intoxication"] = data.where({
+                this.view_object.top_line_stats["Ignored Commands/Symptoms Of Intoxication"] = this.view_object.relevant_people.where({
                     person_ignored_officer_commands: true,
                     person_intoxicated: true
                 });
 
                 // ignored commands and demonstrated symptoms of mentally illness
-                top_line_stats["Ignored Commands/Symptoms of Mental Illness"] = data.where({
+                this.view_object.top_line_stats["Ignored Commands/Symptoms of Mental Illness"] = this.view_object.relevant_people.where({
                     person_ignored_officer_commands: true,
                     person_mentally_ill: true
                 });
 
                 // reaching for waistband and unarmed
-                top_line_stats["Reaching For Waistband & Unarmed"] = data.where({
+                this.view_object.top_line_stats["Reaching For Waistband & Unarmed"] = this.view_object.relevant_people.where({
                     person_unarmed: true,
                     mention_of_waistband_in_report: true
                 });
 
                 // mentally ill and unarmed
-                top_line_stats["Unarmed & Symptoms of Mental Illness"] = data.where({
+                this.view_object.top_line_stats["Unarmed & Symptoms of Mental Illness"] = this.view_object.relevant_people.where({
                     person_unarmed: true,
                     person_mentally_ill: true
                 });
 
-                var my_data = {
-                    top_line_total: this.view_object.relevant_incidents.length,
-                    top_line_total_people: this.view_object.total_people,
-                    top_line_stats: top_line_stats,
-                    police_agencies: this.view_object.police_agencies.models,
-                    incidents_by_officers: this.view_object.incidents_by_officers.models,
-                    type_of_incident: this.view_object.type_of_incident.models,
-                    response_categories: this.view_object.response_categories,
-                    years: this.view_object.years,
-                    months: this.view_object.months,
-                    days: this.view_object.days,
-                    time_of_day: this.view_object.time_of_day,
-                    filters: this.view_object.filters,
-                    genders: this.view_object.genders,
-                    ethnicities: this.view_object.ethnicities,
-                    age_ranges: this.view_object.age_ranges,
-                };
-                $(this.view_object.container).html(this.view_object.template(my_data));
-                this.construct_checkbox_filters();
+                this.view_object.obj = {};
+                this.view_object.obj.filtered = {};
+                this.view_object.obj.init = {};
+                this.view_object.obj.init.people = this.view_object.relevant_people;
+                this.view_object.obj.init.genders = create_groups(this.view_object.obj.init.people, "person_gender");
+                this.view_object.obj.init.ethnicities = create_groups(this.view_object.obj.init.people, "person_ethnicity");
+                this.view_object.obj.init.age_ranges = create_groups(this.view_object.obj.init.people, "age_ranges");
+                this.view_object.obj.init.days = create_groups(this.view_object.obj.init.people, "incident_day");
+                this.view_object.obj.init.months = create_groups(this.view_object.obj.init.people, "incident_month");
+                this.view_object.obj.init.years = create_groups(this.view_object.obj.init.people, "incident_year");
+                this.view_object.obj.init.times = create_groups(this.view_object.obj.init.people, "time_of_day");
+                this.view_object.obj.init.responses = create_groups(this.view_object.obj.init.people, "led_to_response_category");
+                this.view_object.obj.total = this.view_object.obj.init.people.length;
+                $(this.el).html(this.view_object.template(this.view_object));
+                this.display_data(this.view_object.obj, true, "black");
             },
 
-            construct_checkbox_filters: function(){
-                var obj = {};
-                obj.active_checkboxes = [];
-                obj.selected_filters = {};
-                obj.filtered = {};
-                obj.init = {};
-                obj.total_incidents_initial = this.view_object.total_incidents.where({verified: true}).length;
-                obj.total_people_initial = this.view_object.total_people.length;
-                obj.init.incident_data = this.view_object.relevant_incidents;
-                obj.init.people_data = this.view_object.relevant_people;
-                obj.init.response = this.create_groups(obj.init.incident_data, "led_to_response_category");
-                obj.init.times = this.create_groups(obj.init.incident_data, "time_of_day");
-                obj.init.daily = this.create_groups(obj.init.incident_data, "day_of_incident");
-                obj.init.monthly = this.create_groups(obj.init.incident_data, "month_of_incident");
-                obj.init.yearly = this.create_groups(obj.init.incident_data, "year_of_incident");
-
-                /* shifts demographics to people */
-                obj.init.gender = this.create_groups(obj.init.people_data, "gender");
-                obj.init.ethnic = this.create_groups(obj.init.people_data, "ethnicity");
-                obj.init.age = this.create_groups(obj.init.people_data, "age_ranges");
-                obj.relevant_incidents_initial = obj.init.incident_data.length;
-                obj.relevant_people_initial = obj.init.people_data.length;
-
-                if (!$("input:checkbox").is(":checked")){
-                    this.display_data(obj, true);
-                    $(".kpcc-table td.swap").css({color: "black"});
-                } else {
-                    $("input:checkbox").each(function(){
-                        var $this = $(this);
-                        if($this.is(":checked")){
-                            var filter_id = $this.attr("id");
-                            obj.active_checkboxes.push(filter_id);
-                        }
-                    });
-                    _.each(obj.active_checkboxes, function(key){
-                        obj.selected_filters[key] = true;
-                    });
-                    obj.filtered.incident_data = new App.Collections.Incidents(
-                        obj.init.incident_data.where(obj.selected_filters)
-                    );
-                    obj.filtered.people_data = new App.Collections.Persons(
-                        obj.init.people_data.where(obj.selected_filters)
-                    );
-                    obj.total_incidents_filtered = obj.filtered.incident_data.length;
-                    obj.total_people_filtered = obj.filtered.people_data.length;
-                    obj.filtered.response = this.create_groups(obj.filtered.incident_data, "led_to_response_category");
-                    obj.filtered.times = this.create_groups(obj.filtered.incident_data, "time_of_day");
-                    obj.filtered.daily = this.create_groups(obj.filtered.incident_data, "day_of_incident");
-                    obj.filtered.monthly = this.create_groups(obj.filtered.incident_data, "month_of_incident");
-                    obj.filtered.yearly = this.create_groups(obj.filtered.incident_data, "year_of_incident");
-                    var is_fatal_checked = _.has(obj.selected_filters, "fatal");
-                    if (is_fatal_checked === true){
-                        /* shifts demographics to people */
-                        obj.filtered.gender = this.create_groups(obj.filtered.people_data, "gender");
-                        obj.filtered.ethnic = this.create_groups(obj.filtered.people_data, "ethnicity");
-                        obj.filtered.age = this.create_groups(obj.filtered.people_data, "age_ranges");
-                    };
-                    this.display_data(obj, false);
-                }
-            },
-
-            display_data: function(obj, initial){
-                $("td#all-people").html(obj.total_people_initial);
-                $("td#all-incidents").html(obj.total_incidents_initial);
-                $("td#relevant-people").html(obj.relevant_people_initial);
-                $("td#relevant-incidents").html(obj.relevant_incidents_initial);
+            display_data: function(obj, initial, color){
+                $("td#all-people").html(this.view_object.obj.total);
+                $("td#relevant-people").html(this.view_object.obj.total);
                 if (initial === true){
-                    $("td#filtered-people").html(obj.relevant_people_initial + " of " + obj.relevant_people_initial + "<br />people<br /> " + percentify(obj.relevant_people_initial / obj.relevant_people_initial) + "%");
-                    $("td#filtered-display").html(obj.relevant_incidents_initial + " of " + obj.relevant_incidents_initial + "<br />incidents<br /> " + percentify(obj.relevant_incidents_initial / obj.relevant_incidents_initial) + "%");
-                    this.display_initial_data(obj);
+                    this.chart_data(obj.init, this.view_object, color);
                 } else {
-                    if (obj.total_people_filtered > 0){
-                        $("td#filtered-people").html(obj.total_people_filtered + " of " + obj.relevant_people_initial + "<br />people<br /> " + percentify(obj.total_people_filtered / obj.relevant_people_initial) + "%");
-                    } else {
-                        $("td#filtered-people").html("n/a");
-                    };
-                    $("td#filtered-display").html(obj.total_incidents_filtered + " of " + obj.relevant_incidents_initial + "<br />incidents<br /> " + percentify(obj.total_incidents_filtered / obj.relevant_incidents_initial) + "%");
-                    $("td#filtered-people").css({color: "red"});
-                    $("td#filtered-display").css({color: "red"});
-                    this.display_filtered_data(obj);
+                    this.chart_data(obj.filtered, this.view_object, color);
                 };
             },
 
-            display_initial_data: function(obj){
-                var keys = _.keys(obj.init);
-                keys.forEach(function(item){
-                    var these = _.keys(obj.init[item]);
-                    if (item === "gender" || item === "ethnic" || item === "age"){
-                        these.forEach(function(value){
-                            $("td#_" + value).html(" -- ");
-                            $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
-                        });
-                    } else {
-                        these.forEach(function(value){
-                            var data = obj.init[item][value];
-                            if (data === undefined || data.length === 0){
-                                $("td#_" + value).html(" -- ");
-                                $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
-                            } else {
-                                $("td#_" + value).html(data.length + " of " + obj.relevant_people_initial + "<br />incidents <br /> " + percentify(data.length / obj.relevant_people_initial) + "%");
-                                $("td#_" + value).css({color: "red"});
-                            };
-                            if (item === "yearly"){
-                                data.forEach(function(model){
-                                    var separated_civilian = comma_values_to_array(model.attributes.person_name);
-                                    if (separated_civilian.length > 1){
-                                        $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>* " + separated_civilian[0] + "<br />*" + separated_civilian[1] + "</a>");
-                                    } else if (separated_civilian.length === 1){
-                                        $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>" + separated_civilian[0] + "</a>");
-                                    };
-                                });
-                            };
-                        });
-                    };
-                });
-            },
+            chart_data: function(obj, main_obj, color){
 
-            display_filtered_data: function(obj){
-                var keys = _.keys(obj.init);
-                keys.forEach(function(item){
-                    var those = _.keys(obj.init[item]);
-                    var these = _.keys(obj.filtered[item]);
-                    if (item === "gender" || item === "ethnic" || item === "age"){
-                        if (these.length){
-                            those.forEach(function(value){
-                                var data = obj.filtered[item][value];
-                                if (data === undefined || data.length <= 0){
-                                    $("td#_" + value).html(" -- ");
-                                    $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
-                                } else {
-                                    $("td#_" + value).html(data.length + " of " + obj.total_people_filtered + "<br />people<br /> " + percentify(data.length / obj.total_people_filtered) + "%");
-                                    $("td#_" + value).css({color: "red"});
+                // display the overall figures
+                var total = main_obj.total_peoples.length;
+                var people_empty = _.isEmpty(obj.people.models);
+                if (people_empty === false){
+                    $("td#filtered-people").html(obj.people.length + " / " + total + "<br />" + percentify(obj.people.length / total) + "%");
+                } else {
+                    $("td#filtered-people").html("n/a" + "<br />" + "0.00%");
+                    $("td#filtered-people").css({color: "rgba(0, 0, 0, 0.3)"});
+                };
+
+                // display the parsed figures
+                _.keys(obj).forEach(function(item, index, list){
+                    if (item != "people"){
+                        var is_obj_empty = _.isEmpty(obj[item]);
+                        if (is_obj_empty === false){
+                            main_obj[item].forEach(function(key, index, list){
+                                var has_data = _.has(obj[item], key);
+                                if (has_data === false){
+                                    obj[item][key] = [];
                                 };
                             });
-                        } else {
-                            those.forEach(function(value){
-                                $("td#_" + value).html(" -- ");
-                                $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
-                            });
-                        }
-                    } else {
-                        if (these.length){
-                            those.forEach(function(value){
-                                var data = obj.filtered[item][value];
-                                if (data === undefined || data.length <= 0){
-                                    $("td#_" + value).html(" -- ");
-                                    $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
-                                } else {
-                                    $("td#_" + value).html(data.length + " of " + obj.total_incidents_filtered + "<br />incidents<br /> " + percentify(data.length / obj.total_incidents_filtered) + "%");
-                                    $("td#_" + value).css({color: "red"});
-                                };
-                                if (item === "yearly"){
-                                    if (data != undefined){
+                            _.keys(obj[item]).forEach(function(value){
+                                var data = obj[item][value];
+                                if (data.length > 0){
+                                    $("td#_" + value).html(data.length + " / " + obj.people.length + "<br />" + percentify(data.length / obj.people.length) + "%");
+                                    $("td#_" + value).css({color: color});
+                                    if (item === "years"){
                                         data.forEach(function(model){
-                                            var separated_civilian = comma_values_to_array(model.attributes.person_name);
-                                            if (separated_civilian.length > 1){
-                                                $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>* " + separated_civilian[0] + "<br />*" + separated_civilian[1] + "</a>");
-                                            } else if (separated_civilian.length === 1){
-                                                $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = 'http://ois.scprdev.org/incidents/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.url + "' target='_blank'>" + separated_civilian[0] + "</a>");
-                                            };
+                                            $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = '/peoples/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.incident_url + "' target='_blank'>" + model.attributes.person_name + "</a>");
                                         });
                                     };
+                                } else {
+                                    $("td#_" + value).html("n-a" + "<br />" + "0.00%");
+                                    $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
                                 };
                             });
                         } else {
-                            those.forEach(function(value){
-                                $("td#_" + value).html(" -- ");
-                                $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
+                            main_obj[item].forEach(function(key, index, list){
+                                var has_data = _.has(obj[item], key);
+                                if (has_data === false){
+                                    obj[item][key] = [];
+                                };
+                            });
+                            _.keys(obj[item]).forEach(function(value){
+                                var data = obj[item][value];
+                                if (data.length > 0){
+                                    $("td#_" + value).html(data.length + " / " + obj.people.length + "<br />" + percentify(data.length / obj.people.length) + "%");
+                                    $("td#_" + value).css({color: color});
+                                    if (item === "years"){
+                                        data.forEach(function(model){
+                                            $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = '/peoples/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.incident_url + "' target='_blank'>" + model.attributes.person_name + "</a>");
+                                        });
+                                    };
+                                } else {
+                                    $("td#_" + value).html("n-a" + "<br />" + "0.00%");
+                                    $("td#_" + value).css({color: "rgba(0, 0, 0, 0.3)"});
+                                };
                             });
                         };
                     };
                 });
             },
 
-            create_groups: function(object, key){
-                var output = object.groupBy(function(model){
-                    return model.get(key);
+            construct_filtered_data: function(){
+                this.view_object.obj.active_checkboxes = this.get_selected_filters();
+
+                // var incident_filters = {};
+                // _.each(this.view_object.obj.active_checkboxes.incidents, function(item, index, list){
+                //     return incident_filters[item] = true;
+                // });
+                // var people_filters = {};
+                // _.each(this.view_object.obj.active_checkboxes.peoples, function(item, index, list){
+                //     return people_filters[item] = true;
+                // });
+
+                var all_filters = {};
+                _.each(this.view_object.obj.active_checkboxes, function(item, index, list){
+                    return all_filters[item] = true;
                 });
-                return output;
+
+                this.view_object.obj.filtered.people = new App.Collections.Peoples();
+
+                // var people_filters_empty = _.isEmpty(people_filters);
+                // var incident_filters_empty = _.isEmpty(incident_filters);
+
+                var all_filters_empty = _.isEmpty(this.view_object.obj.active_checkboxes);
+
+                if (all_filters_empty === true){
+                    this.view_object.obj.filtered.people = this.view_object.obj.init.people;
+                } else {
+                    this.view_object.obj.filtered.people.add(this.view_object.obj.init.people.where(all_filters));
+                }
+
+                // if (people_filters_empty === true && incident_filters_empty === true){
+                //     this.view_object.obj.filtered.people = this.view_object.obj.init.people;
+                // } else if (people_filters_empty === false && incident_filters_empty === true){
+                //     this.view_object.obj.filtered.people.add(this.view_object.obj.init.people.where(people_filters));
+                // } else if (people_filters_empty === true && incident_filters_empty === false){
+                //     var people_via_incidents = new App.Collections.Incidents(
+                //         this.view_object.relevant_incidents.where(incident_filters)
+                //     );
+                //     this.view_object.obj.filtered.people.add(people_via_incidents.models);
+                // } else if (people_filters_empty === false && incident_filters_empty === false){
+                //     var a = this.view_object.obj.init.people.where(people_filters);
+                //     var b = this.view_object.relevant_incidents.where(incident_filters);
+                //     var case_ids = [];
+                //     b.forEach(function(model, index){
+                //         var _this = model.attributes;
+                //         case_ids.push(_this.district_attorney_file_number);
+                //     });
+                //     var incident_filters_to_assign = _.keys(incident_filters);
+                //     a.forEach(function(model, index){
+                //         var _this = model.attributes;
+                //         var test = _.contains(case_ids, _this.district_attorney_file_number);
+                //         if (test === true){
+                //             incident_filters_to_assign.forEach(function(item, index){
+                //                 model.set(item, true);
+                //             });
+                //         } else {
+                //             incident_filters_to_assign.forEach(function(item, index){
+                //                 model.set(item, false);
+                //             });
+                //         }
+                //     });
+                //     var selected_filters = _.extend(incident_filters, people_filters);
+                //     this.view_object.obj.filtered.people.add(this.view_object.obj.init.people.where(selected_filters));
+                // };
+
+                this.view_object.obj.filtered.genders = create_groups(this.view_object.obj.filtered.people, "person_gender");
+                this.view_object.obj.filtered.ethnicities = create_groups(this.view_object.obj.filtered.people, "person_ethnicity");
+                this.view_object.obj.filtered.age_ranges = create_groups(this.view_object.obj.filtered.people, "age_ranges");
+                this.view_object.obj.init.age_ranges = create_groups(this.view_object.obj.filtered.people, "age_ranges");
+                this.view_object.obj.filtered.times = create_groups(this.view_object.obj.filtered.people, "time_of_day");
+                this.view_object.obj.filtered.days = create_groups(this.view_object.obj.filtered.people, "incident_day");
+                this.view_object.obj.filtered.months = create_groups(this.view_object.obj.filtered.people, "incident_month");
+                this.view_object.obj.filtered.years = create_groups(this.view_object.obj.filtered.people, "incident_year");
+                this.view_object.obj.filtered.responses = create_groups(this.view_object.obj.filtered.people, "led_to_response_category");
+                $("td#filtered-people").css({color: "red"});
+                this.display_data(this.view_object.obj, false, "red");
+            },
+
+            get_selected_filters: function(){
+                var filters = [];
+                // var filters = {};
+                // this.view_object.filter_types.forEach(function(item, index, obj){
+                //     filters[item] = [];
+                // });
+                $("input:radio").each(function(){
+                    var $this = $(this);
+                    if($this.is(":checked")){
+                        var filter_id = $this.attr("id");
+                        var filter_type = $this.attr("class").split(" ")[0];
+                        // if (filter_id === "fatal"){
+                        //     $("label.display-until-toggle").addClass("invisible");
+                        //     $("span.hidden-until-toggle").removeClass("invisible");
+                        //     filters[filter_type].push(filter_id);
+                        // } else if (filter_id === "nonfatal_calc"){
+                        //     $("span.hidden-until-toggle").addClass("invisible");
+                        //     $("label.display-until-toggle").removeClass("invisible");
+                        //     $("input:radio[name='person_ethnicity']").attr("checked", false);
+                        //     filters[filter_type].push("no_ethnicity");
+                        //     filters[filter_type].push(filter_id);
+                        // } else {
+                        //     filters[filter_type].push(filter_id);
+                        // };
+                        // filters[filter_type].push(filter_id);
+                        filters.push(filter_id);
+                    };
+                });
+                $("input:checkbox").each(function(){
+                    var $this = $(this);
+                    if($this.is(":checked")){
+                        var filter_id = $this.attr("id");
+                        var filter_type = $this.attr("class");
+                        // filters[filter_type].push(filter_id)
+                        filters.push(filter_id);
+                    }
+                });
+                return filters;
             },
 
             clear_checkbox_filters: function(){
+                $("input:radio").each(function(){
+                    $(this).attr("checked", false);
+                });
                 $("input:checkbox").each(function(){
                     $(this).attr("checked", false);
                 });
-                this.construct_checkbox_filters();
+                this.render();
             },
 
             demo_filters: function(){
@@ -1356,9 +1040,7 @@
                 $("input:checkbox[id^=multiple_officers]").attr("checked", true);
                 this.construct_checkbox_filters();
             },
-
         });
-
     })();
 
     $(function(){
@@ -1373,342 +1055,262 @@
 </script>
 
 <script id="my_template" type="text/template">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <p>This tool provides a series of true/false filters that allows you to explore the Use of Force Data we have transcribed. The data is based on declination memos that are filed by the Los Angeles District Attorney's Office after Use of Force cases. The declination memos were filed between Jan. 1, 2010 to March 30, 2015.</p>
-                <p>This data only shows the number of Use of Force cases reviewed by the Los Angeles District Attorney's Office in that timeframe. It is not the total number of cases.</p>
-                <p>Use any combination of filters to ask questions of the data, see the results by year, and get links to the cases relevant to your query.</p>
-                <p><strong>An example</strong>: Lets say I wanted to see all <em>Fatal incidents</em> in which the <em>Person Was Unarmed</em> and there were <em>Multiple Officers Involved</em>. Well, you would check the <a id="demo-filters" href="javascript:void(0)">appropriate boxes</a>.</p>
-                <p>From January 2001 to present, JSID has rolled out to 1,331 officer-involved-shooting incidents. I do not have the number of closing letters issued since many cases are still pending. Those are OIS incidents that have occurred in Los Angeles County.</p>
-                <p>There has been no on-duty officer charged with a crime in an OIS incident since 2005. In fact, the last on-duty officer charged was in September 2000 when LAPD Officer Ronald Orosco shot an unarmed African American man in the back following a traffic stop while Officer Orosco was on duty. Orosco was charged in September 2000 in case BA240008. He pleaded to one count of shooting at an occupied motor vehicle. He was sentenced to five years in state prison on Oct. 29, 2001.</p>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h5>Top Line Stats</h5>
+            <ul>
+                <@ _.each(top_line_stats, function(value, key){ @>
+                    <@ var percent = toFixedPercent(value.length, obj.total); @>
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                        <li><strong><@= key @></strong>:<br />&nbsp;&nbsp;<em><@= value.length @> people out of <@= obj.total @> (<@= percent @>%)</em></li>
+                    </div>
+                <@ }); @>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <@ _.each(filters, function(filter) { @>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <h5>Top Line Stats - <@= top_line_total @> incidents</h5>
-                        <ul>
-                            <@ _.each(top_line_stats, function(value, key){ @>
-                                <@ var percent = toFixedPercent(value.length, top_line_total); @>
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                                    <li><strong><@= key @></strong>:<br />&nbsp;&nbsp;<em><@= value.length @> incidents out of <@= top_line_total @> (<@= percent @>%)</em></li>
-                                </div>
-                            <@ }); @>
-                        </ul>
+                    <div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
+                        <div id="<@= filter.type @>" class="singlecol__one-fourth">
+                            <form role="form" class="form-inline">
+                                <fieldset>
+                                    <legend class="form__legend"><@= filter.proper @></legend>
+                                    <@ _.each(filter.radio_buttons, function(item){ @>
+                                        <div class="radio field_name">
+                                            <@ _.each(item.buttons, function(button){ @>
+                                                <label class="radio-inline" for="<@= button.opt_field @>">
+                                                    <input type="radio" class="<@= filter.type @>" id="<@= button.opt_field @>" name="<@= item.field_name @>" value="<@= button.opt @>"> <@= button.opt @>
+                                                    <span><@= button.opt @></span>
+                                                </label>
+                                            <@ }); @>
+                                        </div>
+                                    <@ }); @>
+                                    <@ _.each(filter.checkboxes, function(item){ @>
+                                        <div class="checkbox col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                            <label class="checkbox-inline" for="<@= item.opt_field @>"><@= item.opt @>
+                                                <input type="checkbox" class="<@= filter.type @>" id="<@= item.opt_field @>" name="<@= item.opt_field @>" value="<@= item.opt_field @>">
+                                            </label>
+                                        </div>
+                                    <@ }); @>
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                <form role="form" class="form-inline">
-                    <@ _.each(filters, function(filter) { @>
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-6 col-md-12 col-lg-12">
-                                <h5><@= filter.type @></h5>
-                                <@ _.each(filter.filters, function(checkbox){ @>
-                                    <div class="checkbox col-xs-12 col-sm-6 col-md-4 col-lg-3">
-                                        <label class="checkbox-inline" for="<@= checkbox.field @>">
-                                            <input type="checkbox" id="<@= checkbox.field @>" value="<@= checkbox.field @>"> <@= checkbox.proper @>
-                                        </label>
-                                    </div>
-                                <@ }); @>
-                            </div>
-                        </div>
-                    <@ }); @>
-                </form>
+            <@ }); @>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="btn-group" style="width: 100%; margin: 10px 0 10px 0;">
+                <a id="clear-filters" class="btn btn-success btn-block" href="javascript:void(0)">Clear Filters</a>
             </div>
         </div>
-        <hr></hr>
+    </div>
+    <div id="table-container">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="btn-group" style="width: 100%; margin: 10px 0 10px 0;">
-                    <a id="clear-filters" class="btn btn-success btn-block" href="javascript:void(0)">Clear Filters</a>
-                </div>
-                <div id="table-container">
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h5 class="text-center">View statistics for people</h5>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align: center; width: 33.3%;">Total People</th>
-                                        <th style="text-align: center; width: 33.3%;">Filtered People</th>
-                                        <th style="text-align: center; width: 33.3%;">Relevant People</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td id="all-people" style="text-align: center; width: 33.3%;"></td>
-                                        <td style="text-align: center; width: 33.3%;"></td>
-                                        <td id="relevant-people" style="text-align: center; width: 33.3%;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align: center; width: 33.3%;"></td>
-                                        <td class="swap" id="filtered-people" style="text-align: center; width: 33.3%;"></td>
-                                        <td style="text-align: center; width: 33.3%;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                            <h6 class="text-center">Gender</h6>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <@ _.each(genders, function(gender){ @>
-                                            <th style="text-align: center; width: 20%;"><@= gender @></th>
-                                        <@ }); @>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <@ _.each(genders, function(gender){ @>
-                                            <td class="swap" id="_<@= gender @>" style="text-align: center; width: 20%;">--</td>
-                                        <@ }); @>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                            <h6 class="text-center">Ethnicity</h6>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <@ var width = 100 / ethnicities.length @>
-                                        <@ _.each(ethnicities, function(ethnicity){ @>
-                                            <@ if (ethnicity != undefined) { @>
-                                                <th style="text-align: center; width: <@= width @>%;"><@= ethnicity @></th>
-                                            <@ } @>
-                                        <@ }); @>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <@ _.each(ethnicities, function(ethnicity){ @>
-                                            <@ if (ethnicity != undefined) { @>
-                                                <td class="swap" id="_<@= ethnicity @>" style="text-align: center; width: <@= width @>%;">--</td>
-                                            <@ } @>
-                                        <@ }); @>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">Ages</h6>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <@ _.each(age_ranges, function(age){ @>
-                                            <th style="text-align: center; width: 14.25%;"><@= age @></th>
-                                        <@ }); @>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                    <@ _.each(age_ranges, function(age){ @>
-                                        <td class="swap" id="_<@= age @>" style="text-align: center; width: 14.25%;">--</td>
-                                        <@ }); @>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <hr></hr>
-
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h5 class="text-center">View statistics for incidents</h5>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align: center; width: 33.3%;">Total Incidents</th>
-                                        <th style="text-align: center; width: 33.3%;">Filtered Incidents</th>
-                                        <th style="text-align: center; width: 33.3%;">Relevant Incidents</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td id="all-incidents" style="text-align: center; width: 33.3%;"></td>
-                                        <td style="text-align: center; width: 33.3%;"></td>
-                                        <td id="relevant-incidents" style="text-align: center; width: 33.3%;"></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align: center; width: 33.3%;"></td>
-                                        <td class="swap" id="filtered-display" style="text-align: center; width: 33.3%;"></td>
-                                        <td style="text-align: center; width: 33.3%;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">Response Categories</h6>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <@ _.each(response_categories, function(category){ @>
-                                            <th style="text-align: center; width: 12.5%;"><@= category @></th>
-                                        <@ }); @>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                    <@ _.each(response_categories, function(category){ @>
-                                        <@ var div_id = category.replace(/ /g,"-"); @>
-                                        <td class="swap" id="_<@= div_id @>" style="text-align: center; width: 12.5%;">--</td>
-                                        <@ }); @>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                            <h6 class="text-center">Time of Day</h6>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <@ _.each(time_of_day, function(time){ @>
-                                            <th style="text-align: center; width: 8%;"><@= time @></th>
-                                        <@ }); @>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <@ _.each(time_of_day, function(time){ @>
-                                            <td class="swap" id="_<@= time @>" style="text-align: center; width: 8%;">--</td>
-                                        <@ }); @>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
-                            <h6 class="text-center">Day of the Week</h6>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <@ _.each(days, function(day){ @>
-                                            <th style="text-align: center; width: 8%;"><@= day @></th>
-                                        <@ }); @>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <@ _.each(days, function(day){ @>
-                                            <td class="swap" id="_<@= day @>" style="text-align: center; width: 8%;">--</td>
-                                        <@ }); @>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">By Month</h6>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <@ _.each(months, function(month){ @>
-                                            <th style="text-align: center; width: 8%;"><@= month @></th>
-                                        <@ }); @>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <@ _.each(months, function(month){ @>
-                                            <td class="swap" id="_<@= month @>" style="text-align: center; width: 8%;">--</td>
-                                        <@ }); @>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">By Year</h6>
-                            <table class="kpcc-table">
-                                <thead>
-                                    <tr>
-                                        <@ _.each(years, function(year){ @>
-                                            <th style="text-align: center; width: 20%;"><@= year @></th>
-                                        <@ }); @>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <@ _.each(years, function(year){ @>
-                                            <td class="swap" id="_<@= year @>" style="text-align: center; width: 20%;">--</td>
-                                        <@ }); @>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">Incidents By Police Agencies</h6>
-                            <ul>
-                                <@ _.each(police_agencies, function(model){ @>
-                                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                                        <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
-                                    </div>
-                                <@ }); @>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">Incidents By Police Officers</h6>
-                            <ul>
-                                <@ _.each(incidents_by_officers, function(model){ @>
-
-                                    <@ if (model.attributes.quantity === 3){ @>
-                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
-                                            <ul>
-                                                <@ _.each(model.attributes.cases, function(item){ @>
-                                                    <li><a href="<@= item.url @>" target="blank"><@= item.district_attorney_file_number @></a> (<@= item.officer_police_agency @>)</li>
-                                                <@ }); @>
-                                            </ul>
-                                        </div>
-                                    <@ } else if (model.attributes.quantity === 2){ @>
-                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
-                                            <ul>
-                                                <@ _.each(model.attributes.cases, function(item){ @>
-                                                    <li><a href="<@= item.url @>" target="blank"><@= item.district_attorney_file_number @></a> (<@= item.officer_police_agency @>)</li>
-                                                <@ }); @>
-                                            </ul>
-                                        </div>
-                                    <@ } else { @>
-                                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                            <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
-                                            <ul>
-                                                <@ _.each(model.attributes.cases, function(item){ @>
-                                                    <li><a href="<@= item.url @>" target="blank"><@= item.district_attorney_file_number @></a> (<@= item.officer_police_agency @>)</li>
-                                                <@ }); @>
-                                            </ul>
-                                        </div>
-                                    <@ } @>
-                                <@ }); @>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <h6 class="text-center">Methods of Force Used</h6>
-                            <ul>
-                                <@ _.each(type_of_incident, function(model){ @>
-                                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                                        <li><strong><@= model.attributes.name @></strong>: <@= model.attributes.quantity @></li>
-                                    </div>
-                                <@ }); @>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                <h5 class="text-center">View statistics for people</h5>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center; width: 33.3%;">Total People</th>
+                            <th style="text-align: center; width: 33.3%;">Filtered People</th>
+                            <th style="text-align: center; width: 33.3%;">Relevant People</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="all-people" style="text-align: center; width: 33.3%;"></td>
+                            <td style="text-align: center; width: 33.3%;"></td>
+                            <td id="relevant-people" style="text-align: center; width: 33.3%;"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; width: 33.3%;"></td>
+                            <td class="swap" id="filtered-people" style="text-align: center; width: 33.3%;"></td>
+                            <td style="text-align: center; width: 33.3%;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                <h6 class="text-center">Gender</h6>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <@ var gender_width = 100 / genders.length @>
+                            <@ _.each(genders, function(gender){ @>
+                                <th style="text-align: center; width: <@= gender_width @>%;"><@= gender @></th>
+                            <@ }); @>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <@ _.each(genders, function(gender){ @>
+                                <td class="swap" id="_<@= gender @>" style="text-align: center; width: <@= gender_width @>%;">--</td>
+                            <@ }); @>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                <h6 class="text-center">Ethnicity</h6>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <@ var ethnicity_width = 100 / ethnicities.length @>
+                            <@ _.each(ethnicities, function(ethnicity){ @>
+                                <@ if (ethnicity != undefined) { @>
+                                    <th style="text-align: center; width: <@= ethnicity_width @>%;"><@= ethnicity @></th>
+                                <@ } @>
+                            <@ }); @>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <@ _.each(ethnicities, function(ethnicity){ @>
+                                <@ if (ethnicity != undefined) { @>
+                                    <td class="swap" id="_<@= ethnicity @>" style="text-align: center; width: <@= ethnicity_width @>%;">--</td>
+                                <@ } @>
+                            <@ }); @>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h6 class="text-center">Ages</h6>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <@ var age_width = 100 / age_ranges.length @>
+                            <@ _.each(age_ranges, function(age){ @>
+                                <th style="text-align: center; width: <@= age_width @>%;"><@= age @></th>
+                            <@ }); @>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <@ _.each(age_ranges, function(age){ @>
+                            <td class="swap" id="_<@= age @>" style="text-align: center; width: <@= age_width @>%;">--</td>
+                            <@ }); @>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h6 class="text-center">Response Categories</h6>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <@ var response_width = 100 / responses.length @>
+                            <@ _.each(responses, function(category){ @>
+                                <th style="text-align: center; width: <@= response_width @>%;"><@= category @></th>
+                            <@ }); @>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <@ _.each(responses, function(category){ @>
+                            <@ var div_id = category.replace(/ /g,"-"); @>
+                            <td class="swap" id="_<@= div_id @>" style="text-align: center; width: <@= response_width @>%;">--</td>
+                            <@ }); @>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                <h6 class="text-center">Time of Day</h6>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <@ var time_width = 100 / times.length @>
+                            <@ _.each(times, function(time){ @>
+                                <th style="text-align: center; width: <@= time_width @>%;"><@= time @></th>
+                            <@ }); @>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <@ _.each(times, function(time){ @>
+                                <td class="swap" id="_<@= time @>" style="text-align: center; width: <@= time_width @>%;">--</td>
+                            <@ }); @>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+                <h6 class="text-center">Day of the Week</h6>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <@ var day_width = 100 / days.length @>
+                            <@ _.each(days, function(day){ @>
+                                <th style="text-align: center; width: width: <@= day_width @>%;"><@= day @></th>
+                            <@ }); @>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <@ _.each(days, function(day){ @>
+                                <td class="swap" id="_<@= day @>" style="text-align: center; <@= day_width @>%;">--</td>
+                            <@ }); @>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h6 class="text-center">By Month</h6>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <@ var month_width = 100 / months.length @>
+                            <@ _.each(months, function(month){ @>
+                                <th style="text-align: center; width: <@= month_width @>%;"><@= month @></th>
+                            <@ }); @>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <@ _.each(months, function(month){ @>
+                                <td class="swap" id="_<@= month @>" style="text-align: center; width: <@= month_width @>%;">--</td>
+                            <@ }); @>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h6 class="text-center">By Year</h6>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <@ var year_width = 100 / years.length @>
+                            <@ _.each(years, function(year){ @>
+                                <th style="text-align: center; width: <@= year_width @>%;"><@= year @></th>
+                            <@ }); @>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <@ _.each(years, function(year){ @>
+                                <td class="swap" id="_<@= year @>" style="text-align: center; width: <@= year_width @>%;">--</td>
+                            <@ }); @>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

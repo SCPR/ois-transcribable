@@ -133,7 +133,7 @@
         <div class="do_something">
             <label class="string optional control-label" style="color: #468849;">Will open a new tab to record information about the person shot</label>
             <% @peoples.each do |person| %>
-                <label class="string optional control-label"><%= link_to person.person_name, edit_people_path(person.id), :target => "_blank" %></label>
+                <br /><label class="string optional control-label"><%= link_to person.person_name, edit_people_path(person.id), :target => "_blank" %></label>
             <% end %>
         </div>
 

@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   get "/incidents/data" => "incidents#data"
 
+  get "/incidents/dashboard-data" => "incidents#dashboard_data"
+
   get "/incidents/classify-response" => "incidents#classify_response"
 
   get "/peoples/data" => "peoples#data"
