@@ -4,49 +4,5 @@
             <li><%= link_to 'Home', controller: :home, action: :index %></li>
             <li>Categorize Incident</li>
         </ol>
-        <h1>Incidents#categorize</h1>
-        <p><%= @completed.size %> out of <%= @incidents.size %> (
-        <% if "%.2f" % @completed_percent == "100.00" %>
-            <span style="color: green"><%= "%.2f" % @completed_percent %>%</span>
-        <% else %>
-            <span style="color: red"><%= "%.2f" % @completed_percent %>%</span>
-        <% end %>
-        ) of the relevant incidents have been categorized.</p>
-        <div id="table-container">
-            <table class="kpcc-table">
-                <tr>
-                    <th style="width: 10%;">Categorized</th>
-                    <th style="width: 10%;">DA File Number</th>
-                    <th style="width: 60%;">Underlying Crime</th>
-                    <th style="width: 10%;">Category</th>
-                    <th style="width: 10%;">Submit</th>
-                </tr>
-                <% @incidents.each do |incident| %>
-                    <%= simple_form_for(incident) do |item| %>
-                        <tr>
-                            <% if incident.led_to_response_category == nil %>
-                                <td style="width: 10%; color: red">&mdash;</td>
-                            <% else %>
-                                <td style="width: 10%; color: green">&#10004;</td>
-                            <% end %>
-                            <td style="width: 10%;">
-                                <a href="<%= edit_incident_path(incident.id) %>" target="blank"><%= incident.district_attorney_file_number %></a>
-                            </td>
-                            <td style="width: 60%;">
-                                <%= incident.underlying_crime_leading_to_shooting %>
-                            </td>
-                            <td style="width: 10%;">
-                                <%= item.input :led_to_response_category, collection: [" --select one-- ", "violent/serious crime", "shots fired", "implied weapon is present", "domestic violence", "suicidal/wants to die", "general disturbance", "suspicious or inquisitive cop", "lower-level crime", "traffic violation"], label: false, :default => 0 %>
-                            </td>
-                            <td style="width: 10%;">
-                                <%= submit_tag "Submit", :class => "btn btn-success btn-lg btn-block", :id => "incidentsubmit"  %>
-                            </td>
-                        </tr>
-                        <%= hidden_field_tag "incident_id", incident.id %>
-                        <%= hidden_field_tag :redirect_location, "/incidents/classify-response" %>
-                    <% end %>
-                <% end %>
-            </table>
-        </div>
     </div>
 </div>

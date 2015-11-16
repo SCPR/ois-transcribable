@@ -10,11 +10,11 @@ Rails.application.routes.draw do
 
   get "/incidents/classify-response" => "incidents#classify_response"
 
-  get "/peoples/data" => "peoples#data"
+  get "/people/data" => "people#data"
 
   resources :incidents, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
 
-  resources :peoples, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
+  resources :people, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
 
   resources :transcriptions, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
 

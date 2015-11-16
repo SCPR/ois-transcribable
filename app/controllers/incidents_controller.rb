@@ -57,7 +57,7 @@ class IncidentsController < ApplicationController
 
         @incidents = @incidents.where("case_relevant = '1'")
 
-        render :json => @incidents.to_json(:include => {:peoples => {:only => [:id, :person_name, :district_attorney_file_number, :incident_url, :person_weapon, :person_ethnicity, :person_gender, :person_age, :person_intoxicated, :fatal, :nonfatal_calc, :armed_with_firearm_calc, :armed_with_other_calc, :vehicle_as_weapon, :mention_of_waistband_in_report, :pursuit_occurred, :person_ignored_officer_commands, :person_mentally_ill, :person_fired_weapon, :person_pointed_weapon, :person_unarmed, :person_armed_calc, :officer_couldnt_see_persons_hands, :grabbed_officers_weapon, :person_initiated_physical_threat, :person_weapon_recovered, :vehicle_as_weapon, :person_shot_in_back, :person_shot_in_head, :person_arrested, :person_gang_member]}})
+        render :json => @incidents.to_json(:include => {:people => {:only => [:id, :person_name, :district_attorney_file_number, :incident_url, :person_weapon, :person_ethnicity, :person_gender, :person_age, :person_intoxicated, :fatal, :nonfatal_calc, :armed_with_firearm_calc, :armed_with_other_calc, :vehicle_as_weapon, :mention_of_waistband_in_report, :pursuit_occurred, :person_ignored_officer_commands, :person_mentally_ill, :person_fired_weapon, :person_pointed_weapon, :person_unarmed, :person_armed_calc, :officer_couldnt_see_persons_hands, :grabbed_officers_weapon, :person_initiated_physical_threat, :person_weapon_recovered, :vehicle_as_weapon, :person_shot_in_back, :person_shot_in_head, :person_arrested, :person_gang_member]}})
     end
 
     def dashboard_data
@@ -65,7 +65,7 @@ class IncidentsController < ApplicationController
 
         @incidents = @incidents.where("case_relevant = '1'")
 
-        render :json => @incidents.to_json(:include => {:peoples => {:only => [:person_name, :district_attorney_file_number, :incident_url, :person_weapon, :person_ethnicity, :person_gender, :person_age, :year_of_incident, :case_relevant, :person_intoxicated, :fatal, :nonfatal_calc, :armed_with_firearm_calc, :armed_with_other_calc, :vehicle_as_weapon, :mention_of_waistband_in_report, :pursuit_occurred, :person_ignored_officer_commands, :person_mentally_ill, :person_fired_weapon, :person_unarmed, :person_armed_calc, :officer_couldnt_see_persons_hands, :grabbed_officers_weapon, :date_of_incident]}})
+        render :json => @incidents.to_json(:include => {:people => {:only => [:person_name, :district_attorney_file_number, :incident_url, :person_weapon, :person_ethnicity, :person_gender, :person_age, :year_of_incident, :case_relevant, :person_intoxicated, :fatal, :nonfatal_calc, :armed_with_firearm_calc, :armed_with_other_calc, :vehicle_as_weapon, :mention_of_waistband_in_report, :pursuit_occurred, :person_ignored_officer_commands, :person_mentally_ill, :person_fired_weapon, :person_unarmed, :person_armed_calc, :officer_couldnt_see_persons_hands, :grabbed_officers_weapon, :date_of_incident]}})
     end
 
     def classify_response
@@ -92,7 +92,7 @@ class IncidentsController < ApplicationController
 
         puts @incident
 
-        @peoples = @incident.people
+        @people = @incident.people
         @transcription = Transcription.find_by district_attorney_file_number: @incident.district_attorney_file_number
     end
 
