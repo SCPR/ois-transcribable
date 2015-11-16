@@ -210,7 +210,7 @@
             url: "/incidents/data"
         });
 
-        App.Models.People = Backbone.Model.extend({
+        App.Models.Person = Backbone.Model.extend({
             defaults: {
                 person_name: null,
                 district_attorney_file_number: null,
@@ -245,8 +245,8 @@
             },
         });
 
-        App.Collections.Peoples = Backbone.Collection.extend({
-            model: App.Models.People,
+        App.Collections.People = Backbone.Collection.extend({
+            model: App.Models.Person,
             comparator: function(model) {
                 return model.get("district_attorney_file_number");
             },
@@ -293,12 +293,12 @@
                 var array_of_people = [];
                 incidents.forEach(function(model, index){
                     var _this = model.attributes;
-                    _this.peoples.forEach(function(item, index){
+                    _this.people.forEach(function(item, index){
                         array_of_people.push(item);
                     });
                 });
-                var peoples = new App.Collections.Peoples(array_of_people);
-                peoples.forEach(function(model, index){
+                var people = new App.Collections.People(array_of_people);
+                people.forEach(function(model, index){
                     var _this = model.attributes;
                     var incident_specifics = incidents.where({
                         district_attorney_file_number: _this.district_attorney_file_number
@@ -306,11 +306,11 @@
                     if (incident_specifics.length){
                         model.set(incident_specifics[0].attributes);
                     };
-                    model.unset("peoples");
+                    model.unset("people");
                 });
                 this.applicationVisuals = new App.Views.ApplicationVisuals({
                     total_incidents: incidents,
-                    total_peoples: peoples
+                    total_people: people
                 });
                 return this.applicationVisuals;
             },
@@ -332,8 +332,8 @@
                     })
                 );
 
-                this.view_object.relevant_people = new App.Collections.Peoples(
-                   this.view_object.total_peoples.where({
+                this.view_object.relevant_people = new App.Collections.People(
+                   this.view_object.total_people.where({
                        case_relevant: true
                    })
                 );
@@ -341,7 +341,7 @@
                 this.view_object = this.calculate_model_attributes(this.view_object);
 
                 this.view_object.filters = [{
-                    type: "peoples",
+                    type: "people",
                     proper: "Top Line",
                     radio_buttons: [],
                     checkboxes: [
@@ -370,7 +370,7 @@
                         {opt: "Person Identified As Gang Member", opt_field: "person_gang_member"},
                     ]
                 }, {
-                    type: "peoples",
+                    type: "people",
                     proper: "Agency",
                     radio_buttons: [],
                     checkboxes: [
@@ -844,7 +844,7 @@
             chart_data: function(obj, main_obj, color){
 
                 // display the overall figures
-                var total = main_obj.total_peoples.length;
+                var total = main_obj.total_people.length;
                 var people_empty = _.isEmpty(obj.people.models);
                 if (people_empty === false){
                     $("td#filtered-people").html(obj.people.length + " / " + total + "<br />" + percentify(obj.people.length / total) + "%");
@@ -871,7 +871,7 @@
                                     $("td#_" + value).css({color: color});
                                     if (item === "years"){
                                         data.forEach(function(model){
-                                            $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = '/peoples/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.incident_url + "' target='_blank'>" + model.attributes.person_name + "</a>");
+                                            $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = '/people/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.incident_url + "' target='_blank'>" + model.attributes.person_name + "</a>");
                                         });
                                     };
                                 } else {
@@ -893,7 +893,7 @@
                                     $("td#_" + value).css({color: color});
                                     if (item === "years"){
                                         data.forEach(function(model){
-                                            $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = '/peoples/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.incident_url + "' target='_blank'>" + model.attributes.person_name + "</a>");
+                                            $("td#_" + value).append("<br /><hr></hr>" + "<u><a href = '/people/" + model.attributes.id + "/edit' target='_blank'>" + model.attributes.district_attorney_file_number + "</a></u><br />" + "<a href = '" + model.attributes.incident_url + "' target='_blank'>" + model.attributes.person_name + "</a>");
                                         });
                                     };
                                 } else {
@@ -914,7 +914,7 @@
                 //     return incident_filters[item] = true;
                 // });
                 // var people_filters = {};
-                // _.each(this.view_object.obj.active_checkboxes.peoples, function(item, index, list){
+                // _.each(this.view_object.obj.active_checkboxes.people, function(item, index, list){
                 //     return people_filters[item] = true;
                 // });
 
@@ -923,7 +923,7 @@
                     return all_filters[item] = true;
                 });
 
-                this.view_object.obj.filtered.people = new App.Collections.Peoples();
+                this.view_object.obj.filtered.people = new App.Collections.People();
 
                 // var people_filters_empty = _.isEmpty(people_filters);
                 // var incident_filters_empty = _.isEmpty(incident_filters);
