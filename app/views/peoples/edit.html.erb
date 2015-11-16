@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
     <li><%= link_to 'Home', controller: :home, action: :index %></li>
-    <li><%= link_to "View Transcriptions", transcriptions_path() %></li>
-    <li>Verifying <%= @incident.incident_url %></li>
+    <li><%= link_to "Edit People", peoples_path() %></li>
+    <li>Verifying <%= @people.incident_url %></li>
 </ol>
 
 <% if flash[:alert] %>
@@ -24,6 +24,7 @@
 </div>
 
 <script>
+    var dc_slug = "<%= @people.incident_url %>".replace("https://www.documentcloud.org/documents/", "");
 
     var fn = fn || {};
 
@@ -34,7 +35,8 @@
     };
 
     var initialWidth = $("#doc").width();
-    var CURRENT_DOCUMENT = DV.load("https://documentcloud.org/documents/<%= @incident.dc_slug %>.js", {
+
+    var CURRENT_DOCUMENT = DV.load("https://documentcloud.org/documents/" + dc_slug + ".js", {
         container: '#doc',
         width: initialWidth,
         height: 900,
@@ -44,8 +46,7 @@
         showAnnotations: false
     });
 
-    var docJson = "https://www.documentcloud.org/api/documents/<%= @incident.dc_slug %>.json";
+    var docJson = "https://www.documentcloud.org/api/documents/" + dc_slug + ".json";
 
     $.getJSON(docJson, fn.getDocumentMeta);
-
 </script>
