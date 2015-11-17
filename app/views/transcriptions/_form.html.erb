@@ -53,7 +53,7 @@
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             <div class="do_something">
                 <label class="checkbox-inline">
-                    <%= f.input :case_relevant, class: "form-control", label: "Was Use Of Force Incident?" %>
+                    <%= f.input :on_duty_shooting_case, class: "form-control", label: "Was Use Of Force Incident?" %>
                 </label>
             </div>
         </div>
@@ -61,7 +61,7 @@
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             <div class="do_something">
                 <label class="checkbox-inline">
-                    <%= f.input :fatal, class: "form-control", label: "Was Use Of Force Fatal" %>
+                    <%= f.input :person_killed, class: "form-control", label: "Was Use Of Force Fatal" %>
                 </label>
             </div>
         </div>
@@ -157,11 +157,11 @@
         </div>
 
         <div class="do_something">
-            <%= f.input :da_on_scene, class: "form-control", label: "District Attorney On Scene" %>
+            <%= f.input :district_attorney_on_scene, class: "form-control", label: "District Attorney On Scene" %>
         </div>
 
         <div class="do_something">
-            <%= f.input :da_investigator_on_scene, class: "form-control", label: "District Attorney Investigator On Scene" %>
+            <%= f.input :district_attorney_investigator_on_scene, class: "form-control", label: "District Attorney Investigator On Scene" %>
         </div>
         <!-- end initial data -->
 
@@ -186,7 +186,7 @@
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :pursuit_occurred, class: "form-control", label: "Chase Or Pursuit Occurred" %>
+                        <%= f.input :person_fled_by_foot_or_vehicle, class: "form-control", label: "Chase Or Pursuit Occurred" %>
                     </label>
                 </div>
 
@@ -232,19 +232,19 @@
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :person_gang_member, class: "form-control", label: "Person Gang Member" %>
+                        <%= f.input :person_signs_of_gang_affiliation, class: "form-control", label: "Person Gang Member" %>
                     </label>
                 </div>
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :person_intoxicated, class: "form-control", label: "Person Intoxicated" %>
+                        <%= f.input :person_signs_of_impairment, class: "form-control", label: "Person Intoxicated" %>
                     </label>
                 </div>
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :person_mentally_ill, class: "form-control", label: "Person Mentally Ill" %>
+                        <%= f.input :person_signs_of_mental_illness, class: "form-control", label: "Person Mentally Ill" %>
                     </label>
                 </div>
 
@@ -312,19 +312,19 @@
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :person_fired_weapon, class: "form-control", label: "Person Fired Weapon" %>
+                        <%= f.input :person_fired_gun_at_officer, class: "form-control", label: "Person Fired Weapon" %>
                     </label>
                 </div>
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :person_pointed_weapon, class: "form-control", label: "Person Pointed Weapon" %>
+                        <%= f.input :person_pointed_gun_at_officer, class: "form-control", label: "Person Pointed Weapon" %>
                     </label>
                 </div>
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :grabbed_officers_weapon, class: "form-control", label: "Person Tried To Get Officer's Weapon" %>
+                        <%= f.input :person_grabbed_for_officers_weapon_holster, class: "form-control", label: "Person Tried To Get Officer's Weapon" %>
                     </label>
                 </div>
 
@@ -340,7 +340,7 @@
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :mention_of_waistband_in_report, class: "form-control", label: "Reaching For 'Weapon' or 'Waistband'" %>
+                        <%= f.input :person_reached_for_waistband, class: "form-control", label: "Reaching For 'Weapon' or 'Waistband'" %>
                     </label>
                 </div>
 
@@ -353,13 +353,13 @@
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :person_initiated_physical_threat, class: "form-control", label: "Person Initiated Physical Threat" %>
+                        <%= f.input :person_threatened_officer_with_weapon, class: "form-control", label: "Person Initiated Physical Threat" %>
                     </label>
                 </div>
 
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :officer_couldnt_see_persons_hands, class: "form-control", label: "'Couldn't see persons hands'" %>
+                        <%= f.input :person_hid_hands_from_officer, class: "form-control", label: "'Couldn't see persons hands'" %>
                     </label>
                 </div>
 
@@ -381,7 +381,7 @@
 
         <div class="do_something">
             <div class="field" id="notes">
-                <%= f.input :person_case_number, class: "form-control", label: "Case Number If Person Arrested" %>
+                <%= f.input :person_criminal_case_file_number, class: "form-control", label: "Case Number If Person Arrested" %>
             </div>
         </div>
 

@@ -45,14 +45,14 @@
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :case_relevant, class: "form-control", label: "Was This An On-Duty Shooting?" %>
+                        <%= f.input :on_duty_shooting_case, class: "form-control", label: "Was This An On-Duty Shooting?" %>
                     </label>
                 </div>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 <div class="do_something">
                     <label class="checkbox-inline">
-                        <%= f.input :fatal, class: "form-control", label: "Was This A Fatal Shooting?" %>
+                        <%= f.input :person_killed, class: "form-control", label: "Was This A Fatal Shooting?" %>
                     </label>
                 </div>
             </div>
@@ -118,11 +118,11 @@
         </div>
 
         <div class="do_something">
-            <%= f.input :da_on_scene, class: "form-control", label: "District Attorney On Scene" %>
+            <%= f.input :district_attorney_on_scene, class: "form-control", label: "District Attorney On Scene" %>
         </div>
 
         <div class="do_something">
-            <%= f.input :da_investigator_on_scene, class: "form-control", label: "District Attorney Investigator On Scene" %>
+            <%= f.input :district_attorney_investigator_on_scene, class: "form-control", label: "District Attorney Investigator On Scene" %>
         </div>
         <!-- end initial data -->
 

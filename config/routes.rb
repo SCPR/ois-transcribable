@@ -2,11 +2,11 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
+  get "/dashboard-data" => "home#data"
+
   get "/incidents/statistics" => "incidents#statistics"
 
   get "/incidents/data" => "incidents#data"
-
-  get "/incidents/dashboard-data" => "incidents#dashboard_data"
 
   get "/incidents/classify-response" => "incidents#classify_response"
 

@@ -30,7 +30,7 @@
 
     var fn = {
         getDocumentMeta: function(data){
-            $("#document-title").html(data.document.title);
+            $("#document-title").html("<%= @people.person_name %> - <%= @people.district_attorney_file_number %>");
         }
     };
 

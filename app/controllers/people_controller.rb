@@ -7,14 +7,13 @@ class PeopleController < ApplicationController
         if current_user.email == "wcterrill@gmail.com"
             redirect_to incidents_statistics_path
         else
-            @people = Person.order(:date_of_incident).where("case_relevant = '1'")
+            @people = Person.order(:date_of_incident).where("on_duty_shooting_case = '1'")
         end
     end
 
     def data
-        @people = Person.select("person_name, district_attorney_file_number, incident_url, person_weapon, person_ethnicity, person_gender, person_age, year_of_incident, drugs, case_relevant, person_intoxicated, marijuana_alone, case_doubled_up, fatal, nonfatal_calc, armed_with_firearm_calc, armed_with_other_calc, vehicle_as_weapon, mention_of_waistband_in_report, person_arrested, pursuit_occurred, person_ignored_officer_commands, person_weapon_recovered, person_mentally_ill, person_fired_weapon, person_pointed_weapon, person_unarmed, person_armed_calc, officer_couldnt_see_persons_hands, grabbed_officers_weapon, date_of_incident").all
-        @people = @people.where("case_relevant = '1'")
-        render json: @people
+        @people = Person.where("on_duty_shooting_case = '1'")
+        render :json => @people.to_json(:include => {:incident => {:only => [:district_attorney_file_number, :general_location_of_incident, :type_of_incident, :officer_shots_fired, :officer_name_and_badge_number, :officer_police_agency, :multiple_officers, :car_stop, :potential_police_video, :potential_civillian_video, :person_killed, :officer_charges_filed, :officer_self_defense, :officer_defense_of_civillians, :officer_defense_of_officers, :officer_serving_warrant, :officer_on_surveillance, :officer_on_undercover, :civilian_witnesses, :officer_injured, :flag_for_followup, :officer_routine_patrol, :officer_responding_to_call, :led_to_response_category, :date_of_incident]}})
     end
 
     def show

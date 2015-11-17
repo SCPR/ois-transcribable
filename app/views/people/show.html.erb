@@ -2,19 +2,19 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <ol class="breadcrumb">
             <li><%= link_to 'Home', controller: :home, action: :index %></li>
-            <li><%= link_to "View People", peoples_path() %></li>
-            <li><%= @people.district_attorney_file_number %></li>
+            <li><%= link_to "View People", people_path() %></li>
+            <li><%= @people.person_name %> - <%= @people.district_attorney_file_number %></li>
         </ol>
         <h1>People#show</h1>
         <ul>
-            <li><h6><%= link_to @people.district_attorney_file_number, @people.incident_url %></h6></li>
+            <li><h6><%= link_to @people.person_name, @people.incident_url %></h6></li>
             <ul>
                 <li><h6>Transcribed by <%#= @transcription.email %></h6></li>
                 <li><h6>Verified by <%#= @incident.email %></h6></li>
             </ul>
             <ul class="list-inline">
-                <li><%= link_to "Edit", edit_people_path(@people), class: "btn btn-success" %></li>
-                <li><%= link_to "Delete", people_path(@people), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></li>
+                <li><%= link_to "Edit", edit_person_path(@people), class: "btn btn-success" %></li>
+                <li><%= link_to "Delete", person_path(@people), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></li>
             </ul>
         </ul>
     </div>

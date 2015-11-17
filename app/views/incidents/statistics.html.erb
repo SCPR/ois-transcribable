@@ -163,53 +163,6 @@
             return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
         };
 
-        App.Models.Incident = Backbone.Model.extend({
-            defaults: {
-                car_stop: null,
-                case_relevant: null,
-                civilian_witnesses: null,
-                da_investigator_on_scene: null,
-                da_on_scene: null,
-                date_of_incident: null,
-                district_attorney_county: null,
-                district_attorney_date_of_letter: null,
-                district_attorney_file_number: null,
-                district_attorney_prepared_report: null,
-                flag_for_followup: null,
-                general_location_of_incident: null,
-                led_to_response_category: null,
-                multiple_officers: null,
-                officer_charges_filed: null,
-                officer_defense_of_civillians: null,
-                officer_defense_of_officers: null,
-                officer_injured: null,
-                officer_name_and_badge_number: null,
-                officer_on_surveillance: null,
-                officer_on_undercover: null,
-                officer_police_agency: null,
-                officer_responding_to_call: null,
-                officer_routine_patrol: null,
-                officer_self_defense: null,
-                officer_serving_warrant: null,
-                officer_shots_fired: null,
-                officer_shots_fired_specific: null,
-                peoples: null,
-                potential_civillian_video: null,
-                potential_police_video: null,
-                type_of_incident: null,
-                type_of_incident_number: null,
-                verified: null,
-            },
-        });
-
-        App.Collections.Incidents = Backbone.Collection.extend({
-            model: App.Models.Incident,
-            comparator: function(model) {
-                return model.get("district_attorney_file_number");
-            },
-            url: "/incidents/data"
-        });
-
         App.Models.Person = Backbone.Model.extend({
             defaults: {
                 person_name: null,
@@ -219,29 +172,30 @@
                 person_ethnicity: null,
                 person_gender: null,
                 person_age: null,
-                person_intoxicated: null,
-                fatal: null,
-                nonfatal_calc: null,
-                armed_with_firearm_calc: null,
-                armed_with_other_calc: null,
-                vehicle_as_weapon: null,
-                mention_of_waistband_in_report: null,
-                pursuit_occurred: null,
+                person_signs_of_impairment: null,
+                person_killed: null,
+                person_wounded: null,
+                armed_with_firearm: null,
+                armed_with_weapon: null,
+                used_vehicle_as_weapon: null,
+                person_reached_for_waistband: null,
+                person_fled_by_foot_or_vehicle: null,
                 person_ignored_officer_commands: null,
-                person_mentally_ill: null,
-                person_fired_weapon: null,
-                person_pointed_weapon: null,
+                person_signs_of_mental_illness: null,
+                person_fired_gun_at_officer: null,
+                person_pointed_gun_at_officer: null,
                 person_unarmed: null,
-                person_armed_calc: null,
-                officer_couldnt_see_persons_hands: null,
-                grabbed_officers_weapon: null,
-                person_initiated_physical_threat: null,
+                person_armed: null,
+                person_hid_hands_from_officer: null,
+                person_grabbed_for_officers_weapon_holster: null,
+                person_threatened_officer_with_weapon: null,
                 person_weapon_recovered: null,
-                vehicle_as_weapon: null,
+                used_vehicle_as_weapon: null,
                 person_shot_in_back: null,
                 person_shot_in_head: null,
                 person_arrested: null,
-                person_gang_member: null,
+                person_signs_of_gang_affiliation: null,
+                incident: null,
             },
         });
 
@@ -250,6 +204,7 @@
             comparator: function(model) {
                 return model.get("district_attorney_file_number");
             },
+            url: "/people/data",
         });
 
         App.Models.CommaSeparated = Backbone.Model.extend({
@@ -274,42 +229,28 @@
 
             fetchData: function(){
                 var _this = this;
-                var incidents = new App.Collections.Incidents();
-                incidents.fetch({
+                var people = new App.Collections.People();
+                people.fetch({
                     async: false
                 });
                 var checkExist = setInterval(function() {
-                    if (incidents.length > 0){
+                    if (people.length > 0){
                         clearInterval(checkExist);
-                        _this.renderApplicationVisuals(incidents);
+                        _this.renderApplicationVisuals(people);
                     }
                 }, 500);
             },
 
-            renderApplicationVisuals: function(incidents){
+            renderApplicationVisuals: function(people){
                 if (this.applicationVisuals){
                     this.applicationVisuals.remove();
                 };
-                var array_of_people = [];
-                incidents.forEach(function(model, index){
-                    var _this = model.attributes;
-                    _this.people.forEach(function(item, index){
-                        array_of_people.push(item);
-                    });
-                });
-                var people = new App.Collections.People(array_of_people);
                 people.forEach(function(model, index){
                     var _this = model.attributes;
-                    var incident_specifics = incidents.where({
-                        district_attorney_file_number: _this.district_attorney_file_number
-                    });
-                    if (incident_specifics.length){
-                        model.set(incident_specifics[0].attributes);
-                    };
-                    model.unset("people");
+                    _.extend(_this, _this.incident);
+                    model.unset("incident");
                 });
                 this.applicationVisuals = new App.Views.ApplicationVisuals({
-                    total_incidents: incidents,
                     total_people: people
                 });
                 return this.applicationVisuals;
@@ -326,17 +267,7 @@
 
                 this.view_object.template = template("my_template");
 
-                this.view_object.relevant_incidents = new App.Collections.Incidents(
-                    this.view_object.total_incidents.where({
-                        case_relevant: true
-                    })
-                );
-
-                this.view_object.relevant_people = new App.Collections.People(
-                   this.view_object.total_people.where({
-                       case_relevant: true
-                   })
-                );
+                this.view_object.relevant_people = this.view_object.total_people;
 
                 this.view_object = this.calculate_model_attributes(this.view_object);
 
@@ -345,29 +276,29 @@
                     proper: "Top Line",
                     radio_buttons: [],
                     checkboxes: [
-                        {opt: "Was Use Of Force Fatal", opt_field: "fatal"},
-                        {opt: "Was Use Of Force Non-Fatal", opt_field: "nonfatal_calc"},
-                        {opt: "Person Was Armed", opt_field: "person_armed_calc"},
+                        {opt: "Was Use Of Force Fatal", opt_field: "person_killed"},
+                        {opt: "Was Use Of Force Non-Fatal", opt_field: "person_wounded"},
+                        {opt: "Person Was Armed", opt_field: "person_armed"},
                         {opt: "Person Was Unarmed", opt_field: "person_unarmed"},
                         {opt: "Neither Armed or Unarmed", opt_field: "not_armed_or_unarmed"},
-                        {opt: "Person Armed With Firearm/Gun", opt_field: "armed_with_firearm_calc"},
-                        {opt: "Person Armed With Other Weapon", opt_field: "armed_with_other_calc"},
-                        {opt: "Person Grabbed Officers Weapon", opt_field: "grabbed_officers_weapon"},
-                        {opt: "Person Threatened With Weapon", opt_field: "person_initiated_physical_threat"},
-                        {opt: "Person Pointed Firearm", opt_field: "person_pointed_weapon"},
-                        {opt: "Person Fired Firearm", opt_field: "person_fired_weapon"},
+                        {opt: "Person Armed With Firearm/Gun", opt_field: "armed_with_firearm"},
+                        {opt: "Person Armed With Other Weapon", opt_field: "armed_with_weapon"},
+                        {opt: "Person Grabbed Officers Weapon", opt_field: "person_grabbed_for_officers_weapon_holster"},
+                        {opt: "Person Threatened With Weapon", opt_field: "person_threatened_officer_with_weapon"},
+                        {opt: "Person Pointed Firearm", opt_field: "person_pointed_gun_at_officer"},
+                        {opt: "Person Fired Firearm", opt_field: "person_fired_gun_at_officer"},
                         {opt: "Person Weapon Recovered", opt_field: "person_weapon_recovered"},
                         {opt: "Person Ignored Officer Commands", opt_field: "person_ignored_officer_commands"},
-                        {opt: "Reached for Waistband/Pants", opt_field: "mention_of_waistband_in_report"},
-                        {opt: "Officer Couldn't See Persons Hands", opt_field: "officer_couldnt_see_persons_hands"},
-                        {opt: "Signs of Drug/Alcohol Impairment", opt_field: "person_intoxicated"},
-                        {opt: "Signs of Mental Illness", opt_field: "person_mentally_ill"},
-                        {opt: "Officer Claimed Vehicle Used as Weapon", opt_field: "vehicle_as_weapon"},
+                        {opt: "Reached for Waistband/Pants", opt_field: "person_reached_for_waistband"},
+                        {opt: "Officer Couldn't See Persons Hands", opt_field: "person_hid_hands_from_officer"},
+                        {opt: "Signs of Drug/Alcohol Impairment", opt_field: "person_signs_of_impairment"},
+                        {opt: "Signs of Mental Illness", opt_field: "person_signs_of_mental_illness"},
+                        {opt: "Officer Claimed Vehicle Used as Weapon", opt_field: "used_vehicle_as_weapon"},
                         {opt: "Person Shot In Back", opt_field: "person_shot_in_back"},
                         {opt: "Person Shot In Head", opt_field: "person_shot_in_head"},
-                        {opt: "Pursuit Occurred", opt_field: "pursuit_occurred"},
+                        {opt: "Pursuit Occurred", opt_field: "person_fled_by_foot_or_vehicle"},
                         {opt: "Person Arrested", opt_field: "person_arrested"},
-                        {opt: "Person Identified As Gang Member", opt_field: "person_gang_member"},
+                        {opt: "Person Identified As Gang Member", opt_field: "person_signs_of_gang_affiliation"},
                     ]
                 }, {
                     type: "people",
@@ -576,7 +507,7 @@
                     };
                     /* set ethnicity data */
                     model.set("no_ethnicity", true);
-                    if (_this.fatal === true){
+                    if (_this.person_killed === true){
                         if (_this.person_ethnicity != null || _this.person_ethnicity != undefined){
                             if (_this.person_ethnicity === "HISPANIC/LATIN AMERICAN"){
                                 model.set("person_ethnicity", "latino");
@@ -638,12 +569,12 @@
                     if (_this.officer_police_agency.indexOf("South Gate Police Department") === 0){
                         model.set("south-gate-police-department", true);
                     };
-                    if (_this.person_unarmed === null && _this.person_armed_calc === null){
+                    if (_this.person_unarmed === null && _this.person_armed === null){
                         model.set("not_armed_or_unarmed", true);
                     };
                     // tell us if the da that went to the scene also completed the report
-                    if (_this.da_on_scene != null && _this.district_attorney_prepared_report != null){
-                        model.set("da_the_same_calc", string_equals_string(_this.da_on_scene, _this.district_attorney_prepared_report));
+                    if (_this.district_attorney_on_scene != null && _this.district_attorney_prepared_report != null){
+                        model.set("da_the_same_calc", string_equals_string(_this.district_attorney_on_scene, _this.district_attorney_prepared_report));
                     } else {
                         model.set("da_the_same_calc", null);
                     };
@@ -737,15 +668,15 @@
                 this.view_object.top_line_stats = {};
 
                 this.view_object.top_line_stats["Use Of Force Fatal"] = this.view_object.relevant_people.where({
-                    fatal: true
+                    person_killed: true
                 });
 
                 this.view_object.top_line_stats["Use Of Force Non-Fatal"] = this.view_object.relevant_people.where({
-                    nonfatal_calc: true
+                    person_wounded: true
                 });
 
                 this.view_object.top_line_stats["Armed"] = this.view_object.relevant_people.where({
-                    person_armed_calc: true
+                    person_armed: true
                 });
 
                 this.view_object.top_line_stats["Unarmed"] = this.view_object.relevant_people.where({
@@ -757,19 +688,19 @@
                 });
 
                 this.view_object.top_line_stats["Armed With Firearm/Gun"] = this.view_object.relevant_people.where({
-                    armed_with_firearm_calc: true
+                    armed_with_firearm: true
                 });
 
                 this.view_object.top_line_stats["Armed With Other Weapon"] = this.view_object.relevant_people.where({
-                    armed_with_other_calc: true
+                    armed_with_weapon: true
                 });
 
                 this.view_object.top_line_stats["Fired Weapon"] = this.view_object.relevant_people.where({
-                    person_fired_weapon: true
+                    person_fired_gun_at_officer: true
                 });
 
                 this.view_object.top_line_stats["Pointed Weapon"] = this.view_object.relevant_people.where({
-                    person_pointed_weapon: true
+                    person_pointed_gun_at_officer: true
                 });
 
                 this.view_object.top_line_stats["Ignored Officer Commands"] = this.view_object.relevant_people.where({
@@ -777,41 +708,41 @@
                 });
 
                 this.view_object.top_line_stats["Mention Of Waistband"] = this.view_object.relevant_people.where({
-                    mention_of_waistband_in_report: true
+                    person_reached_for_waistband: true
                 });
 
                 this.view_object.top_line_stats["Couldn't See Persons Hands"] = this.view_object.relevant_people.where({
-                    officer_couldnt_see_persons_hands: true
+                    person_hid_hands_from_officer: true
                 });
 
                 // pointed and fired firearm at an officer
                 this.view_object.top_line_stats["Pointed & Fired Firearm"] = this.view_object.relevant_people.where({
-                    person_pointed_weapon: true,
-                    person_fired_weapon: true
+                    person_pointed_gun_at_officer: true,
+                    person_fired_gun_at_officer: true
                 });
 
                 // ignored commands and demonstrated symptoms of intoxication
                 this.view_object.top_line_stats["Ignored Commands/Symptoms Of Intoxication"] = this.view_object.relevant_people.where({
                     person_ignored_officer_commands: true,
-                    person_intoxicated: true
+                    person_signs_of_impairment: true
                 });
 
                 // ignored commands and demonstrated symptoms of mentally illness
                 this.view_object.top_line_stats["Ignored Commands/Symptoms of Mental Illness"] = this.view_object.relevant_people.where({
                     person_ignored_officer_commands: true,
-                    person_mentally_ill: true
+                    person_signs_of_mental_illness: true
                 });
 
                 // reaching for waistband and unarmed
                 this.view_object.top_line_stats["Reaching For Waistband & Unarmed"] = this.view_object.relevant_people.where({
                     person_unarmed: true,
-                    mention_of_waistband_in_report: true
+                    person_reached_for_waistband: true
                 });
 
                 // mentally ill and unarmed
                 this.view_object.top_line_stats["Unarmed & Symptoms of Mental Illness"] = this.view_object.relevant_people.where({
                     person_unarmed: true,
-                    person_mentally_ill: true
+                    person_signs_of_mental_illness: true
                 });
 
                 this.view_object.obj = {};
@@ -995,11 +926,11 @@
                     if($this.is(":checked")){
                         var filter_id = $this.attr("id");
                         var filter_type = $this.attr("class").split(" ")[0];
-                        // if (filter_id === "fatal"){
+                        // if (filter_id === "person_killed"){
                         //     $("label.display-until-toggle").addClass("invisible");
                         //     $("span.hidden-until-toggle").removeClass("invisible");
                         //     filters[filter_type].push(filter_id);
-                        // } else if (filter_id === "nonfatal_calc"){
+                        // } else if (filter_id === "person_wounded"){
                         //     $("span.hidden-until-toggle").addClass("invisible");
                         //     $("label.display-until-toggle").removeClass("invisible");
                         //     $("input:radio[name='person_ethnicity']").attr("checked", false);
@@ -1035,7 +966,7 @@
             },
 
             demo_filters: function(){
-                $("input:checkbox[id^=fatal]").attr("checked", true);
+                $("input:checkbox[id^=person_killed]").attr("checked", true);
                 $("input:checkbox[id^=person_unarmed]").attr("checked", true);
                 $("input:checkbox[id^=multiple_officers]").attr("checked", true);
                 this.construct_checkbox_filters();
