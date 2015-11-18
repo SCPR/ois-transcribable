@@ -16,6 +16,8 @@
         <% else %>
             <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @verified.size %> incidents we've verified.</h6>
         <% end %>
+        <h6>Build a new <%= link_to 'json file', dashboard_json_data_path(format: :json) %> file for the <a href="projects.scpr.org/officer-involved/explore/">published data exploration tool</a> or <%= link_to 'download a csv file', dashboard_csv_data_path(format: :csv) %> of <a href="https://github.com/SCPR/kpcc-data-team/tree/master/data/kpcc-officer-involved#data-dictionary">selected fields</a>.</h6>
+        <h6>Download the full database as a <%= link_to 'json file', all_json_data_path(format: :json) %> or <%= link_to 'a csv file', all_csv_data_path(format: :csv) %>.</h6>
         <hr></hr>
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">

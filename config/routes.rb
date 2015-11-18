@@ -2,9 +2,13 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
-  get "/json-data" => "home#export_json_data"
+  get "/dashboard-json-data" => "home#export_dashboard_json_data"
 
-  get "/csv-data" => "home#export_csv_data"
+  get "/dashboard-csv-data" => "home#export_dashboard_csv_data"
+
+  get "/all-json-data" => "home#export_all_json_data"
+
+  get "/all-csv-data" => "home#export_all_csv_data"
 
   get "/incidents/statistics" => "incidents#statistics"
 

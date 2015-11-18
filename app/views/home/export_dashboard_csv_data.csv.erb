@@ -1,0 +1,8 @@
+<%=
+CSV.generate do |csv|
+    csv << ["id", "district_attorney_county", "district_attorney_file_number", "incident_url", "person_name", "person_ethnicity", "person_gender", "person_age", "district_attorney_date_of_letter", "type_of_incident", "date_of_incident", "person_wounded", "person_killed", "person_armed", "armed_with_firearm", "armed_with_weapon", "used_vehicle_as_weapon", "person_ignored_officer_commands", "person_hid_hands_from_officer", "person_reached_for_waistband", "person_fled_by_foot_or_vehicle", "person_grabbed_for_officers_weapon_holster", "person_signs_of_mental_illness", "person_signs_of_impairment", "officer_self_defense", "officer_defense_of_civillians", "officer_defense_of_officers"]
+    @people.each do |item|
+        csv << [item.id, item.incident.district_attorney_county, item.district_attorney_file_number, item.incident_url, item.person_name, item.person_ethnicity, item.person_gender, item.person_age, item.incident.district_attorney_date_of_letter, item.incident.type_of_incident, item.incident.date_of_incident, item.person_wounded, item.person_killed, item.person_armed, item.armed_with_firearm, item.armed_with_weapon, item.used_vehicle_as_weapon, item.person_ignored_officer_commands, item.person_hid_hands_from_officer, item.person_reached_for_waistband, item.person_fled_by_foot_or_vehicle, item.person_grabbed_for_officers_weapon_holster, item.person_signs_of_mental_illness, item.person_signs_of_impairment, item.incident.officer_self_defense, item.incident.officer_defense_of_civillians, item.incident.officer_defense_of_officers]
+    end
+end .html_safe
+%>
