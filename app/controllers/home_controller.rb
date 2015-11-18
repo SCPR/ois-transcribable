@@ -12,9 +12,20 @@ class HomeController < ApplicationController
       #Rails.logger.info("Verified so far - #{@verified}")
     end
 
-    def data
-        @people = Person.select("id, person_name, district_attorney_file_number, incident_url, person_weapon, person_ethnicity, person_gender, person_age, person_signs_of_impairment, person_killed, person_wounded, armed_with_firearm, armed_with_weapon, used_vehicle_as_weapon, person_reached_for_waistband, person_fled_by_foot_or_vehicle, person_ignored_officer_commands, person_signs_of_mental_illness, person_fired_gun_at_officer, person_pointed_gun_at_officer, person_unarmed, person_armed, person_hid_hands_from_officer, person_grabbed_for_officers_weapon_holster, person_threatened_officer_with_weapon, person_weapon_recovered, used_vehicle_as_weapon, person_shot_in_back, person_shot_in_head, person_arrested, person_signs_of_gang_affiliation").where("on_duty_shooting_case = '1'")
-        render :json => @people.to_json(:include => {:incident => {:only => [:district_attorney_file_number, :district_attorney_county, :type_of_incident, :date_of_incident, :district_attorney_date_of_letter, :multiple_officers, :car_stop, :officer_self_defense, :officer_defense_of_civillians, :officer_defense_of_officers, :led_to_response_category]}})
+    def export_json_data
+        @people = Person.select("id, person_name, district_attorney_file_number, incident_url, person_ethnicity, person_gender, person_age, person_signs_of_impairment, person_killed, person_wounded, armed_with_firearm, armed_with_weapon, used_vehicle_as_weapon, person_reached_for_waistband, person_fled_by_foot_or_vehicle, person_ignored_officer_commands, person_signs_of_mental_illness, person_unarmed, person_armed, person_hid_hands_from_officer, person_grabbed_for_officers_weapon_holster, used_vehicle_as_weapon").where("on_duty_shooting_case = '1'")
+        render :json => @people.as_json(:include => {:incident => {:only => [:district_attorney_county, :type_of_incident, :date_of_incident, :district_attorney_date_of_letter, :multiple_officers, :car_stop, :officer_self_defense, :officer_defense_of_civillians, :officer_defense_of_officers]}})
+    end
+
+    def export_csv_data
+        @people = Person.where("on_duty_shooting_case = '1'")
+        respond_to do |format|
+            format.html
+            format.csv do
+                headers['Content-Disposition'] = "attachment; filename=\"ois_data-file.csv\""
+                headers['Content-Type'] ||= 'text/csv'
+            end
+        end
     end
 
 end
