@@ -36,7 +36,7 @@
                                 <%= incident.underlying_crime_leading_to_shooting %>
                             </td>
                             <td style="width: 10%;">
-                                <%= item.input :led_to_response_category, collection: [" --select one-- ", "violent/serious crime", "shots fired", "implied weapon is present", "domestic violence", "suicidal/wants to die", "general disturbance", "suspicious or inquisitive cop", "lower-level crime", "traffic violation"], label: false, :default => 0 %>
+                                <%= item.input :led_to_response_category, collection: [" --select one-- ", "domestic violence", "general disturbance", "implied weapon is present", "lower-level crime", "suicidal/wants to die", "shots fired", "suspicious or inquisitive cop", "traffic violation", "violent/serious crime", "other"], label: false, :default => 0 %>
                             </td>
                             <td style="width: 10%;">
                                 <%= submit_tag "Submit", :class => "btn btn-success btn-lg btn-block", :id => "incidentsubmit"  %>
