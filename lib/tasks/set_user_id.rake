@@ -4,6 +4,7 @@ task :set_user_id  => :environment do
         @incident = Incident.find(this.incident_id)
         @incident.user_email = this.email
         @incident.user_id = this.user_id
+        @incident.transcribed = true
         @incident.save
     end
 end

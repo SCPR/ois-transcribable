@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151130175941) do
+ActiveRecord::Schema.define(version: 20151130174847) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                                            null: false
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20151130175941) do
     t.string   "led_to_response_category",                limit: 255
     t.string   "user_email",                              limit: 255
     t.string   "user_id",                                 limit: 255
+    t.boolean  "transcribed",                             limit: 1
   end
 
   create_table "people", force: :cascade do |t|

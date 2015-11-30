@@ -5,11 +5,13 @@
             <li>Edit Incident</li>
         </ol>
         <h1>Incidents#index</h1>
-        <p><strong>Looking for incidents statistics?</strong> <%= link_to "Try Here", incidents_statistics_path %> to view details about the <%= @incidents_verified.size %> <%= link_to "incidents we've verified", incidents_statistics_path %>.</p>
+        <p><strong>Looking for incidents statistics?</strong> <%= link_to "Try Here", incidents_statistics_path %> to view details about the <%= @incidents.size %> <%= link_to "incidents we've verified", incidents_statistics_path %>.</p>
         <hr></hr>
         <div id="table-container">
             <table class="kpcc-table">
                 <tr>
+                    <th>Transcribed</th>
+                    <th>Transcribed By</th>
                     <th>Verified</th>
                     <th>Verified By</th>
                     <th>Verified Date</th>
@@ -21,21 +23,46 @@
                 <% @incidents.each do |incident| %>
                     <%# @this_record = @incidents.find_by(id: incident.id) %>
                         <tr>
-                            <% if incident.verified == true %>
+                            <% if incident.transcribed == true %>
                                 <td style="color: green">&#10004;</td>
+                                <td><%= incident.user_email %></td>
                             <% else %>
                                 <td style="color: red">&mdash;</td>
+                                <td style="color: red">&mdash;</td>
                             <% end %>
-                            <td><%= incident.email %></td>
-                            <td><%= incident.updated_at.strftime("%m/%d/%Y") %></td>
-                            <td><%= incident.district_attorney_file_number %></td>
+
+                            <% if incident.verified == true %>
+                                <td style="color: green">&#10004;</td>
+                                <td><%= incident.verified_by_email %></td>
+                                <td><%= incident.updated_at.strftime("%m/%d/%Y") %></td>
+                            <% else %>
+                                <td style="color: red">&mdash;</td>
+                                <td style="color: red">&mdash;</td>
+                                <td style="color: red">&mdash;</td>
+                            <% end %>
+
+                            <% if incident.transcribed == false %>
+                                <td><%= incident.incident_url %></td>
+                            <% else %>
+                                <td><%= incident.district_attorney_file_number %></td>
+                            <% end %>
+
                             <td>
                                 <% incident.people.each do |person| %>
                                     <%= person.person_name %><br />
                                 <% end %>
                             </td>
+
                             <!--<td><%#= link_to "Delete", incident_path(@this_record), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></td>-->
-                            <td><%= link_to "Edit", edit_incident_path(incident.id), class: "btn btn-success" %></li></td>
+
+                            <% if incident.transcribed == false %>
+                                <td><%= link_to "Transcribe", edit_incident_path(incident.id), class: "btn btn-danger" %></li></td>
+                            <% elsif incident.verified == false %>
+                                <td><%= link_to "Verify", edit_incident_path(incident.id), class: "btn btn-warning" %></li></td>
+                            <% else %>
+                                <td><%= link_to "Edit", edit_incident_path(incident.id), class: "btn btn-success" %></li></td>
+                            <% end %>
+
                         </tr>
                 <% end %>
             </table>

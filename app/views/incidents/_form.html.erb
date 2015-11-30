@@ -130,12 +130,21 @@
 
         <h5>Associated People</h5>
 
-        <div class="do_something">
-            <label class="string optional control-label" style="color: #468849;">Will open a new tab to record information about the person shot</label>
-            <% @people.each do |person| %>
-                <br /><label class="string optional control-label"><%= link_to person.person_name, edit_person_path(person.id), :target => "_blank" %></label>
-            <% end %>
-        </div>
+        <% if @incident.transcribed == false %>
+
+            <h1>Add new person?</h1>
+
+        <% else %>
+
+            <div class="do_something">
+                <label class="string optional control-label" style="color: #468849;">Will open a new tab to record information about the person shot</label>
+                <% @people.each do |person| %>
+                    <br /><label class="string optional control-label"><%= link_to person.person_name, edit_person_path(person.id), :target => "_blank" %></label>
+                <% end %>
+            </div>
+
+        <% end %>
+
 
         <hr></hr>
 
@@ -290,16 +299,29 @@
         </div>
         <!-- end additional data -->
 
-        <% if !@incident.new_record? %>
+        <% if !@incident.user_email %>
             <div class="do_something">
                 <div class="field" id="notes">
-                    <%= f.input :email, class: "form-control", label: "Staff Transcriber" %>
+                    <%= f.input :user_email, class: "form-control", label: "Staff Transcriber", input_html: {value: @user.email} %>
+                </div>
+            </div>
+        <% else %>
+            <div class="do_something">
+                <div class="field" id="notes">
+                    <%= f.input :user_email, class: "form-control", label: "Staff Transcriber", input_html: {value: @user.email} %>
                 </div>
             </div>
         <% end %>
 
+        <% if @incident.transcribed == false %>
+            <p>Set @incident.transcribed to true</p>
+            <p>Set @incident.verified to false</p>
+            <p>Set @incident.user_id to value</p>
+        <% end %>
+
+        <%= hidden_field_tag "incident_url", @incident.incident_url %>
         <%= hidden_field_tag "incident_id", @incident.id %>
-        <%= hidden_field_tag "transcription_id", @transcription.id %>
         <%= hidden_field_tag :redirect_location, "/incidents/#{@incident.id}" %>
+
     </div>
 <% end %>

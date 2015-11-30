@@ -3,28 +3,23 @@ class HomeController < ApplicationController
     def index
       @user = current_user
       @incidents = Incident.all
-      @transcriptions = Transcription.all
+      @transcriptions = @incidents.where(transcribed: true)
       @transcribed_percent = (@transcriptions.count.to_f / @incidents.count.to_f) * 100
-      @transcribed_scoreboard = @transcriptions.group_by(&:email)
+      @transcribed_scoreboard = @incidents.where(transcribed: true).group_by(&:user_email)
       @verified = @incidents.where(verified: true)
       @verified_percent = (@verified.count.to_f / @incidents.count.to_f) * 100
-      @verified_scoreboard = @verified.group_by(&:email)
-      #Rails.logger.info("Verified so far - #{@verified}")
+      @verified_scoreboard = @verified.group_by(&:verified_by_email)
     end
 
     def export_dashboard_json_data
-
         @people = Person.select("id, district_attorney_file_number, incident_url, person_name, person_ethnicity, person_gender, person_age, person_killed, person_armed, armed_with_firearm, armed_with_weapon, used_vehicle_as_weapon, person_ignored_officer_commands, person_hid_hands_from_officer, person_reached_for_waistband, person_fled_by_foot_or_vehicle, person_grabbed_for_officers_weapon_holster, person_signs_of_mental_illness, person_signs_of_impairment").where("on_duty_shooting_case = '1'")
-
         @people.each do |item|
-
             # fix the incident date
             date_of_incident_pacific = item.incident.date_of_incident.in_time_zone("Pacific Time (US & Canada)")
             offset = date_of_incident_pacific.utc_offset()
             date_of_incident_correct = date_of_incident_pacific += offset.abs
             date_of_incident_string = date_of_incident_correct.strftime "%Y-%m-%d %H:%M %Z"
             item.incident.date_of_incident = date_of_incident_string
-
             # fix the date of da letter
             da_date_of_letter_pacific = item.incident.district_attorney_date_of_letter.in_time_zone("Pacific Time (US & Canada)")
             offset = da_date_of_letter_pacific.utc_offset()
@@ -63,5 +58,4 @@ class HomeController < ApplicationController
             end
         end
     end
-
 end
