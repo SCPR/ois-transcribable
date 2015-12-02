@@ -11,6 +11,7 @@ class Incident < ActiveRecord::Base
     def split_url
         # 2107457-10-la-use-of-force-10-0966
         # 2514850-sb_-2013-00-0025411
+        # 2630819-orange_12-024.html
         # https://www.documentcloud.org/documents/2094040-12-la-use-of-force-12-0006
         my_string_array = self.incident_url.split("https://www.documentcloud.org/documents/")
         this = my_string_array[1]
@@ -20,6 +21,9 @@ class Incident < ActiveRecord::Base
         if this_county == "sb"
             data_returned["county"] = "San Bernardino"
             data_returned["file_number"] = "#" + county_string[4..-1]
+        elsif this_county == "or"
+            data_returned["county"] = "Orange"
+            data_returned["file_number"] = "#" + county_string[7..-1]
         else
             data_returned["county"] = "Los Angeles"
             data_returned["file_number"] = "#" + county_string.last(7)
