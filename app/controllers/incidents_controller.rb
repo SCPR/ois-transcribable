@@ -49,6 +49,24 @@ class IncidentsController < ApplicationController
     def update
         @incident = Incident.find(params[:incident_id])
         if @incident.update_attributes(incident_params)
+            if @incident.transcribed_status == nil
+                @incident.transcribed = false
+                @incident.transcribed_count = 0
+                @incident.verified = false
+            elsif @incident.transcribed_status == "in-progress"
+                @incident.transcribed = false
+                @incident.transcribed_count = 0
+                @incident.verified = false
+            elsif @incident.transcribed_status == "transcribed"
+                @incident.transcribed = true
+                @incident.transcribed_count = 1
+                @incident.verified = false
+            else
+                @incident.transcribed = true
+                @incident.transcribed_count = 1
+                @incident.verified = true
+            end
+            @incident.save
             redirect_to(incident_path, :alert => "Updated")
         else
             render "edit"

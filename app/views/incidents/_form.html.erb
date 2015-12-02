@@ -3,6 +3,13 @@
     <%= submit_tag "Submit The Edited Information", :class => "btn btn-success btn-lg btn-block", :id => "incidentsubmit"  %>
 
     <div class="overflow form-fields">
+
+        <div class="do_something">
+            <div class="field" id="transcribed_status">
+                <%= f.input :transcribed_status, collection: ["in-progress", "transcribed", "verified"], label: false, :default => "in-progress", :prompt => " --Select One-- ", class: "form-control", label: "Transcription Status" %>
+            </div>
+        </div>
+
         <% if @incident.errors.any? %>
             <div id="error_explanation">
                 <h6><%= pluralize(@incident.errors.count, "error") %> prohibited this transcription from being saved:</h6>
@@ -286,7 +293,7 @@
                 <h5>Factors Present (Check box if true)</h5>
                 <div class="do_something">
                     <div class="field" id="reason_for_shooting">
-                    <%= p.input :reason_for_shooting, collection: [" --select one-- ", "attempted to disarm deputy", "bystander in shooting", "led to believe was armed", "object shooting", "other person was target", "perception shooting", "vehicle as weapon"], label: false, :default => 0, class: "form-control", label: "Reason For Shooting" %>
+                    <%= p.input :reason_for_shooting, collection: ["attempted to disarm deputy", "bystander in shooting", "led to believe was armed", "object shooting", "other person was target", "perception shooting", "vehicle as weapon"], label: false, :default => nil, :prompt => " --Select One-- ", class: "form-control", label: "Reason For Shooting" %>
                     </div>
                 </div>
                 <div class="row">
@@ -387,7 +394,7 @@
         </div>
 
         <div class="do_something">
-            <%= f.input :led_to_response_category, collection: [" --select one-- ", "domestic violence", "general disturbance", "implied weapon is present", "lower-level crime", "suicidal/wants to die", "shots fired", "suspicious or inquisitive cop", "traffic violation", "violent/serious crime", "other"], label: false, :default => 0, class: "form-control", label: "Categorize What Led To An Officer Response/Shooting" %>
+            <%= f.input :led_to_response_category, collection: [" --select one-- ", "domestic violence", "general disturbance", "implied weapon is present", "lower-level crime", "suicidal/wants to die", "shots fired", "suspicious or inquisitive cop", "traffic violation", "violent/serious crime", "other"], label: false, :default => nil, :prompt => " --Select One-- ", class: "form-control", label: "Categorize What Led To An Officer Response/Shooting" %>
         </div>
 
         <div class="do_something">
@@ -513,14 +520,10 @@
         <!-- end additional data -->
 
         <% if @incident.transcribed == false %>
-            <%= f.input :transcribed, :as => :hidden, :input_html => { :value => true } %>
-            <%= f.input :transcribed_count, :as => :hidden, :input_html => { :value => 1 } %>
-            <%= f.input :verified, :as => :hidden, :input_html => { :value => false } %>
             <%= f.input :user_email, :as => :hidden, input_html: {value: @user.email} %>
             <%= f.input :user_id, :as => :hidden, :input_html => { :value => @user_id } %>
         <% else %>
             <% if @incident.verified == false %>
-                <%= f.input :verified, :as => :hidden, :input_html => { :value => true } %>
                 <%= f.input :verified_by_email, :as => :hidden, input_html: {value: @user.email} %>
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
