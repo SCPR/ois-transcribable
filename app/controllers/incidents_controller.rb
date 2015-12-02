@@ -7,7 +7,7 @@ class IncidentsController < ApplicationController
         if current_user.email == "wcterrill@gmail.com"
             redirect_to incidents_statistics_path
         else
-            @incidents = Incident.all.order("district_attorney_file_number")
+            @incidents = Incident.all.order(verified: :asc, district_attorney_file_number: :asc)
             @incidents_verified = Incident.all.where("verified = '1'")
         end
     end
@@ -41,6 +41,7 @@ class IncidentsController < ApplicationController
 
     def edit
         @user = current_user
+        @user_id = set_user_uuid
         @incident = Incident.find(params[:id])
         @people = @incident.people
     end
@@ -62,6 +63,21 @@ class IncidentsController < ApplicationController
     end
 
     private
+
+    # By default, the current user is stored in a cookie.
+    # For rigorous purposes, please consider implementing a
+    # real login system.
+
+    def set_user_uuid
+        cookie_name = "#{Rails.application.engine_name}_transcriable_user_id".to_sym
+        return cookies[cookie_name] if cookies[cookie_name]
+        cookies[cookie_name] = {
+            :value   => UUID.new.generate(:compact),
+            :expires => 5.years.from_now
+        }
+        cookies[cookie_name]
+    end
+
     def create_pct(count)
         @incidents = Incident.all
         @verified_incidents = @incidents.where(verified: true)

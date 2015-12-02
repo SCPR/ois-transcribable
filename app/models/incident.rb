@@ -6,22 +6,25 @@ class Incident < ActiveRecord::Base
     #validates :district_attorney_file_number, uniqueness:true, allow_blank: true, allow_nil: true
     has_many :transcriptions
     has_many :people, primary_key: "district_attorney_file_number", foreign_key: "district_attorney_file_number"
+    accepts_nested_attributes_for :people
 
-    # def split_url
-    #     my_string_array = self.url.split("https://www.documentcloud.org/documents/")
-    #     my_data_points = my_string_array[1].split("-")
-    #     if my_data_points[2] == "la"
-    #         county = "Los Angeles"
-    #     elsif my_data_points[1] == "la"
-    #         county = "Los Angeles"
-    #     else
-    #         county = nil
-    #     end
-    #     my_data_points.insert(0, county)
-    #     file_number = my_data_points.last(2)
-    #     my_file_number = "#" + file_number[0] + "-" + file_number[1]
-    #     my_data_points.insert(1, my_file_number)
-    #     return my_data_points.first(2)
-    # end
+    def split_url
+        # 2107457-10-la-use-of-force-10-0966
+        # 2514850-sb_-2013-00-0025411
+        # https://www.documentcloud.org/documents/2094040-12-la-use-of-force-12-0006
+        my_string_array = self.incident_url.split("https://www.documentcloud.org/documents/")
+        this = my_string_array[1]
+        county_string = this[8..-1]
+        this_county = county_string[0,2]
+        data_returned = Hash.new
+        if this_county == "sb"
+            data_returned["county"] = "San Bernardino"
+            data_returned["file_number"] = "#" + county_string[4..-1]
+        else
+            data_returned["county"] = "Los Angeles"
+            data_returned["file_number"] = "#" + county_string.last(7)
+        end
+        return data_returned
+    end
 
 end

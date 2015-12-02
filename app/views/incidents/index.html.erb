@@ -14,7 +14,6 @@
                     <th>Transcribed By</th>
                     <th>Verified</th>
                     <th>Verified By</th>
-                    <th>Verified Date</th>
                     <th>DA File Number</th>
                     <th>Person Name</th>
                     <!--<th>Delete</th>-->
@@ -34,9 +33,7 @@
                             <% if incident.verified == true %>
                                 <td style="color: green">&#10004;</td>
                                 <td><%= incident.verified_by_email %></td>
-                                <td><%= incident.updated_at.strftime("%m/%d/%Y") %></td>
                             <% else %>
-                                <td style="color: red">&mdash;</td>
                                 <td style="color: red">&mdash;</td>
                                 <td style="color: red">&mdash;</td>
                             <% end %>
