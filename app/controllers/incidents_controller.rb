@@ -7,7 +7,7 @@ class IncidentsController < ApplicationController
         if current_user.email == "wcterrill@gmail.com"
             redirect_to incidents_statistics_path
         else
-            @incidents = Incident.all.order(verified: :asc, district_attorney_file_number: :asc)
+            @incidents = Incident.all.order(verified: :asc, district_attorney_county: :asc, district_attorney_file_number: :asc)
             @incidents_verified = Incident.all.where("verified = '1'")
         end
     end

@@ -15,12 +15,14 @@
                     <th>Verified</th>
                     <th>Verified By</th>
                     <th>DA File Number</th>
+                    <th>County</th>
                     <th>Person Name</th>
                     <!--<th>Delete</th>-->
                     <th>Edit</th>
                 </tr>
                 <% @incidents.each do |incident| %>
-                    <%# @this_record = @incidents.find_by(id: incident.id) %>
+
+                    <% if incident.on_duty_shooting_case != false %>
                         <tr>
                             <% if incident.transcribed == true %>
                                 <td style="color: green">&#10004;</td>
@@ -44,6 +46,8 @@
                                 <td><%= incident.district_attorney_file_number %></td>
                             <% end %>
 
+                            <td><%= incident.district_attorney_county %></td>
+
                             <td>
                                 <% incident.people.each do |person| %>
                                     <%= person.person_name %><br />
@@ -61,6 +65,9 @@
                             <% end %>
 
                         </tr>
+                    <% end %>
+
+
                 <% end %>
             </table>
         </div>
