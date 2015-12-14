@@ -143,11 +143,8 @@
         <h5>Associated People</h5>
         <% if @people.count == 0 %>
             <%= f.simple_fields_for :people, @incident.people.build do |p| %>
-
                 <%= p.input :incident_url, :as => :hidden, :input_html => { :value => @incident.incident_url } %>
-
                 <%= p.input :district_attorney_file_number, :as => :hidden, :input_html => {value: @incident.split_url["file_number"]} %>
-
                 <div class="do_something">
                     <label class="checkbox-inline">
                         <%= p.input :case_doubled_up, class: "form-control", label: "Were Multiple People Shot" %>
@@ -364,7 +361,11 @@
             <div class="do_something">
                 <label class="string optional control-label" style="color: #468849;">Will open a new tab to record information about the person shot</label>
                 <% @people.each do |person| %>
-                    <br /><label class="string optional control-label"><%= link_to person.person_name, edit_person_path(person.id), :target => "_blank" %></label>
+                    <% if person.person_name == "" %>
+                        <br /><label class="string optional control-label"><%= link_to "You Forgot to Save Details for This Person", edit_person_path(person.id), :target => "_blank" %></label>
+                    <% else %>
+                        <br /><label class="string optional control-label"><%= link_to person.person_name, edit_person_path(person.id), :target => "_blank" %></label>
+                    <% end %>
                 <% end %>
                 <!--
                 <br /><label class="string optional control-label"><%#= link_to 'Add a person?', new_person_path(@incident.id), :target => "_blank" %></label>
