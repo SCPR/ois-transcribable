@@ -7,6 +7,7 @@ class Incident < ActiveRecord::Base
     has_many :transcriptions
     has_many :people, primary_key: "district_attorney_file_number", foreign_key: "district_attorney_file_number"
     accepts_nested_attributes_for :people
+    validates_associated :people
 
     def split_url
         # 2107457-10-la-use-of-force-10-0966

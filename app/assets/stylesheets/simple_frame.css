@@ -55,11 +55,11 @@ label.control-label, label.boolean { font-size: 180%; }
     box-shadow: 0 0 3px #cecece;
 }
 
-.error, .warn, .notice, #simple_frame #error_explanation {
+.error, .warn, .notice, .invalid {
     padding: 10px;
-    margin-bottom: 5px;
-    font-weight:bold;
-    font-family:Helvetica,arial,sans-serif;
+    margin: 25px 0 25px 0;
+    font-weight: bold;
+    font-family: Helvetica,arial,sans-serif;
 }
 
 .error{
@@ -72,13 +72,10 @@ label.control-label, label.boolean { font-size: 180%; }
     background:#FBFFCE;
 }
 
-
-
-
-
-
-
-
+.invalid{
+    color: #ffffff;
+    background: #ff0000;
+}
 
 /* reset */
 /*

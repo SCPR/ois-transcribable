@@ -4,22 +4,22 @@
 
     <div class="overflow form-fields">
 
+        <% if @incident.errors.any? %>
+            <div class="invalid">
+                <h6><%= pluralize(@incident.errors.count, "error") %> prohibited this transcription from being saved:</h6>
+                <ul>
+                    <% @incident.errors.full_messages.each do |msg| %>
+                        <li><%= msg %></li>
+                    <% end %>
+                </ul>
+            </div>
+        <% end %>
+
         <div class="do_something">
             <div class="field" id="transcribed_status">
                 <%= f.input :transcribed_status, collection: ["in-progress", "transcribed", "verified"], label: false, :default => "in-progress", :prompt => " --Select One-- ", class: "form-control", label: "Transcription Status" %>
             </div>
         </div>
-
-        <% if @incident.errors.any? %>
-            <div id="error_explanation">
-                <h6><%= pluralize(@incident.errors.count, "error") %> prohibited this transcription from being saved:</h6>
-                <ul>
-                    <% @incident.errors.full_messages.each do |msg| %>
-                    <li><%= msg %></li>
-                    <% end %>
-                </ul>
-            </div>
-        <% end %>
 
         <!-- begin initial data -->
         <h5>Initial Information</h5>

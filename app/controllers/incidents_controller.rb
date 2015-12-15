@@ -40,14 +40,17 @@ class IncidentsController < ApplicationController
     end
 
     def edit
-        @user = current_user
-        @user_id = set_user_uuid
         @incident = Incident.find(params[:id])
         @people = @incident.people
+        @user = current_user
+        @user_id = set_user_uuid
     end
 
     def update
         @incident = Incident.find(params[:incident_id])
+        @people = @incident.people
+        @user = current_user
+        @user_id = set_user_uuid
         if @incident.update_attributes(incident_params)
             if @incident.transcribed_status == nil
                 @incident.transcribed = false
