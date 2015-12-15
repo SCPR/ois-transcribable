@@ -27,7 +27,7 @@
                     <% else %>
                         <span style="color: red"><%= "%.2f" % @transcribed_percent %>%</span>
                     <% end %>
-                of <%= link_to @incidents.size, transcriptions_path %> incidents.</h6>
+                of <%= link_to @incidents.size, incidents_path %> incidents.</h6>
                 <ul class="list-inline">
                     <% if "%.2f" % @transcribed_percent != "100.00" %>
                         <li><%= link_to "New transcription", incidents_path(), class: "btn btn-info" %></li>
