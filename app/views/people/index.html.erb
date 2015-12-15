@@ -13,13 +13,19 @@
                     <th>DA File Number</th>
                     <th>Person Name</th>
                     <th>Edit This Record</th>
+                    <th>Delete This Record</th>
                 </tr>
                 <% @people.each do |person| %>
                     <tr>
-                        <td><%= person.date_of_incident.strftime("%m/%d/%Y") %></td>
+                        <% if person.date_of_incident %>
+                            <td><%= person.date_of_incident.strftime("%m/%d/%Y") %></td>
+                        <% else %>
+                            <td></td>
+                        <% end %>
                         <td><%= person.district_attorney_file_number %></td>
                         <td><%= person.person_name %></td>
                         <td><%= link_to "Edit", edit_person_path(person.id), class: "btn btn-success" %></li></td>
+                        <td><%= link_to "Delete", person_path(person.id), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></li></td>
                     </tr>
                 <% end %>
             </table>

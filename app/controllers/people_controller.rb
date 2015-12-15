@@ -7,7 +7,7 @@ class PeopleController < ApplicationController
         if current_user.email == "wcterrill@gmail.com"
             redirect_to incidents_statistics_path
         else
-            @people = Person.order(:date_of_incident).where("on_duty_shooting_case = '1'")
+            @people = Person.all
         end
     end
 
