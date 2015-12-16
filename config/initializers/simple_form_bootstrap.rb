@@ -116,10 +116,10 @@ SimpleForm.setup do |config|
     b.optional :min_max
     b.optional :readonly
     b.use :label, class: 'sr-only'
-
+    b.use :hint,  wrap_with: { tag: 'p', class: 'help-block' }
     b.use :input, class: 'form-control'
     b.use :error, wrap_with: { tag: 'span', class: 'help-block' }
-    b.use :hint,  wrap_with: { tag: 'p', class: 'help-block' }
+
   end
 
   # Wrappers for forms and inputs using the Bootstrap toolkit.
