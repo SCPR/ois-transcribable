@@ -1,7 +1,7 @@
 <%=
 CSV.generate do |csv|
     csv << ["id", "district_attorney_county", "district_attorney_file_number", "incident_url", "person_name", "person_ethnicity", "person_gender", "person_age", "district_attorney_date_of_letter", "type_of_incident", "date_of_incident", "person_killed", "person_armed", "armed_with_firearm", "armed_with_weapon", "used_vehicle_as_weapon", "person_ignored_officer_commands", "person_hid_hands_from_officer", "person_reached_for_waistband", "person_fled_by_foot_or_vehicle", "person_grabbed_for_officers_weapon_holster", "person_signs_of_mental_illness", "person_signs_of_impairment", "officer_self_defense", "officer_defense_of_civillians", "officer_defense_of_officers"]
-    @people.each do |item|
+    @these_people.each do |item|
 
         # fix the incident date
         date_of_incident_pacific = item.incident.date_of_incident.in_time_zone("Pacific Time (US & Canada)")
