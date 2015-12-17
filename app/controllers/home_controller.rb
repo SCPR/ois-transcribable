@@ -12,7 +12,7 @@ class HomeController < ApplicationController
     end
 
     def export_dashboard_json_data
-        @people = Person.select("people.id, people.district_attorney_file_number, people.incident_url, people.person_name, people.person_ethnicity, people.person_gender, people.person_age, people.person_killed, people.person_armed, people.armed_with_firearm, people.armed_with_weapon, people.used_vehicle_as_weapon, people.person_ignored_officer_commands, people.person_hid_hands_from_officer, people.person_reached_for_waistband, people.person_fled_by_foot_or_vehicle, people.person_grabbed_for_officers_weapon_holster, people.person_signs_of_mental_illness, people.person_signs_of_impairment").where("people.on_duty_shooting_case = '1'").joins(:incident).where("district_attorney_county = 'Los Angeles'")
+        @people = Person.select("people.id, people.district_attorney_file_number, people.incident_url, people.person_name, people.person_ethnicity, people.person_gender, people.person_age, people.person_killed, people.person_armed, people.armed_with_firearm, people.armed_with_weapon, people.used_vehicle_as_weapon, people.person_ignored_officer_commands, people.person_hid_hands_from_officer, people.person_reached_for_waistband, people.person_fled_by_foot_or_vehicle, people.person_grabbed_for_officers_weapon_holster, people.person_signs_of_mental_illness, people.person_signs_of_impairment").where("on_duty_shooting_case = '1'").joins(:incident).where("district_attorney_county = 'Los Angeles'")
         @people.each do |item|
             # fix the incident date
             date_of_incident_pacific = item.incident.date_of_incident.in_time_zone("Pacific Time (US & Canada)")
