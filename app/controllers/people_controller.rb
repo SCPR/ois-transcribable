@@ -12,13 +12,9 @@ class PeopleController < ApplicationController
     end
 
     def data
-        @people = Person.includes(:incident).where("on_duty_shooting_case = '1'")
-
-        puts @people.incident
-
-        render :json => @people.incidents.to_json
-
-        # render :json => @people.to_json(:include => {:incident => {:only => [:district_attorney_county, :district_attorney_file_number, :general_location_of_incident, :type_of_incident, :officer_shots_fired, :officer_name_and_badge_number, :officer_police_agency, :multiple_officers, :car_stop, :potential_police_video, :potential_civillian_video, :officer_charges_filed, :officer_self_defense, :officer_defense_of_civillians, :officer_defense_of_officers, :officer_serving_warrant, :officer_on_surveillance, :officer_on_undercover, :civilian_witnesses, :officer_injured, :flag_for_followup, :officer_routine_patrol, :officer_responding_to_call, :led_to_response_category, :date_of_incident]}})
+        @people = Person.all
+        @these_people = @people.where("on_duty_shooting_case = '1'").joins(:incident).where("district_attorney_county = 'Los Angeles'")
+        render :json => @these_people.to_json(:include => {:incident => {:only => [:district_attorney_county, :district_attorney_file_number, :general_location_of_incident, :type_of_incident, :officer_shots_fired, :officer_name_and_badge_number, :officer_police_agency, :multiple_officers, :car_stop, :potential_police_video, :potential_civillian_video, :officer_charges_filed, :officer_self_defense, :officer_defense_of_civillians, :officer_defense_of_officers, :officer_serving_warrant, :officer_on_surveillance, :officer_on_undercover, :civilian_witnesses, :officer_injured, :flag_for_followup, :officer_routine_patrol, :officer_responding_to_call, :led_to_response_category, :date_of_incident]}})
     end
 
     def show
