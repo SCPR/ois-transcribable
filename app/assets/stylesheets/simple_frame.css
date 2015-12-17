@@ -1,14 +1,18 @@
-ol,
-ul,
-li { margin-left: 20px; text-indent: 2px; list-style: square; }
+body.minimal .data-container { width: 100%; max-width: 100%; margin: 0 auto; box-sizing: border-box; }
 
-body.minimal header { height: 60px; }
+body.minimal .kpcc-header { width: 100%; margin: 0 0 15px 0;}
 
-body.minimal .data-container { max-width: 100%; margin: 0 auto; }
+body.minimal .kpcc-header header { width: 100%; height: 60px; }
 
-.data-container .data-visuals { height: 900px; }
+body.minimal .kpcc-header .breadcrumb { width: 98%; margin: 0 1% 0 1%; }
 
-.data-container .data-visuals .overflow { height: 875px; overflow-y: scroll; }
+body.minimal .kpcc-footer { margin: 15px 0 0 0; }
+
+ol, ul, li { margin-left: 20px; text-indent: 2px; list-style: square; }
+
+.data-container .data-visuals { height: 764px; }
+
+.data-container .data-visuals .overflow { margin: 15px 0 0 0; overflow-y: scroll; }
 
 .data-container .data-details { margin: 0px auto 5px auto; }
 

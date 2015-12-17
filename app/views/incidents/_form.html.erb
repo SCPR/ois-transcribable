@@ -141,13 +141,12 @@
 
         <!-- NEED TO FIGURE OUT THE PEOPLE -->
         <h5>Associated People</h5>
-
         <label class="string optional control-label" style="color: #468849;">Email ckeller@scpr.org with file number if more than one person shot</label>
-
         <% if @people.count == 0 %>
             <%= f.simple_fields_for :people, @incident.people.build do |p| %>
                 <%= p.input :incident_url, :as => :hidden, :input_html => { :value => @incident.incident_url } %>
                 <%= p.input :district_attorney_file_number, :as => :hidden, :input_html => {value: @incident.split_url["file_number"]} %>
+                <%= p.input :year_of_incident, :as => :hidden, :input_html => {value: @incident.get_incident_year["file_number"]} %>
                 <%= render "people/base_form", f: f, p: p %>
             <% end %>
         <% else %>
@@ -158,6 +157,7 @@
                         <%= f.simple_fields_for :people, @incident.people do |p| %>
                             <%= p.input :incident_url, :as => :hidden, :input_html => { :value => @incident.incident_url } %>
                             <%= p.input :district_attorney_file_number, :as => :hidden, :input_html => {value: @incident.split_url["file_number"]} %>
+                            <%= p.input :year_of_incident, :as => :hidden, :input_html => {value: @incident.get_incident_year["file_number"]} %>
                             <%= render "people/base_form", f: f, p: p %>
                         <% end %>
                     <% else %>
@@ -165,6 +165,7 @@
                             <%= f.simple_fields_for :people, @incident.people do |p| %>
                                 <%= p.input :incident_url, :as => :hidden, :input_html => { :value => @incident.incident_url } %>
                                 <%= p.input :district_attorney_file_number, :as => :hidden, :input_html => {value: @incident.split_url["file_number"]} %>
+                                <%= p.input :year_of_incident, :as => :hidden, :input_html => {value: @incident.get_incident_year["file_number"]} %>
                                 <%= render "people/base_form", f: f, p: p %>
                             <% end %>
                     <% end %>

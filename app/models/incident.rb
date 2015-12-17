@@ -32,4 +32,22 @@ class Incident < ActiveRecord::Base
         return data_returned
     end
 
+    def get_incident_year
+        my_string_array = self.incident_url.split("https://www.documentcloud.org/documents/")
+        this = my_string_array[1]
+        county_string = this[8..-1]
+        this_county = county_string[0,2]
+        data_returned = Hash.new
+        if this_county == "sb"
+            data_returned["county"] = "San Bernardino"
+            data_returned["file_number"] = county_string[4..7]
+        elsif this_county == "or"
+            data_returned["county"] = "Orange"
+            data_returned["file_number"] = "20" + county_string[7..8]
+        else
+            data_returned["county"] = "Los Angeles"
+            data_returned["file_number"] = "20" + county_string.last(7).gsub(/-\d+/, "")
+        end
+        return data_returned
+    end
 end

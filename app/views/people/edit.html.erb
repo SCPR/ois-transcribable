@@ -3,16 +3,13 @@
     <li><%= link_to "Edit People", person_path() %></li>
     <li>Verifying <%= @people.incident_url %></li>
 </ol>
-
-<% if flash[:alert] %>
-    <div class="warn"><%= flash[:alert] %></div>
-<% end %>
-
-<% if flash[:notice] %>
-    <div class="notice"><%= flash[:notice] %></div>
-<% end %>
-
 <div class="row data-visuals">
+    <% if flash[:alert] %>
+        <div class="warn"><%= flash[:alert] %></div>
+    <% end %>
+    <% if flash[:notice] %>
+        <div class="notice"><%= flash[:notice] %></div>
+    <% end %>
     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
         <div id="doc"></div>
     </div>
@@ -25,28 +22,28 @@
 
 <script>
     var dc_slug = "<%= @people.incident_url %>".replace("https://www.documentcloud.org/documents/", "");
-
     var fn = fn || {};
-
     var fn = {
         getDocumentMeta: function(data){
             $("#document-title").html("<%= @people.person_name %> - <%= @people.district_attorney_file_number %>");
         }
     };
-
-    var initialWidth = $("#doc").width();
-
+    var doc_width = $("#doc").width();
+    var existing_height = $(".kpcc-header").height() + $(".kpcc-footer").height() + $(".breadcrumb").height();
+    var remaining_height = screen.height - existing_height;
+    var doc_height = remaining_height - 210;
+    $(".data-visuals").css("height", doc_height - 5);
+    $("#form").css("height", doc_height);
+    $(".overflow").css("height", doc_height - 165);
     var CURRENT_DOCUMENT = DV.load("https://documentcloud.org/documents/" + dc_slug + ".js", {
-        container: '#doc',
-        width: initialWidth,
-        height: 900,
-        zoom: 'auto',
+        container: "#doc",
+        width: doc_width,
+        height: doc_height,
+        zoom: "auto",
         showSidebar: false,
         embedded: true,
         showAnnotations: false
     });
-
     var docJson = "https://www.documentcloud.org/api/documents/" + dc_slug + ".json";
-
     $.getJSON(docJson, fn.getDocumentMeta);
 </script>

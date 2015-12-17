@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151202163350) do
+ActiveRecord::Schema.define(version: 20151216220710) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                                            null: false
@@ -98,12 +98,10 @@ ActiveRecord::Schema.define(version: 20151202163350) do
     t.string   "coroner_case_number",                        limit: 255
     t.string   "year_of_incident",                           limit: 255
     t.string   "coroner_police_agency",                      limit: 255
-    t.string   "officer_police_agency",                      limit: 255
     t.text     "drugs",                                      limit: 65535
     t.text     "person_criminal_case_file_number",           limit: 65535
     t.text     "person_charges_filed",                       limit: 65535
     t.text     "notes",                                      limit: 65535
-    t.boolean  "on_duty_shooting_case",                      limit: 1
     t.boolean  "person_signs_of_impairment",                 limit: 1
     t.boolean  "marijuana_alone",                            limit: 1
     t.boolean  "case_doubled_up",                            limit: 1
@@ -132,7 +130,6 @@ ActiveRecord::Schema.define(version: 20151202163350) do
     t.boolean  "law_enforcement_related",                    limit: 1
     t.boolean  "officer_involved",                           limit: 1
     t.boolean  "in_custody",                                 limit: 1
-    t.datetime "date_of_incident"
     t.datetime "person_date_of_birth"
     t.datetime "person_date_of_death"
   end
