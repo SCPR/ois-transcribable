@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216220710) do
+ActiveRecord::Schema.define(version: 20160210143805) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                                            null: false
@@ -135,74 +135,74 @@ ActiveRecord::Schema.define(version: 20151216220710) do
   end
 
   create_table "transcriptions", force: :cascade do |t|
-    t.datetime "created_at",                                                         null: false
-    t.datetime "updated_at",                                                         null: false
-    t.string   "person_name",                          limit: 255
-    t.string   "district_attorney_file_number",        limit: 255
-    t.string   "district_attorney_county",             limit: 255
-    t.string   "district_attorney_prepared_report",    limit: 255
-    t.string   "general_location_of_incident",         limit: 255
-    t.string   "type_of_incident",                     limit: 255
-    t.string   "person_weapon",                        limit: 255
-    t.string   "officer_shots_fired",                  limit: 255
-    t.string   "da_on_scene",                          limit: 255
-    t.string   "da_investigator_on_scene",             limit: 255
-    t.text     "district_attorney_conclusion",         limit: 65535
-    t.text     "narrative_notes",                      limit: 65535
-    t.text     "autopsy_notes",                        limit: 65535
-    t.text     "conclusion_notes",                     limit: 65535
-    t.text     "officer_name_and_badge_number",        limit: 65535
-    t.text     "officer_police_agency",                limit: 65535
-    t.text     "what_happened",                        limit: 65535
-    t.text     "underlying_crime_leading_to_shooting", limit: 65535
-    t.text     "how_situation_escalated",              limit: 65535
-    t.text     "person_case_number",                   limit: 65535
-    t.text     "officer_special_unit",                 limit: 65535
-    t.text     "officer_charges_filed_yes_detail",     limit: 65535
-    t.text     "person_charges_filed",                 limit: 65535
+    t.datetime "created_at",                                                               null: false
+    t.datetime "updated_at",                                                               null: false
+    t.string   "person_name",                                limit: 255
+    t.string   "district_attorney_file_number",              limit: 255
+    t.string   "district_attorney_county",                   limit: 255
+    t.string   "district_attorney_prepared_report",          limit: 255
+    t.string   "general_location_of_incident",               limit: 255
+    t.string   "type_of_incident",                           limit: 255
+    t.string   "person_weapon",                              limit: 255
+    t.string   "officer_shots_fired",                        limit: 255
+    t.string   "district_attorney_on_scene",                 limit: 255
+    t.string   "district_attorney_investigator_on_scene",    limit: 255
+    t.text     "district_attorney_conclusion",               limit: 65535
+    t.text     "narrative_notes",                            limit: 65535
+    t.text     "autopsy_notes",                              limit: 65535
+    t.text     "conclusion_notes",                           limit: 65535
+    t.text     "officer_name_and_badge_number",              limit: 65535
+    t.text     "officer_police_agency",                      limit: 65535
+    t.text     "what_happened",                              limit: 65535
+    t.text     "underlying_crime_leading_to_shooting",       limit: 65535
+    t.text     "how_situation_escalated",                    limit: 65535
+    t.text     "person_criminal_case_file_number",           limit: 65535
+    t.text     "officer_special_unit",                       limit: 65535
+    t.text     "officer_charges_filed_yes_detail",           limit: 65535
+    t.text     "person_charges_filed",                       limit: 65535
     t.datetime "date_of_incident"
     t.datetime "district_attorney_date_of_letter"
-    t.boolean  "verified",                             limit: 1,     default: false, null: false
-    t.boolean  "multiple_officers",                    limit: 1
-    t.boolean  "car_stop",                             limit: 1
-    t.boolean  "believed_person_armed",                limit: 1
-    t.boolean  "potential_police_video",               limit: 1
-    t.boolean  "potential_civillian_video",            limit: 1
-    t.boolean  "mention_of_waistband_in_report",       limit: 1
-    t.boolean  "fatal",                                limit: 1
-    t.boolean  "case_relevant",                        limit: 1
-    t.boolean  "person_arrested",                      limit: 1
-    t.boolean  "officer_charges_filed",                limit: 1
-    t.boolean  "officer_self_defense",                 limit: 1
-    t.boolean  "officer_defense_of_civillians",        limit: 1
-    t.boolean  "officer_defense_of_officers",          limit: 1
-    t.boolean  "officer_unknown",                      limit: 1
-    t.boolean  "officer_serving_warrant",              limit: 1
-    t.boolean  "officer_on_surveillance",              limit: 1
-    t.boolean  "officer_on_undercover",                limit: 1
-    t.boolean  "pursuit_occurred",                     limit: 1
-    t.boolean  "person_gang_member",                   limit: 1
-    t.boolean  "person_ignored_officer_commands",      limit: 1
-    t.boolean  "person_weapon_recovered",              limit: 1
-    t.boolean  "person_initiated_physical_threat",     limit: 1
-    t.boolean  "person_intoxicated",                   limit: 1
-    t.boolean  "person_mentally_ill",                  limit: 1
-    t.boolean  "civilian_witnesses",                   limit: 1
-    t.boolean  "person_fired_weapon",                  limit: 1
-    t.boolean  "person_pointed_weapon",                limit: 1
-    t.boolean  "officer_injured",                      limit: 1
-    t.boolean  "flag_for_followup",                    limit: 1
-    t.integer  "incident_id",                          limit: 4
-    t.string   "user_id",                              limit: 255
-    t.boolean  "person_shot_in_back",                  limit: 1
-    t.boolean  "applied_lawful_force",                 limit: 1
-    t.string   "email",                                limit: 255
-    t.boolean  "person_shot_in_head",                  limit: 1
-    t.boolean  "person_unarmed",                       limit: 1
-    t.boolean  "officer_couldnt_see_persons_hands",    limit: 1
-    t.boolean  "officer_routine_patrol",               limit: 1
-    t.boolean  "officer_responding_to_call",           limit: 1
-    t.boolean  "grabbed_officers_weapon",              limit: 1
+    t.boolean  "verified",                                   limit: 1,     default: false, null: false
+    t.boolean  "multiple_officers",                          limit: 1
+    t.boolean  "car_stop",                                   limit: 1
+    t.boolean  "believed_person_armed",                      limit: 1
+    t.boolean  "potential_police_video",                     limit: 1
+    t.boolean  "potential_civillian_video",                  limit: 1
+    t.boolean  "person_reached_for_waistband",               limit: 1
+    t.boolean  "person_killed",                              limit: 1
+    t.boolean  "on_duty_shooting_case",                      limit: 1
+    t.boolean  "person_arrested",                            limit: 1
+    t.boolean  "officer_charges_filed",                      limit: 1
+    t.boolean  "officer_self_defense",                       limit: 1
+    t.boolean  "officer_defense_of_civillians",              limit: 1
+    t.boolean  "officer_defense_of_officers",                limit: 1
+    t.boolean  "officer_unknown",                            limit: 1
+    t.boolean  "officer_serving_warrant",                    limit: 1
+    t.boolean  "officer_on_surveillance",                    limit: 1
+    t.boolean  "officer_on_undercover",                      limit: 1
+    t.boolean  "person_fled_by_foot_or_vehicle",             limit: 1
+    t.boolean  "person_signs_of_gang_affiliation",           limit: 1
+    t.boolean  "person_ignored_officer_commands",            limit: 1
+    t.boolean  "person_weapon_recovered",                    limit: 1
+    t.boolean  "person_threatened_officer_with_weapon",      limit: 1
+    t.boolean  "person_signs_of_impairment",                 limit: 1
+    t.boolean  "person_signs_of_mental_illness",             limit: 1
+    t.boolean  "civilian_witnesses",                         limit: 1
+    t.boolean  "person_fired_gun_at_officer",                limit: 1
+    t.boolean  "person_pointed_gun_at_officer",              limit: 1
+    t.boolean  "officer_injured",                            limit: 1
+    t.boolean  "flag_for_followup",                          limit: 1
+    t.integer  "incident_id",                                limit: 4
+    t.string   "user_id",                                    limit: 255
+    t.boolean  "person_shot_in_back",                        limit: 1
+    t.boolean  "applied_lawful_force",                       limit: 1
+    t.string   "email",                                      limit: 255
+    t.boolean  "person_shot_in_head",                        limit: 1
+    t.boolean  "person_unarmed",                             limit: 1
+    t.boolean  "person_hid_hands_from_officer",              limit: 1
+    t.boolean  "officer_routine_patrol",                     limit: 1
+    t.boolean  "officer_responding_to_call",                 limit: 1
+    t.boolean  "person_grabbed_for_officers_weapon_holster", limit: 1
   end
 
   create_table "users", force: :cascade do |t|
