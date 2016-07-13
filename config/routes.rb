@@ -10,6 +10,10 @@ Rails.application.routes.draw do
 
   get "/all-csv-data" => "home#export_all_csv_data"
 
+  get "/bak-incident-data" => "home#export_incidents"
+
+  get "/bak-people-data" => "home#export_people"
+
   get "/incidents/statistics" => "incidents#statistics"
 
   get "/incidents/data" => "incidents#data"
