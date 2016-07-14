@@ -2,14 +2,52 @@
 CSV.generate do |csv|
     csv << ["id", "created_at", "updated_at", "incident_url", "district_attorney_file_number", "district_attorney_county", "district_attorney_prepared_report", "general_location_of_incident", "type_of_incident", "officer_shots_fired", "district_attorney_on_scene", "district_attorney_investigator_on_scene", "narrative_notes", "autopsy_notes", "conclusion_notes", "officer_name_and_badge_number", "officer_police_agency", "what_happened", "underlying_crime_leading_to_shooting", "how_situation_escalated", "officer_special_unit", "officer_charges_filed_yes_detail", "date_of_incident", "district_attorney_date_of_letter", "verified", "multiple_officers", "car_stop", "potential_police_video", "potential_civillian_video", "person_killed", "on_duty_shooting_case", "officer_charges_filed", "officer_self_defense", "officer_defense_of_civillians", "officer_defense_of_officers", "officer_serving_warrant",  "officer_on_surveillance", "officer_on_undercover", "civilian_witnesses", "officer_injured", "flag_for_followup", "officer_routine_patrol", "transcribed_count", "officer_responding_to_call", "verified_by_email", "officer_shots_fired_specific", "type_of_incident_number", "led_to_response_category", "user_email", "user_id", "transcribed", "transcribed_status"]
     @incidents.each do |item|
+
+        verified = item.verified ? 1 : 0
+        multiple_officers = item.multiple_officers ? 1 : 0
+        car_stop = item.car_stop ? 1 : 0
+        potential_police_video = item.potential_police_video ? 1 : 0
+        potential_civillian_video = item.potential_civillian_video ? 1 : 0
+        person_killed = item.person_killed ? 1 : 0
+        on_duty_shooting_case = item.on_duty_shooting_case ? 1 : 0
+        officer_charges_filed = item.officer_charges_filed ? 1 : 0
+        officer_self_defense = item.officer_self_defense ? 1 : 0
+        officer_defense_of_civillians = item.officer_defense_of_civillians ? 1 : 0
+        officer_defense_of_officers = item.officer_defense_of_officers ? 1 : 0
+        officer_serving_warrant = item.officer_serving_warrant ? 1 : 0
+        officer_on_surveillance = item.officer_on_surveillance ? 1 : 0
+        officer_on_undercover = item.officer_on_undercover ? 1 : 0
+        civilian_witnesses = item.civilian_witnesses ? 1 : 0
+        officer_injured = item.officer_injured ? 1 : 0
+        flag_for_followup = item.flag_for_followup ? 1 : 0
+        officer_routine_patrol = item.officer_routine_patrol ? 1 : 0
+        officer_responding_to_call = item.officer_responding_to_call ? 1 : 0
+        transcribed = item.transcribed ? 1 : 0
+
+        # fix created_at
+        if item.created_at
+            created_at_string = item.created_at.strftime "%Y-%m-%d %H:%M"
+        else
+            created_at_string = "NULL"
+        end
+        puts created_at_string
+
+        # fix updated_at
+        if item.updated_at
+            updated_at_string = item.updated_at.strftime "%Y-%m-%d %H:%M"
+        else
+            updated_at_string = "NULL"
+        end
+        puts updated_at_string
+
         # fix the incident date
         if item.date_of_incident
             date_of_incident_pacific = item.date_of_incident.in_time_zone("Pacific Time (US & Canada)")
             offset = date_of_incident_pacific.utc_offset()
             date_of_incident_correct = date_of_incident_pacific += offset.abs
-            date_of_incident_string = date_of_incident_correct.strftime "%Y-%m-%d %H:%M %Z"
+            date_of_incident_string = date_of_incident_correct.strftime "%Y-%m-%d %H:%M"
         elsif
-            date_of_incident_string = nil
+            date_of_incident_string = "NULL"
         end
         puts date_of_incident_string
 
@@ -20,11 +58,11 @@ CSV.generate do |csv|
             da_date_of_letter_correct = da_date_of_letter_pacific += offset.abs
             da_date_of_letter_string = da_date_of_letter_correct.strftime "%Y-%m-%d"
         elsif
-            da_date_of_letter_string = nil
+            da_date_of_letter_string = "NULL"
         end
         puts da_date_of_letter_string
 
-        csv << [item.id, item.created_at, item.updated_at, item.incident_url, item.district_attorney_file_number, item.district_attorney_county, item.district_attorney_prepared_report, item.general_location_of_incident, item.type_of_incident, item.officer_shots_fired, item.district_attorney_on_scene, item.district_attorney_investigator_on_scene, item.narrative_notes, item.autopsy_notes, item.conclusion_notes, item.officer_name_and_badge_number, item.officer_police_agency, item.what_happened, item.underlying_crime_leading_to_shooting, item.how_situation_escalated, item.officer_special_unit, item.officer_charges_filed_yes_detail, date_of_incident_string, da_date_of_letter_string, item.verified, item.multiple_officers, item.car_stop, item.potential_police_video, item.potential_civillian_video, item.person_killed, item.on_duty_shooting_case, item.officer_charges_filed, item.officer_self_defense, item.officer_defense_of_civillians, item.officer_defense_of_officers, item.officer_serving_warrant, item.officer_on_surveillance, item.officer_on_undercover, item.civilian_witnesses, item.officer_injured, item.flag_for_followup, item.officer_routine_patrol, item.transcribed_count, item.officer_responding_to_call, item.verified_by_email, item.officer_shots_fired_specific, item.type_of_incident_number, item.led_to_response_category, item.user_email, item.user_id, item.transcribed, item.transcribed_status]
+        csv << [item.id, created_at_string, updated_at_string, item.incident_url, item.district_attorney_file_number, item.district_attorney_county, item.district_attorney_prepared_report, item.general_location_of_incident, item.type_of_incident, item.officer_shots_fired, item.district_attorney_on_scene, item.district_attorney_investigator_on_scene, item.narrative_notes, item.autopsy_notes, item.conclusion_notes, item.officer_name_and_badge_number, item.officer_police_agency, item.what_happened, item.underlying_crime_leading_to_shooting, item.how_situation_escalated, item.officer_special_unit, item.officer_charges_filed_yes_detail, date_of_incident_string, da_date_of_letter_string, verified, multiple_officers, car_stop, potential_police_video, potential_civillian_video, person_killed, on_duty_shooting_case, officer_charges_filed, officer_self_defense, officer_defense_of_civillians, officer_defense_of_officers, officer_serving_warrant, officer_on_surveillance, officer_on_undercover, civilian_witnesses, officer_injured, flag_for_followup, officer_routine_patrol, item.transcribed_count, officer_responding_to_call, item.verified_by_email, item.officer_shots_fired_specific, item.type_of_incident_number, item.led_to_response_category, item.user_email, item.user_id, transcribed, item.transcribed_status]
     end
 end .html_safe
 %>
