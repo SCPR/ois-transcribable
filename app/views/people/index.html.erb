@@ -17,8 +17,8 @@
                 </tr>
                 <% @people.each do |person| %>
                     <tr>
-                        <% if person.date_of_incident %>
-                            <td><%= person.date_of_incident.strftime("%m/%d/%Y") %></td>
+                        <% if person.person_date_of_death %>
+                            <td><%= person.person_date_of_death.strftime("%m/%d/%Y") %></td>
                         <% else %>
                             <td></td>
                         <% end %>
