@@ -3,16 +3,16 @@
         <ol class="breadcrumb">
             <li>Logged in as <%= @user.email %></li>
             <li><%= link_to 'Home', controller: :home, action: :index %></li>
-            <li>Edit An Incident</li>
+            <li>Verify An Incident</li>
         </ol>
-        <h1><%= @incidents_total.size %> incidents exist in our system</h1>
+        <h1><%= @incidents_awaiting_verification.size %> incidents need to be verified</h1>
         <p><strong>Looking for incidents statistics?</strong> You can view details about the <%= @incidents_verified.size %> <%= link_to "incidents we've verified here.", incidents_statistics_path %>.</p>
         <hr></hr>
         <div id="table-container">
             <table class="kpcc-table">
                 <tr>
                     <% if @user.email == "ckeller@scpr.org" or @user.email == "amendelson@scpr.org" %>
-                        <th>Delete Incident</th>
+                        <th>Delete This Incident</th>
                     <% else %>
                     <% end %>
                     <th>Transcribed</th>
@@ -61,16 +61,13 @@
                                 <% end %>
                             </td>
 
-                            <% if incident.transcribed_status == 'in-progress' %>
-                                <td><%= link_to "Finish Transcription", edit_incident_path(incident.id), class: "btn btn-info" %></li></td>
-                            <% elsif incident.transcribed == false %>
-                                <td><%= link_to "Transcribe This Incident", edit_incident_path(incident.id), class: "btn btn-info" %></li></td>
+                            <% if incident.transcribed == false %>
+                                <td><%= link_to "Transcribe", edit_incident_path(incident.id), class: "btn btn-success" %></li></td>
                             <% elsif incident.verified == false %>
-                                <td><%= link_to "Verify This Incident", edit_incident_path(incident.id), class: "btn btn-warning" %></li></td>
+                                <td><%= link_to "Verify", edit_incident_path(incident.id), class: "btn btn-warning" %></li></td>
                             <% else %>
-                                <td><%= link_to "Edit This Incident", edit_incident_path(incident.id), class: "btn btn-success" %></li></td>
+                                <td><%= link_to "Edit", edit_incident_path(incident.id), class: "btn btn-success" %></li></td>
                             <% end %>
-
                         </tr>
                 <% end %>
             </table>
