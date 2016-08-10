@@ -164,6 +164,15 @@
             return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
         };
 
+        window.slugify = function(text){
+            return text.toString().toLowerCase()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+            .replace(/^-+/, '')             // Trim - from start of text
+            .replace(/-+$/, '');            // Trim - from end of text
+        };
+
         App.Models.Person = Backbone.Model.extend({
             defaults: {
                 person_name: null,
@@ -314,6 +323,15 @@
                         {opt: "Hawthorne Police Department", opt_field: "hawthorne-police-department"},
                         {opt: "Monterey Park Police Department", opt_field: "monterey-park-police-department"},
                         {opt: "South Gate Police Department", opt_field: "south-gate-police-department"},
+                    ]
+                }, {
+                    type: "county",
+                    proper: "County",
+                    radio_buttons: [],
+                    checkboxes: [
+                        {opt: "Los Angeles County", opt_field: "los-angeles"},
+                        {opt: "Orange County", opt_field: "orange"},
+                        {opt: "San Bernardino County", opt_field: "san-bernardino"},
                     ]
                 }, {
                     type: "incidents",
@@ -546,6 +564,10 @@
                             model.set("age_ranges", "na");
                         };
                     };
+
+                    _this.district_attorney_county = window.slugify(_this.district_attorney_county);
+                    model.set(_this.district_attorney_county, true);
+
                     if (_this.officer_police_agency.indexOf("Los Angeles County Sheriff's Department") === 0){
                         model.set("los-angeles-county-sheriffs-department", true);
                     };

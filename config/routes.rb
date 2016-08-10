@@ -18,6 +18,10 @@ Rails.application.routes.draw do
 
   get "/incidents/data" => "incidents#data"
 
+  get "/incidents/transcribe" => "incidents#transcribe"
+
+  get "/incidents/verify" => "incidents#verify"
+
   get "/incidents/classify-response" => "incidents#classify_response"
 
   get "/people/data" => "people#data"

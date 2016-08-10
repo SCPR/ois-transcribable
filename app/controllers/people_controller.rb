@@ -7,7 +7,9 @@ class PeopleController < ApplicationController
         if current_user.email == "wcterrill@gmail.com"
             redirect_to incidents_statistics_path
         else
-            @people = Person.all
+            @people = Person.all.order(person_name: :asc, district_attorney_file_number: :desc).joins(:incident)
+            @people_total = Person.all()
+            @people_verified = Person.where("verified = '1'")
         end
     end
 

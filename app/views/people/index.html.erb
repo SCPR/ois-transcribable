@@ -1,31 +1,53 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <ol class="breadcrumb">
+            <li>Logged in as <%= @user.email %></li>
             <li><%= link_to 'Home', controller: :home, action: :index %></li>
-            <li>Peoples#index</li>
+            <li>Edit A Person</li>
         </ol>
-        <h1>Peoples#index</h1>
+        <h1><%= @people_total.size %> people exist in our system</h1>
         <hr></hr>
         <div id="table-container">
             <table class="kpcc-table">
                 <tr>
-                    <th>Date</th>
+                    <% if @user.email == "ckeller@scpr.org" or @user.email == "amendelson@scpr.org" %>
+                        <th>Delete Person</th>
+                    <% else %>
+                    <% end %>
+                    <th>Transcribed</th>
+                    <th>Transcribed By</th>
+                    <th>Verified</th>
+                    <th>Verified By</th>
                     <th>DA File Number</th>
+                    <th>County</th>
                     <th>Person Name</th>
-                    <th>Edit This Record</th>
-                    <th>Delete This Record</th>
+                    <th>Edit This Person</th>
                 </tr>
                 <% @people.each do |person| %>
                     <tr>
-                        <% if person.person_date_of_death %>
-                            <td><%= person.person_date_of_death.strftime("%m/%d/%Y") %></td>
-                        <% else %>
-                            <td></td>
-                        <% end %>
-                        <td><%= person.district_attorney_file_number %></td>
-                        <td><%= person.person_name %></td>
-                        <td><%= link_to "Edit", edit_person_path(person.id), class: "btn btn-success" %></li></td>
                         <td><%= link_to "Delete", person_path(person.id), class: "btn btn-danger", method: :delete, data: {confirm: "are you sure?"} %></li></td>
+                        <% if person.incident.transcribed == true %>
+                            <td style="color: green">&#10004;</td>
+                            <td><%= person.incident.user_email %></td>
+                        <% else %>
+                            <td style="color: red">&mdash;</td>
+                            <td style="color: red">&mdash;</td>
+                        <% end %>
+                        <% if person.incident.verified == true %>
+                            <td style="color: green">&#10004;</td>
+                            <td><%= person.incident.verified_by_email %></td>
+                        <% else %>
+                            <td style="color: red">&mdash;</td>
+                            <td style="color: red">&mdash;</td>
+                        <% end %>
+                        <% if person.incident.transcribed == false %>
+                            <td><%= person.incident.incident_url %></td>
+                        <% else %>
+                            <td><%= person.incident.district_attorney_file_number %></td>
+                        <% end %>
+                        <td><%= person.incident.district_attorney_county %></td>
+                        <td><%= person.person_name %></td>
+                        <td><%= link_to "Edit This Person", edit_person_path(person.id), class: "btn btn-success" %></li></td>
                     </tr>
                 <% end %>
             </table>

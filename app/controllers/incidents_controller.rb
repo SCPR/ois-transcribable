@@ -7,8 +7,31 @@ class IncidentsController < ApplicationController
         if current_user.email == "wcterrill@gmail.com"
             redirect_to incidents_statistics_path
         else
-            @incidents = Incident.all.order(verified: :asc, district_attorney_county: :asc, district_attorney_file_number: :asc)
-            @incidents_verified = Incident.all.where("verified = '1'")
+            @incidents = Incident.all.order(district_attorney_county: :asc, verified: :desc, district_attorney_file_number: :asc)
+            @incidents_total = Incident.all()
+            @incidents_verified = Incident.where("verified = '1'")
+        end
+    end
+
+    def transcribe
+        @user = current_user
+        if current_user.email == "wcterrill@gmail.com"
+            redirect_to incidents_statistics_path
+        else
+            @incidents = Incident.where("transcribed = '0'").order(verified: :asc, district_attorney_county: :asc, district_attorney_file_number: :asc)
+            @incidents_awaiting_transcription = Incident.where("transcribed = '0'")
+            @incidents_verified = Incident.where("verified = '1'")
+        end
+    end
+
+    def verify
+        @user = current_user
+        if current_user.email == "wcterrill@gmail.com"
+            redirect_to incidents_statistics_path
+        else
+            @incidents = Incident.where("transcribed = '1'").where("verified = '0'").order(verified: :asc, district_attorney_county: :asc, district_attorney_file_number: :asc)
+            @incidents_awaiting_verification = Incident.where("transcribed = '1'").where("verified = '0'")
+            @incidents_verified = Incident.where("verified = '1'")
         end
     end
 

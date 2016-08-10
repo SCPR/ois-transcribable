@@ -9,6 +9,10 @@ class HomeController < ApplicationController
       @verified = @incidents.where(verified: true)
       @verified_percent = (@verified.count.to_f / @incidents.count.to_f) * 100
       @verified_scoreboard = @verified.group_by(&:verified_by_email)
+
+      @people = Person.where("person_shot = '1'")
+      @these_people = @people.joins(:incident).where("district_attorney_county = 'Los Angeles'").where("on_duty_shooting_case = '1'").where("verified = '1'")
+
     end
 
     def export_dashboard_json_data

@@ -1,40 +1,23 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <ol class="breadcrumb">
+            <li>Logged in as <%= @user.email %></li>
             <li>Home</li>
         </ol>
-        <h1>Officer Involved - The Application</h1>
-        <h3>Welcome <%= @user.email %></h3>
-        <% if @user.email == "wcterrill@gmail.com" %>
-            <% if @verified.size == 0 %>
-                <h6>We haven't verified any incidents.</h6>
-            <% else %>
-                <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @verified.size %> incidents we've verified.</h6>
-            <% end %>
-        <% elsif @verified.size == 0 %>
-            <h6>We haven't verified any incidents. You should transcribe or verify some</h6>
-        <% else %>
-            <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @verified.size %> incidents we've verified.</h6>
-        <% end %>
-        <h6>Build a new <%= link_to 'json file', dashboard_json_data_path(format: :json) %> file for the <a href="http://projects.scpr.org/officer-involved/explore/">published data exploration tool</a> or <%= link_to 'download a csv file', dashboard_csv_data_path(format: :csv) %> of <a href="https://github.com/SCPR/kpcc-data-team/tree/master/data/kpcc-officer-involved#data-dictionary">selected fields</a>.</h6>
-        <h6>Download the full database as a <%= link_to 'json file', all_json_data_path(format: :json) %> or <%= link_to 'a csv file', all_csv_data_path(format: :csv) %>.</h6>
-        <h6>Export <%= link_to 'incidents table csv', bak_incident_data_path(format: :csv) %>.</h6>
-        <h6>Export <%= link_to 'people table csv', bak_people_data_path(format: :csv) %>.</h6>
-        <hr></hr>
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <h6>Transcriptions &ndash; We've transcribed
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <h5 class="text-center">Transcriptions<br />We've transcribed
                     <% if "%.2f" % @transcribed_percent == "100.00" %>
                         <span style="color: green"><%= "%.2f" % @transcribed_percent %>%</span>
                     <% else %>
                         <span style="color: red"><%= "%.2f" % @transcribed_percent %>%</span>
                     <% end %>
-                of <%= link_to @incidents.size, incidents_path %> incidents.</h6>
+                of <%= link_to @incidents.size, incidents_transcribe_path() %> incidents.</h5>
                 <ul class="list-inline">
                     <% if "%.2f" % @transcribed_percent != "100.00" %>
-                        <li><%= link_to "New transcription", incidents_path(), class: "btn btn-info" %></li>
+                        <li><%= link_to "New transcription", incidents_transcribe_path(), class: "btn btn-info" %></li>
                     <% else %>
-                        <li><%= link_to "Verify transcriptions", incidents_path(), class: "btn btn-info" %></li>
+                        <li><%= link_to "Verify incident", incidents_verify_path(), class: "btn btn-warning" %></li>
                     <% end %>
                 </ul>
                 <ul>
@@ -43,20 +26,25 @@
                     <% end %>
                 </ul>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <% if "%.2f" % @transcribed_percent == "0.00" %>
-                    <h6>We've haven't transcribed any incidents.</h6>
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <h5 class="text-center">What we've done so far</h5>
+                <a href="http://www.scpr.org/topics/officer-involved/" target="_blank"><img alt="" src="http://a.scpr.org/i/c1aa54555cf98edd43a285c5530894fa/114325-full.jpg" width="100%"></a>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                <% if "%.2f" % @verified_percent == "0.00" %>
+                    <h5>We've haven't verified any incidents.</h5>
                 <% else %>
-                    <h6>Incidents &ndash; We've verified
+                    <h5 class="text-center">Incidents<br />We've verified
                         <% if "%.2f" % @verified_percent == "100.00" %>
                             <span style="color: green"><%= "%.2f" % @verified_percent %>%</span>
                         <% else %>
                             <span style="color: red"><%= "%.2f" % @verified_percent %>%</span>
                         <% end %>
-                    of <%= link_to @incidents.size, incidents_path %> incidents.</h6>
+                    of <%= link_to @incidents.size, incidents_verify_path() %> incidents.</h5>
                     <ul class="list-inline">
-                        <% if @user.email == "ckeller@scpr.org" or @user.email == "elarrubia@scpr.org" %>
-                            <li><%= link_to "Edit an incident", incidents_path(), class: "btn btn-info" %></li>
+                        <% if @user.email == "ckeller@scpr.org" or @user.email == "amendelson@scpr.org" %>
+                            <li><%= link_to "Verify incidents", incidents_verify_path(), class: "btn btn-warning" %></li>
+                            <li><%= link_to "Edit incidents", incidents_path(), class: "btn btn-success" %></li>
                         <% end %>
                     </ul>
                     <ul>
@@ -65,8 +53,36 @@
                         <% end %>
                     </ul>
                 <% end %>
+                <hr></hr>
+                <h5 class="text-center">People<br />We've recorded <%= @these_people.size %> people shot<br />in <%= @verified.size %> verified incidents</h5>
+                <ul class="list-inline">
+                    <% if @user.email == "ckeller@scpr.org" or @user.email == "amendelson@scpr.org" %>
+                        <li><%= link_to "Edit people", people_path(), class: "btn btn-success" %></li>
+                    <% end %>
+                </ul>
             </div>
         </div>
+    </div>
+</div>
+<div class="row">
+    <div class="text-center col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <% if @user.email == "wcterrill@gmail.com" %>
+            <% if @verified.size == 0 %>
+                <h6>We haven't verified any incidents.</h6>
+            <% else %>
+                <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @these_people.size %> people shot by law enforcement.</h6>
+            <% end %>
+        <% elsif @verified.size == 0 %>
+            <h6>We haven't verified any incidents. You should transcribe or verify some</h6>
+        <% else %>
+            <h6><%= link_to "Explore details", incidents_statistics_path %> about the <%= @these_people.size %> people shot by law enforcement.</h6>
+        <% end %>
+        <h6>Build a new <%= link_to 'json file', dashboard_json_data_path(format: :json) %> file for the <a href="http://projects.scpr.org/officer-involved/explore/">published data exploration tool</a>.</h6>
+        <h6><%= link_to 'Download a csv file', dashboard_csv_data_path(format: :csv) %> of <a href="https://github.com/SCPR/kpcc-data-team/tree/master/data/kpcc-officer-involved#data-dictionary">selected fields</a>.</h6>
+        <h6>Download the relational database as a <%= link_to 'json file', all_json_data_path(format: :json) %> or <%= link_to 'a csv file', all_csv_data_path(format: :csv) %>.</h6>
+        <h6>Export a backup of the <%= link_to 'incidents table csv', bak_incident_data_path(format: :csv) %>.</h6>
+        <h6>Export a backup of the <%= link_to 'people table csv', bak_people_data_path(format: :csv) %>.</h6>
+        <hr></hr>
     </div>
 </div>
 <div class="row">
