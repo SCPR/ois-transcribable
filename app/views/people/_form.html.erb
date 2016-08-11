@@ -1,4 +1,4 @@
-<%= simple_form_for @people, url: people_path do |p| %>
+<%= simple_form_for(@people) do |p| %>
 
     <%= submit_tag "Submit The Edited Information", :class => "btn btn-success btn-lg btn-block", :id => "peoplesubmit"  %>
 
@@ -182,6 +182,7 @@
         <hr></hr>
 
         <%= hidden_field_tag "people_id", @people.id %>
+        <%= hidden_field_tag :redirect_location, "/people/#{@people.id}" %>
 
     </div>
 <% end %>

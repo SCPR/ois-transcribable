@@ -43,9 +43,10 @@ class PeopleController < ApplicationController
     end
 
     def update
-        @people = Person.find(params[:id])
-        if @people.update_attributes(people_params)
-           redirect_to(people_path, :alert => "Updated")
+        @person = Person.find(params[:id])
+        if @person.update_attributes(people_params)
+           @person.save
+           redirect_to(person_path, :alert => "Updated")
         else
             render "edit"
         end
