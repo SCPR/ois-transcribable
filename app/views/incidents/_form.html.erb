@@ -9,7 +9,6 @@
     </div>
 
     <div class="overflow form-fields">
-
         <% if @incident.errors.any? %>
             <div class="invalid">
                 <h6><%= pluralize(@incident.errors.count, "error") %> prohibited this transcription from being saved:</h6>
@@ -141,42 +140,34 @@
 
         <!-- NEED TO FIGURE OUT THE PEOPLE -->
         <h5>Associated People</h5>
-        <label class="string optional control-label" style="color: #468849;">Email ckeller@scpr.org with file number if more than one person shot</label>
         <% if @people.count == 0 %>
+            <label class="string optional control-label" style="color: #468849;"><a href="mailto:ckeller@scpr.org?Subject=Multiple people shot in DA File <%= @incident.split_url["file_number"] %>" target="_top">Email ckeller@scpr.org if more than one person shot</a></label>
             <%= f.simple_fields_for :people, @incident.people.build do |p| %>
                 <%= p.input :incident_url, :as => :hidden, :input_html => { :value => @incident.incident_url } %>
                 <%= p.input :district_attorney_file_number, :as => :hidden, :input_html => {value: @incident.split_url["file_number"]} %>
                 <%= p.input :year_of_incident, :as => :hidden, :input_html => {value: @incident.get_incident_year["file_number"]} %>
                 <%= render "people/base_form", f: f, p: p %>
             <% end %>
+            <label class="string optional control-label"><%= link_to 'Add another person to this incident', new_person_path(:district_attorney_file_number => @incident.split_url["file_number"], :incident_url => @incident.incident_url), :incident_year => @incident.get_incident_year["file_number"], :target => "_blank" %></label>
+        <% elsif @people.count == 1 %>
+            <%= f.simple_fields_for :people, @incident.people do |p| %>
+                <%= p.input :incident_url, :as => :hidden, :input_html => { :value => @incident.incident_url } %>
+                <%= p.input :district_attorney_file_number, :as => :hidden, :input_html => {value: @incident.split_url["file_number"]} %>
+                <%= p.input :year_of_incident, :as => :hidden, :input_html => {value: @incident.get_incident_year["file_number"]} %>
+                <%= render "people/base_form", f: f, p: p %>
+            <% end %>
+            <label class="string optional control-label"><%= link_to 'Add another person to this incident', new_person_path(:district_attorney_file_number => @incident.split_url["file_number"], :incident_url => @incident.incident_url), :incident_year => @incident.get_incident_year["file_number"], :target => "_blank" %></label>
         <% else %>
             <div class="do_something">
                 <% @people.each do |person| %>
-                    <% if person.person_name == "" %>
-                        <br /><label class="string optional control-label"><%= link_to "You Forgot to Save Details for This Person", edit_person_path(person.id), :target => "_blank" %></label>
-                        <%= f.simple_fields_for :people, @incident.people do |p| %>
-                            <%= p.input :incident_url, :as => :hidden, :input_html => { :value => @incident.incident_url } %>
-                            <%= p.input :district_attorney_file_number, :as => :hidden, :input_html => {value: @incident.split_url["file_number"]} %>
-                            <%= p.input :year_of_incident, :as => :hidden, :input_html => {value: @incident.get_incident_year["file_number"]} %>
-                            <%= render "people/base_form", f: f, p: p %>
-                        <% end %>
-                    <% else %>
-                        <br /><label class="string optional control-label" style="color: #468849;"><%= link_to "Click to open #{person.person_name} in new tab" , edit_person_path(person.id), :target => "_blank" %></label>
-                            <%= f.simple_fields_for :people, @incident.people do |p| %>
-                                <%= p.input :incident_url, :as => :hidden, :input_html => { :value => @incident.incident_url } %>
-                                <%= p.input :district_attorney_file_number, :as => :hidden, :input_html => {value: @incident.split_url["file_number"]} %>
-                                <%= p.input :year_of_incident, :as => :hidden, :input_html => {value: @incident.get_incident_year["file_number"]} %>
-                                <%= render "people/base_form", f: f, p: p %>
-                            <% end %>
-                    <% end %>
+                    <label class="string optional control-label" style="color: #468849;"><%= link_to "Click to edit #{person.person_name} in new tab" , edit_person_path(person.id), :target => "_blank" %></label><br />
                 <% end %>
-                <!--
-                <br /><label class="string optional control-label"><%#= link_to 'Add a person?', new_person_path(@incident.id), :target => "_blank" %></label>
-                -->
+                <label class="string optional control-label"><%= link_to 'Add another person to this incident', new_person_path(:district_attorney_file_number => @incident.split_url["file_number"], :incident_url => @incident.incident_url), :incident_year => @incident.get_incident_year["file_number"], :target => "_blank" %></label>
             </div>
         <% end %>
-        <hr></hr>
         <!-- NEED TO FIGURE OUT THE PEOPLE -->
+
+        <hr></hr>
 
         <!-- begin narrative data -->
         <h5>Factual Information</h5>

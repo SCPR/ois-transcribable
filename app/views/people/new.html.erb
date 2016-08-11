@@ -1,7 +1,6 @@
 <ol class="breadcrumb">
     <li><%= link_to 'Home', controller: :home, action: :index %></li>
     <li><%= link_to "Create Person", new_person_path() %></li>
-    <li>Transcribing <%= @people.incident_url %></li>
 </ol>
 <div class="row data-visuals">
     <% if flash[:alert] %>
@@ -21,11 +20,11 @@
 </div>
 
 <script>
-    var dc_slug = "<%= @people.incident_url %>".replace("https://www.documentcloud.org/documents/", "");
+    var dc_slug = "<%= params[:incident_url] %>".replace("https://www.documentcloud.org/documents/", "");
     var fn = fn || {};
     var fn = {
         getDocumentMeta: function(data){
-            $("#document-title").html("<%= @people.person_name %> - <%= @people.district_attorney_file_number %>");
+            $("#document-title").html("<%= @people.person_name %> - <%=params[:district_attorney_file_number] %>");
         }
     };
     var doc_width = $("#doc").width();

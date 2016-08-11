@@ -1,4 +1,4 @@
-<%= simple_form_for @people, url: person_path do |p| %>
+<%= simple_form_for @people, url: people_path do |p| %>
 
     <%= submit_tag "Submit The Edited Information", :class => "btn btn-success btn-lg btn-block", :id => "peoplesubmit"  %>
 
@@ -14,17 +14,33 @@
             </div>
         <% end %>
 
-        <div class="do_something">
-            <div class="field" id="incident_url">
-                <%= p.input :incident_url, class: "form-control", label: "Incident URL", hint: "* Link to the District Attorney summary letter on DocumentCloud." %>
+        <% if params[:incident_url] %>
+            <div class="do_something">
+                <div class="field" id="incident_url">
+                    <%= p.input :incident_url, class: "form-control", :input_html => { :value => params[:incident_url] }, label: "Incident URL", hint: "* Link to the District Attorney summary letter on DocumentCloud." %>
+                </div>
             </div>
-        </div>
+        <% else %>
+            <div class="do_something">
+                <div class="field" id="incident_url">
+                    <%= p.input :incident_url, class: "form-control", label: "Incident URL", hint: "* Link to the District Attorney summary letter on DocumentCloud." %>
+                </div>
+            </div>
+        <% end %>
 
-        <div class="do_something">
-            <div class="field" id="district_attorney_file_number">
-                <%= p.input :district_attorney_file_number, class: "form-control", label: "District Attorney File Number", hint: "* File number used by the district attorney's office. In the case of the Los Angeles District Attorney's Justice System Integrity Division the first two numbers indicate the year in which the shooting took place." %>
+        <% if params[:district_attorney_file_number] %>
+            <div class="do_something">
+                <div class="field" id="district_attorney_file_number">
+                    <%= p.input :district_attorney_file_number, class: "form-control", :input_html => { :value => params[:district_attorney_file_number] }, label: "District Attorney File Number", hint: "* File number used by the district attorney's office. In the case of the Los Angeles District Attorney's Justice System Integrity Division the first two numbers indicate the year in which the shooting took place." %>
+                </div>
             </div>
-        </div>
+        <% else %>
+            <div class="do_something">
+                <div class="field" id="district_attorney_file_number">
+                    <%= p.input :district_attorney_file_number, class: "form-control", label: "District Attorney File Number", hint: "* File number used by the district attorney's office. In the case of the Los Angeles District Attorney's Justice System Integrity Division the first two numbers indicate the year in which the shooting took place." %>
+                </div>
+            </div>
+        <% end %>
 
         <%= render "people/base_form", p: p %>
 
@@ -35,97 +51,97 @@
 
         <div class="do_something">
             <div class="field" id="person_place_of_death">
-                <%= p.input :person_place_of_death, class: "form-control", label: "Person Place Of Death", hint: "* Xxxx" %>
+                <%= p.input :person_place_of_death, class: "form-control", label: "Person Place Of Death", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_manner">
-                <%= p.input :person_manner, class: "form-control", label: "person manner", hint: "* Xxxx" %>
+                <%= p.input :person_manner, class: "form-control", label: "Manner of Death", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_cause_a">
-                <%= p.input :person_cause_a, class: "form-control", label: "person cause a", hint: "* Xxxx" %>
+                <%= p.input :person_cause_a, class: "form-control", label: "Cause A", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_cause_b">
-                <%= p.input :person_cause_b, class: "form-control", label: "person cause b", hint: "* Xxxx" %>
+                <%= p.input :person_cause_b, class: "form-control", label: "Cause B", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="pperson_cause_c">
-                <%= p.input :person_cause_c, class: "form-control", label: "person cause c", hint: "* Xxxx" %>
+                <%= p.input :person_cause_c, class: "form-control", label: "Cause C", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_cause_d">
-                <%= p.input :person_cause_d, class: "form-control", label: "person cause d", hint: "* Xxxx" %>
+                <%= p.input :person_cause_d, class: "form-control", label: "Cause D", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_other_significant_causes">
-                <%= p.input :person_other_significant_causes, class: "form-control", label: "person_other_significant_cause", hint: "* Xxxx" %>
+                <%= p.input :person_other_significant_causes, class: "form-control", label: "Other Significant Cause", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_investigator">
-                <%= p.input :person_investigator, class: "form-control", label: "person_investigator", hint: "* Xxxx" %>
+                <%= p.input :person_investigator, class: "form-control", label: "Investigator", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_dme">
-                <%= p.input :person_dme, class: "form-control", label: "person_dme", hint: "* Xxxx" %>
+                <%= p.input :person_dme, class: "form-control", label: "DME", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_toxicology_status">
-                <%= p.input :person_toxicology_status, class: "form-control", label: ":person_toxicology_status", hint: "* Xxxx" %>
+                <%= p.input :person_toxicology_status, class: "form-control", label: "Toxicology Status", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_case_status">
-                <%= p.input :person_case_status, class: "form-control", label: "person_case_status", hint: "* Xxxx" %>
+                <%= p.input :person_case_status, class: "form-control", label: "Case Status", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_body_status">
-                <%= p.input :person_body_status, class: "form-control", label: "person_body_status", hint: "* Xxxx" %>
+                <%= p.input :person_body_status, class: "form-control", label: "Body Status", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="person_age">
-                <%= p.input :person_age, class: "form-control", label: "person_age", hint: "* Xxxx" %>
+                <%= p.input :person_age, class: "form-control", label: "Person Age", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="in_custody_record_key_number">
-                <%= p.input :in_custody_record_key_number, class: "form-control", label: "in_custody_record_key_number", hint: "* Xxxx" %>
+                <%= p.input :in_custody_record_key_number, class: "form-control", label: "In Custody Death Record Number", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="coroner_case_number">
-                <%= p.input :coroner_case_number, class: "form-control", label: "coroner_case_number", hint: "* Xxxx" %>
+                <%= p.input :coroner_case_number, class: "form-control", label: "Coroner Case Number", hint: "*" %>
             </div>
         </div>
 
         <div class="do_something">
             <div class="field" id="coroner_police_agency">
-                <%= p.input :coroner_police_agency, class: "form-control", label: "coroner_police_agency", hint: "* Xxxx" %>
+                <%= p.input :coroner_police_agency, class: "form-control", label: "Coroner Police Agency", hint: "*" %>
             </div>
         </div>
 
@@ -139,22 +155,28 @@
         </div>
         -->
 
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= p.input :law_enforcement_related, class: "form-control", label: "Law Enforcement Related", hint: "* Xxxx" %>
-            </label>
-        </div>
-
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= p.input :officer_involved, class: "form-control", label: "Officer Involved", hint: "* Xxxx" %>
-            </label>
-        </div>
-
-        <div class="do_something">
-            <label class="checkbox-inline">
-                <%= p.input :in_custody, class: "form-control", label: "In Custody", hint: "* Xxxx" %>
-            </label>
+        <div class="row">
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= p.input :law_enforcement_related, class: "form-control", label: "Law Enforcement Related" %>
+                    </label>
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= p.input :officer_involved, class: "form-control", label: "Officer Involved" %>
+                    </label>
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div class="do_something">
+                    <label class="checkbox-inline">
+                        <%= p.input :in_custody, class: "form-control", label: "In Custody" %>
+                    </label>
+                </div>
+            </div>
         </div>
 
         <hr></hr>

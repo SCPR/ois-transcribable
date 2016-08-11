@@ -29,10 +29,13 @@ class PeopleController < ApplicationController
 
     def create
         @people = Person.new(people_params)
-        # puts @people.district_attorney_file_number
-        # @incident = Incident.where("district_attorney_file_number = params[:district_attorney_file_number]")
-        # @incident = Incident.find(params[:incident_id])
-        # @people = @incident.people.build
+        if(@people.save)
+            #Saved successfully; go to the index (or wherever)...
+            redirect_to :action => :index
+        else
+            #Validation failed; show the "new" form again...
+            render :action => :new
+        end
     end
 
     def edit
