@@ -20,7 +20,7 @@ class IncidentsController < ApplicationController
         else
             @incidents = Incident.where("transcribed = '0'").order(verified: :asc, district_attorney_county: :asc, district_attorney_file_number: :asc)
             @incidents_awaiting_transcription = Incident.where("transcribed = '0'")
-            @incidents_verified = Incident.where("verified = '1'")
+            @incidents_verified = Incident.where("on_duty_shooting_case = '1'").where("verified = '1'")
         end
     end
 
@@ -29,9 +29,9 @@ class IncidentsController < ApplicationController
         if current_user.email == "wcterrill@gmail.com"
             redirect_to incidents_statistics_path
         else
-            @incidents = Incident.where("transcribed = '1'").where("verified = '0'").order(verified: :asc, district_attorney_county: :asc, district_attorney_file_number: :asc)
-            @incidents_awaiting_verification = Incident.where("transcribed = '1'").where("verified = '0'")
-            @incidents_verified = Incident.where("verified = '1'")
+            @incidents = Incident.where("on_duty_shooting_case = '1'").where("transcribed = '1'").where("verified = '0'").order(verified: :asc, district_attorney_county: :asc, district_attorney_file_number: :asc)
+            @incidents_awaiting_verification = Incident.where("on_duty_shooting_case = '1'").where("transcribed = '1'").where("verified = '0'")
+            @incidents_verified = Incident.where("on_duty_shooting_case = '1'").where("verified = '1'")
         end
     end
 
