@@ -339,12 +339,12 @@
             <% else %>
                 <div class="do_something">
                     <div class="field" id="notes">
-                        <%= f.input :user_email, class: "form-control", label: "Transcribed By", input_html: {value: @user.email}, hint: "* Who transcribed this incident?" %>
+                        <%= f.input :user_email, class: "form-control", label: "Transcribed By", hint: "* Who transcribed this incident?" %>
                     </div>
                 </div>
                 <div class="do_something">
                     <div class="field" id="notes">
-                        <%= f.input :verified_by_email, class: "form-control", label: "Verified By", input_html: {value: @user.email}, hint: "* Who verified this incident?" %>
+                        <%= f.input :verified_by_email, class: "form-control", label: "Verified By", hint: "* Who verified this incident?" %>
                     </div>
                 </div>
             <% end %>
