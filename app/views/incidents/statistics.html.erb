@@ -601,33 +601,35 @@
                     } else {
                         model.set("da_the_same_calc", null);
                     };
+                    if (_this.led_to_response_category === "domestic violence"){
+                        model.set("led_to_response_category", "domestic_violence");
+                    };
                     if (_this.led_to_response_category === "implied weapon is present"){
-                        model.set("led_to_response_category", "weapon implied");
+                        model.set("led_to_response_category", "implied_weapon_is_present");
                     };
                     if (_this.led_to_response_category === "shots fired"){
-                        model.set("led_to_response_category", "weapon implied");
+                        model.set("led_to_response_category", "implied_weapon_is_present");
                     };
                     if (_this.led_to_response_category === "lower-level crime"){
-                        model.set("led_to_response_category", "lower level");
+                        model.set("led_to_response_category", "lower_level_crime");
                     };
                     if (_this.led_to_response_category === "suicidal/wants to die"){
                         model.set("led_to_response_category", "suicidal");
                     };
                     if (_this.led_to_response_category === "violent/serious crime"){
-                        model.set("led_to_response_category", "serious");
+                        model.set("led_to_response_category", "serious_crime");
                     };
                     if (_this.led_to_response_category === "general disturbance"){
-                        model.set("led_to_response_category", "disturbance");
+                        model.set("led_to_response_category", "general_disturbance");
                     };
                     if (_this.led_to_response_category === "suspicious or inquisitive cop"){
-                        model.set("led_to_response_category", "suspicious cop");
+                        model.set("led_to_response_category", "suspicious_cop");
                     };
                     if (_this.led_to_response_category != null){
                         _this.led_to_response_category = _this.led_to_response_category.replace(/ /g,"_");
                         model.set(_this.led_to_response_category, true);
                     };
                     view_object.responses.push(_this.led_to_response_category);
-
                 });
 
                 view_object.months = [
