@@ -13,9 +13,21 @@ class PeopleController < ApplicationController
         end
     end
 
-    def data
+    def data_verified
+        @people = Person.where("person_shot = '1'")
+        @these_people = @people.joins(:incident).where("on_duty_shooting_case = '1'").where("verified = '1'")
+        render :json => @these_people.to_json(:include => {:incident => {:only => [:district_attorney_county, :district_attorney_file_number, :general_location_of_incident, :type_of_incident, :officer_shots_fired, :officer_name_and_badge_number, :officer_police_agency, :multiple_officers, :car_stop, :potential_police_video, :potential_civillian_video, :officer_charges_filed, :officer_self_defense, :officer_defense_of_civillians, :officer_defense_of_officers, :officer_serving_warrant, :officer_on_surveillance, :officer_on_undercover, :civilian_witnesses, :officer_injured, :flag_for_followup, :officer_routine_patrol, :officer_responding_to_call, :led_to_response_category, :date_of_incident]}})
+    end
+
+    def data_orginal
         @people = Person.where("person_shot = '1'")
         @these_people = @people.joins(:incident).where("district_attorney_county = 'Los Angeles'").where("on_duty_shooting_case = '1'").where("verified = '1'")
+        render :json => @these_people.to_json(:include => {:incident => {:only => [:district_attorney_county, :district_attorney_file_number, :general_location_of_incident, :type_of_incident, :officer_shots_fired, :officer_name_and_badge_number, :officer_police_agency, :multiple_officers, :car_stop, :potential_police_video, :potential_civillian_video, :officer_charges_filed, :officer_self_defense, :officer_defense_of_civillians, :officer_defense_of_officers, :officer_serving_warrant, :officer_on_surveillance, :officer_on_undercover, :civilian_witnesses, :officer_injured, :flag_for_followup, :officer_routine_patrol, :officer_responding_to_call, :led_to_response_category, :date_of_incident]}})
+    end
+
+    def data_sb
+        @people = Person.where("person_shot = '1'")
+        @these_people = @people.joins(:incident).where("district_attorney_county = 'San Bernardino'").where("on_duty_shooting_case = '1'").where("verified = '1'")
         render :json => @these_people.to_json(:include => {:incident => {:only => [:district_attorney_county, :district_attorney_file_number, :general_location_of_incident, :type_of_incident, :officer_shots_fired, :officer_name_and_badge_number, :officer_police_agency, :multiple_officers, :car_stop, :potential_police_video, :potential_civillian_video, :officer_charges_filed, :officer_self_defense, :officer_defense_of_civillians, :officer_defense_of_officers, :officer_serving_warrant, :officer_on_surveillance, :officer_on_undercover, :civilian_witnesses, :officer_injured, :flag_for_followup, :officer_routine_patrol, :officer_responding_to_call, :led_to_response_category, :date_of_incident]}})
     end
 

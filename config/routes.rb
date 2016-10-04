@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   get "/bak-people-data" => "home#export_people"
 
-  get "/incidents/statistics" => "incidents#statistics"
+  # get "/incidents/statistics" => "incidents#statistics"
 
   get "/incidents/data" => "incidents#data"
 
@@ -24,7 +24,19 @@ Rails.application.routes.draw do
 
   get "/incidents/classify-response" => "incidents#classify_response"
 
-  get "/people/data" => "people#data"
+  get "/statistics" => "home#statistics"
+
+  get "/statistics/#all" => "home#statistics"
+
+  get "/statistics/#original" => "home#statistics"
+
+  get "/statistics/#san-bernardino" => "home#statistics"
+
+  get "/people/data/all" => "people#data_verified"
+
+  get "/people/data/original" => "people#data_orginal"
+
+  get "/people/data/san-bernardino" => "people#data_sb"
 
   resources :incidents, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
 

@@ -2,8 +2,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <ol class="breadcrumb">
             <li><%= link_to 'Home', controller: :home, action: :index %></li>
-            <li><%= link_to "Incidents", incidents_path() %></li>
-            <li>Incident Statistics</li>
+            <li id="scope"></li>
         </ol>
     </div>
 </div>
@@ -220,7 +219,7 @@
             comparator: function(model) {
                 return model.get("district_attorney_file_number");
             },
-            url: "/people/data",
+            url: null,
         });
 
         App.Models.CommaSeparated = Backbone.Model.extend({
@@ -240,12 +239,14 @@
         App.Router = Backbone.Router.extend({
 
             routes: {
-                "": "fetchData",
+                ":scope(/)": "fetchData",
             },
 
-            fetchData: function(){
+            fetchData: function(scope){
+                $("li#scope").html(scope + " statistics");
                 var _this = this;
                 var people = new App.Collections.People();
+                people.url = "/people/data/" + scope;
                 people.fetch({
                     async: false
                 });
@@ -288,15 +289,6 @@
                 this.view_object = this.calculate_model_attributes(this.view_object);
 
                 this.view_object.filters = [{
-                    type: "people",
-                    proper: "Scope of Data",
-                    radio_buttons: [],
-                    checkboxes: [
-                        {opt: "Nov. 2015 #Officer Involved project", opt_field: "original-scope"},
-                        {opt: "San Bernardino County data", opt_field: "san-bernardino"},
-                        {opt: "Orange County data", opt_field: "orange"},
-                    ]
-                }, {
                     type: "people",
                     proper: "Top Line",
                     radio_buttons: [],
@@ -519,16 +511,15 @@
                         if (_this.person_gender === "MALE"){
                             model.set("person_gender", "male");
                             model.set("person_male", true);
-                            view_object.genders.push(_this.person_gender);
                         } else if (_this.person_gender === "FEMALE"){
                             model.set("person_gender", "female");
                             model.set("person_female", true);
-                            view_object.genders.push(_this.person_gender);
                         } else {
                             model.set("person_gender", null);
                             model.set("person_male", false);
                             model.set("person_female", false);
                         };
+                        view_object.genders.push(_this.person_gender);
                     };
                     /* set ethnicity data */
                     model.set("no_ethnicity", true);
@@ -877,24 +868,12 @@
             construct_filtered_data: function(){
                 this.view_object.obj.active_checkboxes = this.get_selected_filters();
 
-                // var incident_filters = {};
-                // _.each(this.view_object.obj.active_checkboxes.incidents, function(item, index, list){
-                //     return incident_filters[item] = true;
-                // });
-                // var people_filters = {};
-                // _.each(this.view_object.obj.active_checkboxes.people, function(item, index, list){
-                //     return people_filters[item] = true;
-                // });
-
                 var all_filters = {};
                 _.each(this.view_object.obj.active_checkboxes, function(item, index, list){
                     return all_filters[item] = true;
                 });
 
                 this.view_object.obj.filtered.people = new App.Collections.People();
-
-                // var people_filters_empty = _.isEmpty(people_filters);
-                // var incident_filters_empty = _.isEmpty(incident_filters);
 
                 var all_filters_empty = _.isEmpty(this.view_object.obj.active_checkboxes);
 
@@ -903,41 +882,6 @@
                 } else {
                     this.view_object.obj.filtered.people.add(this.view_object.obj.init.people.where(all_filters));
                 }
-
-                // if (people_filters_empty === true && incident_filters_empty === true){
-                //     this.view_object.obj.filtered.people = this.view_object.obj.init.people;
-                // } else if (people_filters_empty === false && incident_filters_empty === true){
-                //     this.view_object.obj.filtered.people.add(this.view_object.obj.init.people.where(people_filters));
-                // } else if (people_filters_empty === true && incident_filters_empty === false){
-                //     var people_via_incidents = new App.Collections.Incidents(
-                //         this.view_object.relevant_incidents.where(incident_filters)
-                //     );
-                //     this.view_object.obj.filtered.people.add(people_via_incidents.models);
-                // } else if (people_filters_empty === false && incident_filters_empty === false){
-                //     var a = this.view_object.obj.init.people.where(people_filters);
-                //     var b = this.view_object.relevant_incidents.where(incident_filters);
-                //     var case_ids = [];
-                //     b.forEach(function(model, index){
-                //         var _this = model.attributes;
-                //         case_ids.push(_this.district_attorney_file_number);
-                //     });
-                //     var incident_filters_to_assign = _.keys(incident_filters);
-                //     a.forEach(function(model, index){
-                //         var _this = model.attributes;
-                //         var test = _.contains(case_ids, _this.district_attorney_file_number);
-                //         if (test === true){
-                //             incident_filters_to_assign.forEach(function(item, index){
-                //                 model.set(item, true);
-                //             });
-                //         } else {
-                //             incident_filters_to_assign.forEach(function(item, index){
-                //                 model.set(item, false);
-                //             });
-                //         }
-                //     });
-                //     var selected_filters = _.extend(incident_filters, people_filters);
-                //     this.view_object.obj.filtered.people.add(this.view_object.obj.init.people.where(selected_filters));
-                // };
 
                 this.view_object.obj.filtered.genders = create_groups(this.view_object.obj.filtered.people, "person_gender");
                 this.view_object.obj.filtered.ethnicities = create_groups(this.view_object.obj.filtered.people, "person_ethnicity");
@@ -954,29 +898,11 @@
 
             get_selected_filters: function(){
                 var filters = [];
-                // var filters = {};
-                // this.view_object.filter_types.forEach(function(item, index, obj){
-                //     filters[item] = [];
-                // });
                 $("input:radio").each(function(){
                     var $this = $(this);
                     if($this.is(":checked")){
                         var filter_id = $this.attr("id");
                         var filter_type = $this.attr("class").split(" ")[0];
-                        // if (filter_id === "person_killed"){
-                        //     $("label.display-until-toggle").addClass("invisible");
-                        //     $("span.hidden-until-toggle").removeClass("invisible");
-                        //     filters[filter_type].push(filter_id);
-                        // } else if (filter_id === "person_wounded"){
-                        //     $("span.hidden-until-toggle").addClass("invisible");
-                        //     $("label.display-until-toggle").removeClass("invisible");
-                        //     $("input:radio[name='person_ethnicity']").attr("checked", false);
-                        //     filters[filter_type].push("no_ethnicity");
-                        //     filters[filter_type].push(filter_id);
-                        // } else {
-                        //     filters[filter_type].push(filter_id);
-                        // };
-                        // filters[filter_type].push(filter_id);
                         filters.push(filter_id);
                     };
                 });
@@ -985,7 +911,6 @@
                     if($this.is(":checked")){
                         var filter_id = $this.attr("id");
                         var filter_type = $this.attr("class");
-                        // filters[filter_type].push(filter_id)
                         filters.push(filter_id);
                     }
                 });
@@ -1015,7 +940,7 @@
         window.app = new App.Router();
         Backbone.history.stop();
         Backbone.history.start({
-            root: "/incidents/statistics",
+            root: "/statistics",
             pushState: false,
         });
     });
@@ -1023,7 +948,6 @@
 </script>
 
 <script id="my_template" type="text/template">
-    <!--
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <h5>Top Line Stats</h5>
@@ -1037,7 +961,6 @@
             </ul>
         </div>
     </div>
-    -->
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <@ _.each(filters, function(filter) { @>
