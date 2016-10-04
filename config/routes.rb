@@ -34,7 +34,7 @@ Rails.application.routes.draw do
 
   get "/people/data/all" => "people#data_verified"
 
-  get "/people/data/original" => "people#data_orginal"
+  get "/people/data/original" => "people#data_original"
 
   get "/people/data/san-bernardino" => "people#data_sb"
 
