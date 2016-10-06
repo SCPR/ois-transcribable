@@ -552,42 +552,45 @@
                         model.set("_6_pm_to_midnight", undefined);
                     };
                     /* set gender data */
-                    if (_this.person_gender != null || _this.person_gender != undefined){
-                        if (_this.person_gender === "MALE"){
-                            model.set("person_gender", "male");
-                            model.set("person_male", true);
-                        } else if (_this.person_gender === "FEMALE"){
-                            model.set("person_gender", "female");
-                            model.set("person_female", true);
-                        } else {
-                            model.set("person_gender", null);
-                            model.set("person_male", false);
-                            model.set("person_female", false);
-                        };
-                        view_object.genders.push(_this.person_gender);
+                    if (_this.person_gender === "MALE"){
+                        model.set("person_male", true);
+                    } else if (_this.person_gender === "FEMALE"){
+                        model.set("person_female", true);
+                    } else if (_this.person_gender === null || _this.person_gender === "NULL"){
+                        model.set("person_gender", "na-gender");
+                        model.set("person_male", null);
+                        model.set("person_female", null);
                     };
+                    view_object.genders.push(_this.person_gender);
                     /* set ethnicity data */
-                    model.set("no_ethnicity", true);
-                    if (_this.person_killed === true){
-                        if (_this.person_ethnicity != null || _this.person_ethnicity != undefined){
-                            if (_this.person_ethnicity === "HISPANIC/LATIN AMERICAN"){
-                                model.set("person_ethnicity", "latino");
-                            } else if (_this.person_ethnicity === "MIDDLE EASTERN"){
-                                model.set("person_ethnicity", "mid-eastn");
-                            };
-                            model.set("person_ethnicity", _this.person_ethnicity.toLowerCase());
-                            model.set(_this.person_ethnicity, true);
-                        } else {
-                            model.set("person_ethnicity", "na");
-                        }
-                    } else {
-                        model.set("person_ethnicity", "na");
+                    if (_this.person_ethnicity === null || _this.person_ethnicity === "NULL"){
+                        model.set("no_ethnicity", true);
+                        model.set("person_ethnicity", "na-ethnicity");
                     };
+                    if (_this.person_ethnicity === ""){
+                        model.set("no_ethnicity", true);
+                        model.set("person_ethnicity", "na-ethnicity");
+                    };
+                    if (_this.person_ethnicity === "HISPANIC/LATIN AMERICAN"){
+                        model.set("no_ethnicity", false);
+                        model.set("person_ethnicity", "latino");
+                    };
+                    if (_this.person_ethnicity === "MIDDLE EASTERN"){
+                        model.set("no_ethnicity", false);
+                        model.set("person_ethnicity", "mid-eastn");
+                    };
+                    if (_this.person_ethnicity === "PACIFIC ISLANDER"){
+                        model.set("no_ethnicity", false);
+                        model.set("person_ethnicity", "pacific-islander");
+                    };
+                    model.set("person_ethnicity", _this.person_ethnicity.toLowerCase());
+                    model.set(_this.person_ethnicity, true);
                     view_object.ethnicities.push(_this.person_ethnicity);
+
                     /* set age data */
-                    if (_this.person_age === undefined || _this.person_age === null){
-                        model.set("age_ranges", "na");
-                        model.set("person_age", "na");
+                    if (_this.person_age === undefined || _this.person_age === null|| _this.person_age === "NULL"){
+                        model.set("age_ranges", "na-range");
+                        model.set("person_age", "na-age");
                     } else {
                         var comparison_age = parseInt(_this.person_age);
                         if (comparison_age < 18){
@@ -603,7 +606,7 @@
                         } else if (comparison_age >= 55){
                             model.set("age_ranges", "55_over");
                         } else{
-                            model.set("age_ranges", "na");
+                            model.set("age_ranges", "na-range");
                         };
                     };
 
@@ -735,9 +738,6 @@
 
                 view_object.responses = _.uniq(view_object.responses).sort();
                 view_object.reasons = _.uniq(view_object.reasons).sort();
-
-                console.log(view_object.reasons);
-
                 view_object.years = _.uniq(view_object.relevant_people.pluck("incident_year")).sort();
                 view_object.genders = _.uniq(view_object.genders).sort();
                 view_object.ethnicities = _.uniq(view_object.ethnicities).sort();
@@ -863,9 +863,6 @@
                 this.view_object.obj.init.times = create_groups(this.view_object.obj.init.people, "time_of_day");
                 this.view_object.obj.init.responses = create_groups(this.view_object.obj.init.people, "led_to_response_category");
                 this.view_object.obj.init.reasons = create_groups(this.view_object.obj.init.people, "reason_for_shooting");
-
-                console.log(this.view_object.obj.init.reasons);
-
                 this.view_object.obj.total = this.view_object.obj.init.people.length;
                 $(this.el).html(this.view_object.template(this.view_object));
                 this.display_data(this.view_object.obj, true, "black");
@@ -1176,7 +1173,7 @@
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <h6 class="text-center">Response Categories</h6>
+                <h6 class="text-center">Response Circumstances</h6>
                 <table class="kpcc-table">
                     <thead>
                         <tr>
@@ -1201,7 +1198,7 @@
 
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <h6 class="text-center">Reasons for Shooting</h6>
+                <h6 class="text-center">Shooting Circumstances</h6>
                 <table class="kpcc-table">
                     <thead>
                         <tr>
