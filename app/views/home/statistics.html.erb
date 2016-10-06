@@ -8,11 +8,9 @@
 </div>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <p>This tool provides a series of true/false filters that allows you to explore the Use of Force Data we have transcribed. The data is based on declination memos that are filed by the Los Angeles District Attorney's Office after Use of Force cases. The declination memos were filed between Jan. 1, 2010 to March 30, 2015.</p>
-        <p>This data only shows the number of Use of Force cases reviewed by the Los Angeles District Attorney's Office in that timeframe. It is not the total number of cases.</p>
-        <p>Use any combination of filters to ask questions of the data, see the results by year, and get links to the cases relevant to your query.</p>
-        <p><strong>An example</strong>: Lets say I wanted to see all <em>Fatal incidents</em> in which the <em>Person Was Unarmed</em> and there were <em>Multiple Officers Involved</em>. Well, you would check the <a id="demo-filters" href="javascript:void(0)">appropriate boxes</a>.</p>
-        <p>Download the full relational database as a <%= link_to 'json file', all_json_data_path(format: :json) %> or <%= link_to 'a csv file', all_csv_data_path(format: :csv) %>.</p>
+        <p>This tool provides a series of true/false filters that allows you to explore officer involved shooting data we have transcribed. Currently the data is based on letters filed by district attorney's in the relevant county. This data does not purport to show the total number of police shootings.</p>
+        <p>Use any combination of filters to ask questions of the data, see the results by year, and get links to the cases relevant to your query. <strong>For example</strong>: Lets say I wanted to see all <em>Fatal incidents</em> in which the <em>Person Was Unarmed</em> and there were <em>Multiple Officers Involved</em>. Well, you would check the <a id="demo-filters" href="javascript:void(0)">appropriate boxes</a>.</p>
+        <p>You can also download the full relational database as a <%= link_to 'json file', all_json_data_path(format: :json) %> or <%= link_to 'a csv file', all_csv_data_path(format: :csv) %>.</p>
     </div>
 </div>
 
@@ -180,37 +178,71 @@
 
         App.Models.Person = Backbone.Model.extend({
             defaults: {
+                id: null,
+                created_at: null,
+                updated_at: null,
                 person_name: null,
                 district_attorney_file_number: null,
                 incident_url: null,
                 person_weapon: null,
+                person_weapon_specific: null,
+                reason_for_shooting: null,
+                person_place_of_death: null,
+                person_first_name: null,
+                person_last_name: null,
                 person_ethnicity: null,
                 person_gender: null,
+                person_manner: null,
+                person_cause_a: null,
+                person_cause_b: null,
+                person_cause_c: null,
+                person_cause_d: null,
+                person_other_significant_causes: null,
+                person_investigator: null,
+                person_dme: null,
+                person_toxicology_status: null,
+                person_media_reports_link: null,
+                person_case_status: null,
+                person_body_status: null,
                 person_age: null,
+                in_custody_record_key_number: null,
+                coroner_case_number: null,
+                year_of_incident: null,
+                coroner_police_agency: null,
+                drugs: null,
+                person_criminal_case_file_number: null,
+                person_charges_filed: null,
+                notes: null,
                 person_signs_of_impairment: null,
+                marijuana_alone: null,
+                case_doubled_up: null,
+                person_shot: null,
                 person_killed: null,
                 person_wounded: null,
                 armed_with_firearm: null,
                 armed_with_weapon: null,
                 used_vehicle_as_weapon: null,
                 person_reached_for_waistband: null,
+                person_arrested: null,
                 person_fled_by_foot_or_vehicle: null,
+                person_signs_of_gang_affiliation: null,
                 person_ignored_officer_commands: null,
+                person_weapon_recovered: null,
+                person_threatened_officer_with_weapon: null,
                 person_signs_of_mental_illness: null,
                 person_fired_gun_at_officer: null,
                 person_pointed_gun_at_officer: null,
+                person_shot_in_back: null,
+                person_shot_in_head: null,
                 person_unarmed: null,
                 person_armed: null,
                 person_hid_hands_from_officer: null,
                 person_grabbed_for_officers_weapon_holster: null,
-                person_threatened_officer_with_weapon: null,
-                person_weapon_recovered: null,
-                used_vehicle_as_weapon: null,
-                person_shot_in_back: null,
-                person_shot_in_head: null,
-                person_arrested: null,
-                person_signs_of_gang_affiliation: null,
-                incident: null,
+                law_enforcement_related: null,
+                officer_involved: null,
+                in_custody: null,
+                person_date_of_birth: null,
+                person_date_of_death: null,
             },
         });
 
@@ -318,20 +350,6 @@
                         {opt: "Person Identified As Gang Member", opt_field: "person_signs_of_gang_affiliation"},
                     ]
                 }, {
-                    type: "people",
-                    proper: "Agency",
-                    radio_buttons: [],
-                    checkboxes: [
-                        {opt: "LA County Sheriff's Department", opt_field: "los-angeles-county-sheriffs-department"},
-                        {opt: "LA Police Department", opt_field: "los-angeles-police-department"},
-                        {opt: "Long Beach Police Department", opt_field: "long-beach-police-department"},
-                        {opt: "Inglewood Police Department", opt_field: "inglewood-police-department"},
-                        {opt: "Gardena Police Department", opt_field: "gardena-police-department"},
-                        {opt: "Hawthorne Police Department", opt_field: "hawthorne-police-department"},
-                        {opt: "Monterey Park Police Department", opt_field: "monterey-park-police-department"},
-                        {opt: "South Gate Police Department", opt_field: "south-gate-police-department"},
-                    ]
-                }, {
                     type: "incidents",
                     proper: "Officer",
                     radio_buttons: [],
@@ -364,6 +382,18 @@
                         {opt: "Traffic Violation", opt_field: "traffic_violation"},
                     ]
                 }, {
+                    type: "people",
+                    proper: "Reasons",
+                    radio_buttons: [],
+                    checkboxes: [
+                        {opt: "Attempted To Disarm Officer", opt_field: "attempted_to_disarm_officer"},
+                        {opt: "Bystander In Shooting", opt_field: "bystander_in_shooting"},
+                        {opt: "Led To Believe Was Armed", opt_field: "led_to_believe_was_armed"},
+                        {opt: "Object Shooting", opt_field: "object_shooting"},
+                        {opt: "Perception Shooting", opt_field: "perception_shooting"},
+                        {opt: "Vehicle As Weapon", opt_field: "vehicle_as_weapon"},
+                    ]
+                }, {
                     type: "incidents",
                     proper: "Incident",
                     radio_buttons: [],
@@ -393,6 +423,20 @@
                         {opt: "Friday", opt_field: "friday"},
                         {opt: "Saturday", opt_field: "saturday"},
                     ]
+                }, {
+                    type: "people",
+                    proper: "Agency",
+                    radio_buttons: [],
+                    checkboxes: [
+                        {opt: "LA County Sheriff's Department", opt_field: "los-angeles-county-sheriffs-department"},
+                        {opt: "LA Police Department", opt_field: "los-angeles-police-department"},
+                        {opt: "Long Beach Police Department", opt_field: "long-beach-police-department"},
+                        {opt: "Inglewood Police Department", opt_field: "inglewood-police-department"},
+                        {opt: "Gardena Police Department", opt_field: "gardena-police-department"},
+                        {opt: "Hawthorne Police Department", opt_field: "hawthorne-police-department"},
+                        {opt: "Monterey Park Police Department", opt_field: "monterey-park-police-department"},
+                        {opt: "South Gate Police Department", opt_field: "south-gate-police-department"},
+                    ]
                 }];
                 var grouped_filters = _.groupBy(this.view_object.filters, function(item){
                     return item.type;
@@ -405,6 +449,7 @@
                 view_object.genders = [];
                 view_object.ethnicities = [];
                 view_object.responses = [];
+                view_object.reasons = [];
                 view_object.relevant_people.forEach(function(model, index){
                     var _this = model.attributes;
                     // create a year of incident measure
@@ -633,6 +678,17 @@
                         model.set(_this.led_to_response_category, true);
                     };
                     view_object.responses.push(_this.led_to_response_category);
+                    if (_this.reason_for_shooting === "null"){
+                        model.set("reason_for_shooting", "undefined");
+                    }
+                    if (_this.reason_for_shooting === "NULL" || _this.reason_for_shooting === null){
+                        _this.reason_for_shooting = "undefined";
+                        model.set(_this.reason_for_shooting, true);
+                    } else {
+                        _this.reason_for_shooting = _this.reason_for_shooting.replace(/ /g,"_");
+                        model.set(_this.reason_for_shooting, true);
+                    };
+                    view_object.reasons.push(_this.reason_for_shooting);
                 });
 
                 view_object.months = [
@@ -678,6 +734,10 @@
                 ];
 
                 view_object.responses = _.uniq(view_object.responses).sort();
+                view_object.reasons = _.uniq(view_object.reasons).sort();
+
+                console.log(view_object.reasons);
+
                 view_object.years = _.uniq(view_object.relevant_people.pluck("incident_year")).sort();
                 view_object.genders = _.uniq(view_object.genders).sort();
                 view_object.ethnicities = _.uniq(view_object.ethnicities).sort();
@@ -695,82 +755,99 @@
 
                 this.view_object.top_line_stats = {};
 
-                this.view_object.top_line_stats["Use Of Force Fatal"] = this.view_object.relevant_people.where({
+                this.view_object.top_line_stats["Fatal Shooting"] = this.view_object.relevant_people.where({
                     person_killed: true
                 });
 
-                this.view_object.top_line_stats["Use Of Force Non-Fatal"] = this.view_object.relevant_people.where({
+                this.view_object.top_line_stats["Non-Fatal Shooting"] = this.view_object.relevant_people.where({
                     person_wounded: true
                 });
 
-                this.view_object.top_line_stats["Armed"] = this.view_object.relevant_people.where({
-                    person_armed: true
-                });
-
-                this.view_object.top_line_stats["Unarmed"] = this.view_object.relevant_people.where({
+                this.view_object.top_line_stats["Unarmed Civilian"] = this.view_object.relevant_people.where({
                     person_unarmed: true
                 });
 
+                this.view_object.top_line_stats["Unarmed Civilian & Implied Weapon Is Present"] = this.view_object.relevant_people.where({
+                        person_unarmed: true,
+                        led_to_response_category: "implied_weapon_is_present"
+                });
+
+                this.view_object.top_line_stats["Armed Civilian"] = this.view_object.relevant_people.where({
+                    person_armed: true
+                });
+
+                this.view_object.top_line_stats["Weapon Recovered From Civilian"] = this.view_object.relevant_people.where({
+                    person_weapon_recovered: true
+                });
+
                 this.view_object.top_line_stats["Replica, Nonfunctional, Toy Or Blank Gun"] = this.view_object.relevant_people.where({
-                    person_gunlike: true
+                        person_weapon: "replica, nonfunctional, toy or blank gun"
+                });
+
+                this.view_object.top_line_stats["Armed With Nonfirearm"] = this.view_object.relevant_people.where({
+                    armed_with_weapon: true
                 });
 
                 this.view_object.top_line_stats["Armed With Firearm/Gun"] = this.view_object.relevant_people.where({
                     armed_with_firearm: true
                 });
 
-                this.view_object.top_line_stats["Armed With Other Weapon"] = this.view_object.relevant_people.where({
-                    armed_with_weapon: true
+                this.view_object.top_line_stats["Civilian Pointed Firearm/Gun"] = this.view_object.relevant_people.where({
+                        person_pointed_gun_at_officer: true
                 });
 
-                this.view_object.top_line_stats["Fired Weapon"] = this.view_object.relevant_people.where({
+                this.view_object.top_line_stats["Civilian Fired Firearm/Gun"] = this.view_object.relevant_people.where({
                     person_fired_gun_at_officer: true
                 });
 
-                this.view_object.top_line_stats["Pointed Weapon"] = this.view_object.relevant_people.where({
-                    person_pointed_gun_at_officer: true
+                this.view_object.top_line_stats["Civilian Pointed & Fired Firearm/Gun"] = this.view_object.relevant_people.where({
+                        person_pointed_gun_at_officer: true,
+                        person_fired_gun_at_officer: true
                 });
 
-                this.view_object.top_line_stats["Ignored Officer Commands"] = this.view_object.relevant_people.where({
-                    person_ignored_officer_commands: true
+                this.view_object.top_line_stats["Civilian Ignored Officer Commands"] = this.view_object.relevant_people.where({
+                        person_ignored_officer_commands: true
                 });
 
-                this.view_object.top_line_stats["Mention Of Waistband"] = this.view_object.relevant_people.where({
-                    person_reached_for_waistband: true
+                this.view_object.top_line_stats["Civilian Reached for Waistband"] = this.view_object.relevant_people.where({
+                        person_reached_for_waistband: true
                 });
 
-                this.view_object.top_line_stats["Couldn't See Persons Hands"] = this.view_object.relevant_people.where({
-                    person_hid_hands_from_officer: true
-                });
-
-                // pointed and fired firearm at an officer
-                this.view_object.top_line_stats["Pointed & Fired Firearm"] = this.view_object.relevant_people.where({
-                    person_pointed_gun_at_officer: true,
-                    person_fired_gun_at_officer: true
+                this.view_object.top_line_stats["Officer Couldn't See Civilian's Hands"] = this.view_object.relevant_people.where({
+                        person_hid_hands_from_officer: true
                 });
 
                 // ignored commands and demonstrated symptoms of intoxication
-                this.view_object.top_line_stats["Ignored Commands/Symptoms Of Intoxication"] = this.view_object.relevant_people.where({
-                    person_ignored_officer_commands: true,
-                    person_signs_of_impairment: true
+                this.view_object.top_line_stats["Civilian Ignored Commands/Symptoms Of Intoxication"] = this.view_object.relevant_people.where({
+                        person_ignored_officer_commands: true,
+                        person_signs_of_impairment: true
                 });
 
                 // ignored commands and demonstrated symptoms of mentally illness
-                this.view_object.top_line_stats["Ignored Commands/Symptoms of Mental Illness"] = this.view_object.relevant_people.where({
-                    person_ignored_officer_commands: true,
-                    person_signs_of_mental_illness: true
+                this.view_object.top_line_stats["Civilian Ignored Commands/Symptoms of Mental Illness"] = this.view_object.relevant_people.where({
+                        person_ignored_officer_commands: true,
+                        person_signs_of_mental_illness: true
                 });
 
                 // reaching for waistband and unarmed
-                this.view_object.top_line_stats["Reaching For Waistband & Unarmed"] = this.view_object.relevant_people.where({
-                    person_unarmed: true,
-                    person_reached_for_waistband: true
+                this.view_object.top_line_stats["Unarmed & Civilian Reached for Waistband"] = this.view_object.relevant_people.where({
+                        person_unarmed: true,
+                        person_reached_for_waistband: true
                 });
 
                 // mentally ill and unarmed
                 this.view_object.top_line_stats["Unarmed & Symptoms of Mental Illness"] = this.view_object.relevant_people.where({
-                    person_unarmed: true,
-                    person_signs_of_mental_illness: true
+                        person_unarmed: true,
+                        person_signs_of_mental_illness: true
+                });
+
+
+                this.view_object.top_line_stats["Civilian Used Vehicle As Weapon"] = this.view_object.relevant_people.where({
+                        used_vehicle_as_weapon: true
+                });
+
+                this.view_object.top_line_stats["Foot Pursuit or Car Pursuit Occurred"] = this.view_object.relevant_people.where({
+                        person_fled_by_foot_or_vehicle: true
                 });
 
                 this.view_object.obj = {};
@@ -785,6 +862,10 @@
                 this.view_object.obj.init.years = create_groups(this.view_object.obj.init.people, "incident_year");
                 this.view_object.obj.init.times = create_groups(this.view_object.obj.init.people, "time_of_day");
                 this.view_object.obj.init.responses = create_groups(this.view_object.obj.init.people, "led_to_response_category");
+                this.view_object.obj.init.reasons = create_groups(this.view_object.obj.init.people, "reason_for_shooting");
+
+                console.log(this.view_object.obj.init.reasons);
+
                 this.view_object.obj.total = this.view_object.obj.init.people.length;
                 $(this.el).html(this.view_object.template(this.view_object));
                 this.display_data(this.view_object.obj, true, "black");
@@ -867,22 +948,17 @@
 
             construct_filtered_data: function(){
                 this.view_object.obj.active_checkboxes = this.get_selected_filters();
-
                 var all_filters = {};
                 _.each(this.view_object.obj.active_checkboxes, function(item, index, list){
                     return all_filters[item] = true;
                 });
-
                 this.view_object.obj.filtered.people = new App.Collections.People();
-
                 var all_filters_empty = _.isEmpty(this.view_object.obj.active_checkboxes);
-
                 if (all_filters_empty === true){
                     this.view_object.obj.filtered.people = this.view_object.obj.init.people;
                 } else {
                     this.view_object.obj.filtered.people.add(this.view_object.obj.init.people.where(all_filters));
                 }
-
                 this.view_object.obj.filtered.genders = create_groups(this.view_object.obj.filtered.people, "person_gender");
                 this.view_object.obj.filtered.ethnicities = create_groups(this.view_object.obj.filtered.people, "person_ethnicity");
                 this.view_object.obj.filtered.age_ranges = create_groups(this.view_object.obj.filtered.people, "age_ranges");
@@ -892,6 +968,7 @@
                 this.view_object.obj.filtered.months = create_groups(this.view_object.obj.filtered.people, "incident_month");
                 this.view_object.obj.filtered.years = create_groups(this.view_object.obj.filtered.people, "incident_year");
                 this.view_object.obj.filtered.responses = create_groups(this.view_object.obj.filtered.people, "led_to_response_category");
+                this.view_object.obj.filtered.reasons = create_groups(this.view_object.obj.filtered.people, "reason_for_shooting");
                 $("td#filtered-people").css({color: "red"});
                 this.display_data(this.view_object.obj, false, "red");
             },
@@ -950,7 +1027,7 @@
 <script id="my_template" type="text/template">
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <h5>Top Line Stats</h5>
+            <h5>Top Line Findings</h5>
             <ul>
                 <@ _.each(top_line_stats, function(value, key){ @>
                     <@ var percent = toFixedPercent(value.length, obj.total); @>
@@ -1105,7 +1182,7 @@
                         <tr>
                             <@ var response_width = 100 / responses.length @>
                             <@ _.each(responses, function(category){ @>
-                                <th style="text-align: center; width: <@= response_width @>%;"><@= category @></th>
+                                <th style="text-align: center; width: <@= response_width @>%;"><@= category.replace(/_/g," ") @></th>
                             <@ }); @>
                         </tr>
                     </thead>
@@ -1120,6 +1197,35 @@
                 </table>
             </div>
         </div>
+
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <h6 class="text-center">Reasons for Shooting</h6>
+                <table class="kpcc-table">
+                    <thead>
+                        <tr>
+                            <@ var reason_width = 100 / reasons.length @>
+                            <@ _.each(reasons, function(category){ @>
+                                <th style="text-align: center; width: <@= reason_width @>%;"><@= category.replace(/_/g," ") @></th>
+                            <@ }); @>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <@ _.each(reasons, function(category){ @>
+                            <@ var div_id = category.replace(/ /g,"_"); @>
+                            <td class="swap" id="_<@= div_id @>" style="text-align: center; width: <@= reason_width @>%;">--</td>
+                            <@ }); @>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
                 <h6 class="text-center">Time of Day</h6>

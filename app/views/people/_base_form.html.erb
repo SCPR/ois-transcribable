@@ -34,7 +34,7 @@
 
         <div class="do_something">
             <div class="field" id="person_gender">
-            <%= p.input :person_gender, class: "form-control", collection: ["Female", "Male"], :default => nil, :prompt => " --Select One-- ", label: "Gender", hint: "* Gender of person shot. Should be able to tell from narrative details" %>
+            <%= p.input :person_gender, class: "form-control", collection: ["FEMALE", "MALE"], :default => nil, :prompt => " --Select One-- ", label: "Gender", hint: "* Gender of person shot. Should be able to tell from narrative details" %>
             </div>
         </div>
         <div class="do_something">
@@ -170,7 +170,7 @@
         <h5>Factors Present (Check if true)</h5>
         <div class="do_something">
             <div class="field" id="reason_for_shooting">
-            <%= p.input :reason_for_shooting, collection: ["attempted to disarm deputy", "bystander in shooting", "led to believe was armed", "object shooting", "other person was target", "perception shooting", "vehicle as weapon"], label: false, :default => nil, :prompt => " --Select One-- ", class: "form-control", label: "Reason For Shooting", hint: "* Pick the best choice from this list" %>
+            <%= p.input :reason_for_shooting, collection: ["attempted to disarm officer", "attacked or threatened officer", "bystander in shooting", "object shooting", "other person was target", "perception shooting", "vehicle as weapon", "weapon displayed"], label: false, :default => nil, :prompt => " --Select One-- ", class: "form-control", label: "Reason For Shooting", hint: "* Pick the best choice from this list" %>
             </div>
         </div>
         <div class="row">

@@ -5,8 +5,7 @@
             <li><%= link_to 'Home', controller: :home, action: :index %></li>
             <li>Verify An Incident</li>
         </ol>
-        <h1><%= @incidents_awaiting_verification.size %> incidents need to be verified</h1>
-        <p><strong>Looking for incidents statistics?</strong> You can view details about the <%= @incidents_verified.size %> <%= link_to "incidents we've verified here.", incidents_statistics_path %>.</p>
+        <h1><%= @incidents_awaiting_verification.size %> incidents awaiting verification</h1>
         <hr></hr>
         <div id="table-container">
             <table class="kpcc-table">

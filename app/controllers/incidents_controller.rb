@@ -9,7 +9,9 @@ class IncidentsController < ApplicationController
         else
             @incidents = Incident.all.order(district_attorney_county: :asc, verified: :desc, district_attorney_file_number: :asc)
             @incidents_total = Incident.all()
-            @incidents_verified = Incident.where("verified = '1'")
+            @incidents_verified = Incident.where("on_duty_shooting_case = '1'").where("verified = '1'")
+            @incidents_awaiting_transcription = Incident.where("transcribed = '0'")
+            @incidents_awaiting_verification = Incident.where("on_duty_shooting_case = '1'").where("transcribed = '1'").where("verified = '0'")
         end
     end
 
