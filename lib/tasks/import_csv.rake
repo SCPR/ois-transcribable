@@ -2,7 +2,7 @@ require "csv"
 require "open-uri"
 
 task :import_csv  => :environment do
-    url = "https://www.dropbox.com/s/3scqwrldpvegsbo/incidents.csv?dl=1"
+    url = "https://s3-us-west-2.amazonaws.com/ois-uploads/incidents.csv"
     Incident.delete_all
     csv_data = open(url).read()
     csv = CSV.parse(csv_data, :headers => true)
@@ -13,7 +13,7 @@ task :import_csv  => :environment do
 end
 
 task :import_csv  => :environment do
-    url = "https://www.dropbox.com/s/6x4i1gfmq3r5rcp/people.csv?dl=1"
+    url = "https://s3-us-west-2.amazonaws.com/ois-uploads/people.csv"
     Person.delete_all
     csv_data = open(url).read()
     csv = CSV.parse(csv_data, :headers => true)
