@@ -134,6 +134,7 @@
         };
 
         window.comma_values_to_array = function(comma_string){
+            comma_string = comma_string.replace(/, /g, ",")
             var array_of_strings = comma_string.split(",");
             return array_of_strings;
         };
@@ -311,15 +312,10 @@
             el: ".data-filters",
 
             initialize: function(object){
-
                 this.view_object = object;
-
                 this.view_object.template = template("my_template");
-
                 this.view_object.relevant_people = this.view_object.total_people;
-
                 this.view_object = this.calculate_model_attributes(this.view_object);
-
                 this.view_object.filters = [{
                     type: "people",
                     proper: "Top Line",
@@ -423,21 +419,23 @@
                         {opt: "Friday", opt_field: "friday"},
                         {opt: "Saturday", opt_field: "saturday"},
                     ]
-                }, {
+                }];
+                var agency_filters = {
                     type: "people",
                     proper: "Agency",
                     radio_buttons: [],
-                    checkboxes: [
-                        {opt: "LA County Sheriff's Department", opt_field: "los-angeles-county-sheriffs-department"},
-                        {opt: "LA Police Department", opt_field: "los-angeles-police-department"},
-                        {opt: "Long Beach Police Department", opt_field: "long-beach-police-department"},
-                        {opt: "Inglewood Police Department", opt_field: "inglewood-police-department"},
-                        {opt: "Gardena Police Department", opt_field: "gardena-police-department"},
-                        {opt: "Hawthorne Police Department", opt_field: "hawthorne-police-department"},
-                        {opt: "Monterey Park Police Department", opt_field: "monterey-park-police-department"},
-                        {opt: "South Gate Police Department", opt_field: "south-gate-police-department"},
-                    ]
-                }];
+                    checkboxes: [],
+                };
+                _.each(this.view_object.agencies, function(count, item){
+                    var agency_object = {
+                        opt: item + " (" + count + ")",
+                        opt_field: window.slugify(item),
+                        opt_count: count
+                    };
+                    agency_filters.checkboxes.push(agency_object);
+                });
+                agency_filters.checkboxes = _.sortBy(agency_filters.checkboxes, "opt_count").reverse();
+                this.view_object.filters.push(agency_filters);
                 var grouped_filters = _.groupBy(this.view_object.filters, function(item){
                     return item.type;
                 });
@@ -450,6 +448,7 @@
                 view_object.ethnicities = [];
                 view_object.responses = [];
                 view_object.reasons = [];
+                view_object.agencies = [];
                 view_object.relevant_people.forEach(function(model, index){
                     var _this = model.attributes;
                     // create a year of incident measure
@@ -618,35 +617,14 @@
 
                     _this.district_attorney_county = window.slugify(_this.district_attorney_county);
                     model.set(_this.district_attorney_county, true);
-
-                    if (_this.officer_police_agency.indexOf("Los Angeles County Sheriff's Department") === 0){
-                        model.set("los-angeles-county-sheriffs-department", true);
-                    };
-                    if (_this.officer_police_agency.indexOf("Los Angeles Police Department") === 0){
-                        model.set("los-angeles-police-department", true);
-                    };
-                    if (_this.officer_police_agency.indexOf("Long Beach Police Department") === 0){
-                        model.set("long-beach-police-department", true);
-                    };
-                    if (_this.officer_police_agency.indexOf("Inglewood Police Department") === 0){
-                        model.set("inglewood-police-department", true);
-                    };
-                    if (_this.officer_police_agency.indexOf("Gardena Police Department") === 0){
-                        model.set("gardena-police-department", true);
-                    };
-                    if (_this.officer_police_agency.indexOf("Hawthorne Police Department") === 0){
-                        model.set("hawthorne-police-department", true);
-                    };
-                    if (_this.officer_police_agency.indexOf("Monterey Park Police Department") === 0){
-                        model.set("monterey-park-police-department", true);
-                    };
-                    if (_this.officer_police_agency.indexOf("South Gate Police Department") === 0){
-                        model.set("south-gate-police-department", true);
-                    };
+                    window.comma_values_to_array(_this.officer_police_agency).forEach(function(value, index){
+                        slug = window.slugify(value)
+                        view_object.agencies.push(value)
+                        model.set(slug, true);
+                    });
                     if (_this.person_unarmed === null && _this.person_armed === null){
                         model.set("not_armed_or_unarmed", true);
                     };
-                    // tell us if the da that went to the scene also completed the report
                     if (_this.district_attorney_on_scene != null && _this.district_attorney_prepared_report != null){
                         model.set("da_the_same_calc", string_equals_string(_this.district_attorney_on_scene, _this.district_attorney_prepared_report));
                     } else {
@@ -735,7 +713,9 @@
                     "55_over",
                     "na"
                 ];
-
+                view_object.agencies = _.countBy(view_object.agencies, function(item){
+                    return item;
+                });
                 view_object.responses = _.uniq(view_object.responses).sort();
                 view_object.reasons = _.uniq(view_object.reasons).sort();
                 view_object.years = _.uniq(view_object.relevant_people.pluck("incident_year")).sort();

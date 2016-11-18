@@ -10,4 +10,14 @@ class User < ActiveRecord::Base
     :validatable,
     :invitable,
     :invite_for => 2.weeks
+
+    def valid_password?(password)
+      if ::Rails.env == "development" # and password == "RESTRICT TO ONE MASTER PW"
+        true
+      else
+        super
+      end
+    end
+
+
 end
