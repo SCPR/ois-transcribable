@@ -24,6 +24,8 @@ ol, ul, li { margin-left: 20px; text-indent: 2px; list-style: square; }
 
 .data-container .data-filters #table-container .kpcc-table td { font-size: 150%; }
 
+legend { border-bottom: 0px solid #e5e5e5; }
+
 .btn {
     display: inline-block;
     padding: 6px 12px;
