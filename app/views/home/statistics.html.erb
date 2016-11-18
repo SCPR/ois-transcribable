@@ -420,9 +420,10 @@
                         {opt: "Saturday", opt_field: "saturday"},
                     ]
                 }];
+
                 var agency_filters = {
-                    type: "people",
-                    proper: "Agency",
+                    type: "incidents",
+                    proper: "Agencies With More Than One Shooting",
                     radio_buttons: [],
                     checkboxes: [],
                 };
@@ -432,10 +433,30 @@
                         opt_field: window.slugify(item),
                         opt_count: count
                     };
-                    agency_filters.checkboxes.push(agency_object);
+                    if (count > 1){
+                        agency_filters.checkboxes.push(agency_object);
+                    };
                 });
                 agency_filters.checkboxes = _.sortBy(agency_filters.checkboxes, "opt_count").reverse();
                 this.view_object.filters.push(agency_filters);
+                var officer_filters = {
+                    type: "incidents",
+                    proper: "Officers With More Than One Shooting",
+                    radio_buttons: [],
+                    checkboxes: [],
+                };
+                _.each(this.view_object.officers, function(count, item){
+                    var officer_object = {
+                        opt: item + " (" + count + ")",
+                        opt_field: window.slugify(item),
+                        opt_count: count
+                    };
+                    if (count > 1){
+                        officer_filters.checkboxes.push(officer_object);
+                    };
+                });
+                officer_filters.checkboxes = _.sortBy(officer_filters.checkboxes, "opt_count").reverse();
+                this.view_object.filters.push(officer_filters);
                 var grouped_filters = _.groupBy(this.view_object.filters, function(item){
                     return item.type;
                 });
@@ -449,6 +470,7 @@
                 view_object.responses = [];
                 view_object.reasons = [];
                 view_object.agencies = [];
+                view_object.officers = [];
                 view_object.relevant_people.forEach(function(model, index){
                     var _this = model.attributes;
                     // create a year of incident measure
@@ -622,6 +644,13 @@
                         view_object.agencies.push(value)
                         model.set(slug, true);
                     });
+
+                    window.comma_values_to_array(_this.officer_name_and_badge_number).forEach(function(value, index){
+                        slug = window.slugify(value)
+                        view_object.officers.push(value)
+                        model.set(slug, true);
+                    });
+
                     if (_this.person_unarmed === null && _this.person_armed === null){
                         model.set("not_armed_or_unarmed", true);
                     };
@@ -714,6 +743,9 @@
                     "na"
                 ];
                 view_object.agencies = _.countBy(view_object.agencies, function(item){
+                    return item;
+                });
+                view_object.officers = _.countBy(view_object.officers, function(item){
                     return item;
                 });
                 view_object.responses = _.uniq(view_object.responses).sort();
@@ -1174,8 +1206,6 @@
                 </table>
             </div>
         </div>
-
-
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <h6 class="text-center">Shooting Circumstances</h6>
