@@ -1,0 +1,64 @@
+<%=
+CSV.generate do |csv|
+    csv << ["id", "email", "encrypted_password", "reset_password_token", "reset_password_sent_at", "remember_created_at", "sign_in_count", "current_sign_in_at", "last_sign_in_at", "current_sign_in_ip", "last_sign_in_ip", "created_at", "updated_at", "invitation_token", "invitation_created_at", "invitation_sent_at", "invitation_accepted_at", "invitation_limit", "invited_by_id", "invited_by_type", "invitations_count"]
+
+    @users.each do |item|
+
+        if item.reset_password_sent_at
+            item.reset_password_sent_at = item.reset_password_sent_at.strftime "%Y-%m-%d %H:%M"
+        else
+            item.reset_password_sent_at = "NULL"
+        end
+
+        if item.remember_created_at
+            item.remember_created_at = item.remember_created_at.strftime "%Y-%m-%d %H:%M"
+        else
+            item.remember_created_at = "NULL"
+        end
+
+        if item.current_sign_in_at
+            item.current_sign_in_at = item.current_sign_in_at.strftime "%Y-%m-%d %H:%M"
+        else
+            item.current_sign_in_at = "NULL"
+        end
+
+        if item.last_sign_in_at
+            item.last_sign_in_at = item.last_sign_in_at.strftime "%Y-%m-%d %H:%M"
+        else
+            item.last_sign_in_at = "NULL"
+        end
+
+        if item.created_at
+            item.created_at = item.created_at.strftime "%Y-%m-%d %H:%M"
+        else
+            item.created_at = "NULL"
+        end
+
+        if item.updated_at
+            item.updated_at = item.updated_at.strftime "%Y-%m-%d %H:%M"
+        else
+            item.updated_at = "NULL"
+        end
+
+        if item.invitation_created_at
+            item.invitation_created_at = item.invitation_created_at.strftime "%Y-%m-%d %H:%M"
+        else
+            item.invitation_created_at = "NULL"
+        end
+
+        if item.invitation_sent_at
+            item.invitation_sent_at = item.invitation_sent_at.strftime "%Y-%m-%d %H:%M"
+        else
+            item.invitation_sent_at = "NULL"
+        end
+
+        if item.invitation_accepted_at
+            item.invitation_accepted_at = item.invitation_accepted_at.strftime "%Y-%m-%d %H:%M"
+        else
+            item.invitation_accepted_at = "NULL"
+        end
+
+        csv << [item.id, item.email, item.encrypted_password, item.reset_password_token, item.reset_password_sent_at, item.remember_created_at, item.sign_in_count, item.current_sign_in_at, item.last_sign_in_at, item.current_sign_in_ip, item.last_sign_in_ip, item.created_at, item.updated_at, item.invitation_token, item.invitation_created_at, item.invitation_sent_at, item.invitation_accepted_at, item.invitation_limit, item.invited_by_id, item.invited_by_type, item.invitations_count]
+    end
+end .html_safe
+%>

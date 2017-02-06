@@ -90,4 +90,16 @@ class HomeController < ApplicationController
             end
         end
     end
+
+    def export_users
+        @users = User.all
+        respond_to do |format|
+            format.html
+            format.csv do
+                headers['Content-Disposition'] = "attachment; filename=\"ois_users_bak.csv\""
+                headers['Content-Type'] ||= 'text/csv'
+            end
+        end
+    end
+
 end
