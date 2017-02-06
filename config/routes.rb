@@ -14,6 +14,8 @@ Rails.application.routes.draw do
 
   get "/bak-people-data" => "home#export_people"
 
+  get "/bak-user-data" => "home#export_users"
+
   # get "/incidents/statistics" => "incidents#statistics"
 
   get "/incidents/data" => "incidents#data"
