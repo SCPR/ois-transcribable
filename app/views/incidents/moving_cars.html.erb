@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ol class="breadcrumb">
+            <li><%= link_to 'Home', controller: :home, action: :index %></li>
+            <li>Categorize Incident</li>
+        </ol>
+        <h1>Determining if officers shot at moving cars</h1>
+        <p><%= @completed.size %> out of <%= @incidents.size %> (
+        <% if "%.2f" % @completed_percent == "100.00" %>
+            <span style="color: green"><%= "%.2f" % @completed_percent %>%</span>
+        <% else %>
+            <span style="color: red"><%= "%.2f" % @completed_percent %>%</span>
+        <% end %>
+        ) of the relevant incidents have been categorized.</p>
+        <div id="table-container">
+            <table class="kpcc-table">
+                <tr>
+                    <th style="width: 25%;">Categorized</th>
+                    <th style="width: 25%;">County</th>
+                    <th style="width: 25%;">DA File Number</th>
+                    <th style="width: 25%;">Classify</th>
+                </tr>
+                <% @incidents.each do |incident| %>
+                    <%= simple_form_for(incident) do |item| %>
+                        <tr>
+                            <% if incident.moving_car == nil %>
+                                <td style="width: 25%; color: red">&mdash;</td>
+                            <% end %>
+                            <% if incident.moving_car == nil %>
+                                <td style="width: 25%;"><%= incident.district_attorney_county %></td>
+                            <% end %>
+                            <% if incident.moving_car == nil %>
+                                <td style="width: 25%;">
+                                    <%= incident.district_attorney_file_number %>
+                                </td>
+                            <% end %>
+                            <% if incident.moving_car == nil %>
+                                <td style="width: 25%;">
+                                    <%= link_to "Edit", edit_incident_path(incident.id), class: "btn btn-success" %>
+                                </td>
+                            <% end %>
+                        </tr>
+                        <%= hidden_field_tag "incident_id", incident.id %>
+                        <%= hidden_field_tag :redirect_location, "/incidents/moving-cars" %>
+                    <% end %>
+                <% end %>
+            </table>
+        </div>
+    </div>
+</div>
