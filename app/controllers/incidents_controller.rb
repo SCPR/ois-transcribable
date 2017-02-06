@@ -51,6 +51,12 @@ class IncidentsController < ApplicationController
         @completed_percent = (@completed.count.to_f / @incidents.count.to_f) * 100
     end
 
+    def moving_cars
+        @incidents = Incident.where("on_duty_shooting_case = '1'").where("transcribed = '1'").where("verified = '1'").order(verified: :asc, district_attorney_county: :asc, district_attorney_file_number: :asc)
+        @completed = @incidents.where("moving_car != 'nil'")
+        @completed_percent = (@completed.count.to_f / @incidents.count.to_f) * 100
+    end
+
     def show
         @incident = Incident.find(params[:id])
         @transcription = Transcription.find_by district_attorney_file_number: @incident.district_attorney_file_number

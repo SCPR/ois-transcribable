@@ -26,6 +26,8 @@ Rails.application.routes.draw do
 
   get "/incidents/classify-response" => "incidents#classify_response"
 
+  get "/incidents/moving-cars" => "incidents#moving_cars"
+
   get "/statistics" => "home#statistics"
 
   get "/statistics/#all" => "home#statistics"
