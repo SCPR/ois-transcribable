@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org/'
 
 gem 'pry'
 
@@ -11,9 +11,9 @@ gem 'devise'
 
 gem 'devise-bootstrap-views'
 
-gem 'devise_invitable', '~> 1.3.4'
+gem 'devise_invitable', '~> 1.6'
 
-gem "mysql2"
+gem 'mysql2', '~> 0.3.18'
 
 gem "newrelic_rpm"
 
