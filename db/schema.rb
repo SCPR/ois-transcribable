@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210143805) do
+ActiveRecord::Schema.define(version: 20170206215937) do
 
   create_table "incidents", force: :cascade do |t|
     t.datetime "created_at",                                                            null: false
@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 20160210143805) do
     t.string   "user_id",                                 limit: 255
     t.boolean  "transcribed",                             limit: 1
     t.string   "transcribed_status",                      limit: 255
+    t.boolean  "moving_car",                              limit: 1
   end
 
   create_table "people", force: :cascade do |t|
