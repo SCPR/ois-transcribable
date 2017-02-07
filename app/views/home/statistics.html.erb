@@ -439,6 +439,7 @@
                 });
                 agency_filters.checkboxes = _.sortBy(agency_filters.checkboxes, "opt_count").reverse();
                 this.view_object.filters.push(agency_filters);
+
                 var officer_filters = {
                     type: "incidents",
                     proper: "Officers With More Than One Shooting",
@@ -457,6 +458,26 @@
                 });
                 officer_filters.checkboxes = _.sortBy(officer_filters.checkboxes, "opt_count").reverse();
                 this.view_object.filters.push(officer_filters);
+
+                var drug_filters = {
+                    type: "people",
+                    proper: "Presence of drugs",
+                    radio_buttons: [],
+                    checkboxes: [],
+                };
+                _.each(this.view_object.drugs, function(count, item){
+                    var drug_object = {
+                        opt: item + " (" + count + ")",
+                        opt_field: window.slugify(item),
+                        opt_count: count
+                    };
+                    if (count >= 1){
+                        drug_filters.checkboxes.push(drug_object);
+                    };
+                });
+                drug_filters.checkboxes = _.sortBy(drug_filters.checkboxes, "opt_count").reverse();
+                this.view_object.filters.push(drug_filters);
+
                 var grouped_filters = _.groupBy(this.view_object.filters, function(item){
                     return item.type;
                 });
@@ -469,6 +490,7 @@
                 view_object.ethnicities = [];
                 view_object.responses = [];
                 view_object.reasons = [];
+                view_object.drugs = [];
                 view_object.agencies = [];
                 view_object.officers = [];
                 view_object.relevant_people.forEach(function(model, index){
@@ -651,6 +673,24 @@
                         model.set(slug, true);
                     });
 
+                    window.comma_values_to_array(_this.drugs).forEach(function(value, index){
+                        if (value !== ""){
+                            var output = value.toLowerCase();
+                            if (output.indexOf("blood alcohol content") > 0){
+                                output = "alcohol"
+                            };
+                            if (output === "cannabinoids"){
+                                output = "marijuana"
+                            }
+                            if (output === "thc"){
+                                output = "marijuana"
+                            };
+                            slug = window.slugify(output)
+                            view_object.drugs.push(output)
+                            model.set(slug, true);
+                        };
+                    });
+
                     if (_this.person_unarmed === null && _this.person_armed === null){
                         model.set("not_armed_or_unarmed", true);
                     };
@@ -746,6 +786,9 @@
                     return item;
                 });
                 view_object.officers = _.countBy(view_object.officers, function(item){
+                    return item;
+                });
+                view_object.drugs = _.countBy(view_object.drugs, function(item){
                     return item;
                 });
                 view_object.responses = _.uniq(view_object.responses).sort();
