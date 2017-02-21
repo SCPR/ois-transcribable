@@ -338,6 +338,7 @@
                         {opt: "Officer Couldn't See Persons Hands", opt_field: "person_hid_hands_from_officer"},
                         {opt: "Signs of Drug/Alcohol Impairment", opt_field: "person_signs_of_impairment"},
                         {opt: "Signs of Mental Illness", opt_field: "person_signs_of_mental_illness"},
+                        {opt: "Shot At Moving Car", opt_field: "moving_car"},
                         {opt: "Officer Claimed Vehicle Used as Weapon", opt_field: "used_vehicle_as_weapon"},
                         {opt: "Person Shot In Back", opt_field: "person_shot_in_back"},
                         {opt: "Person Shot In Head", opt_field: "person_shot_in_head"},
@@ -595,45 +596,58 @@
                         model.set("_6_pm_to_midnight", undefined);
                     };
                     /* set gender data */
-                    if (_this.person_gender === "MALE"){
-                        model.set("person_male", true);
-                    } else if (_this.person_gender === "FEMALE"){
-                        model.set("person_female", true);
-                    } else if (_this.person_gender === null || _this.person_gender === "NULL"){
+                    if (_this.person_gender === undefined || _this.person_gender === null){
                         model.set("person_gender", "na-gender");
-                        model.set("person_male", null);
-                        model.set("person_female", null);
+                    };
+                    _this.person_gender = _this.person_gender.trim().toLowerCase();
+                    if (_this.person_gender === "na-gender"){
+                        model.set("person_male", false);
+                        model.set("person_female",false);
+                    } else if (_this.person_gender === "male"){
+                        model.set("person_male", true);
+                        model.set("person_female", false);
+                    } else if (_this.person_gender === "female"){
+                        model.set("person_male", false);
+                        model.set("person_female", true);
                     };
                     view_object.genders.push(_this.person_gender);
+
                     /* set ethnicity data */
-                    if (_this.person_ethnicity === null || _this.person_ethnicity === "NULL"){
+                    if (_this.person_ethnicity === undefined || _this.person_ethnicity === null){
                         model.set("no_ethnicity", true);
                         model.set("person_ethnicity", "na-ethnicity");
                     };
-                    if (_this.person_ethnicity === ""){
+                    _this.person_ethnicity = _this.person_ethnicity.trim().toLowerCase();
+                    if (_this.person_ethnicity === "" || _this.person_ethnicity === "NULL"){
                         model.set("no_ethnicity", true);
                         model.set("person_ethnicity", "na-ethnicity");
                     };
-                    if (_this.person_ethnicity === "HISPANIC/LATIN AMERICAN"){
+                    if (_this.person_ethnicity === "other"){
+                        model.set("no_ethnicity", true);
+                        model.set("person_ethnicity", "na-ethnicity");
+                    };
+                    if (_this.person_ethnicity === "hispanic/latin american"){
                         model.set("no_ethnicity", false);
                         model.set("person_ethnicity", "latino");
                     };
-                    if (_this.person_ethnicity === "MIDDLE EASTERN"){
+                    if (_this.person_ethnicity === "middle eastern"){
                         model.set("no_ethnicity", false);
                         model.set("person_ethnicity", "mid-eastn");
                     };
-                    if (_this.person_ethnicity === "PACIFIC ISLANDER"){
+                    if (_this.person_ethnicity === "pacific islander"){
                         model.set("no_ethnicity", false);
                         model.set("person_ethnicity", "pacific-islander");
                     };
                     model.set("person_ethnicity", _this.person_ethnicity.toLowerCase());
                     model.set(_this.person_ethnicity, true);
                     view_object.ethnicities.push(_this.person_ethnicity);
-
                     /* set age data */
-                    if (_this.person_age === undefined || _this.person_age === null|| _this.person_age === "NULL"){
-                        model.set("age_ranges", "na-range");
-                        model.set("person_age", "na-age");
+                    if (_this.person_age === undefined || _this.person_age === null){
+                        model.set("person_age", null);
+                        model.set("age_ranges", "na-age");
+                    } else if (_this.person_age === "" || _this.person_age === "NULL"){
+                        model.set("person_age", null);
+                        model.set("age_ranges", "na-age");
                     } else {
                         var comparison_age = parseInt(_this.person_age);
                         if (comparison_age < 18){
@@ -649,16 +663,14 @@
                         } else if (comparison_age >= 55){
                             model.set("age_ranges", "55_over");
                         } else{
-                            model.set("age_ranges", "na-range");
+                            model.set("age_ranges", "na-age");
                         };
                     };
-
                     if (_this.district_attorney_county === "Los Angeles"){
                         model.set("original-scope", parse_record_creation(_this.created_at));
                     } else {
                         model.set("original-scope", false);
                     };
-
                     _this.district_attorney_county = window.slugify(_this.district_attorney_county);
                     model.set(_this.district_attorney_county, true);
                     window.comma_values_to_array(_this.officer_police_agency).forEach(function(value, index){
@@ -666,13 +678,11 @@
                         view_object.agencies.push(value)
                         model.set(slug, true);
                     });
-
                     window.comma_values_to_array(_this.officer_name_and_badge_number).forEach(function(value, index){
                         slug = window.slugify(value)
                         view_object.officers.push(value)
                         model.set(slug, true);
                     });
-
                     window.comma_values_to_array(_this.drugs).forEach(function(value, index){
                         if (value !== ""){
                             var output = value.toLowerCase();
@@ -690,7 +700,6 @@
                             model.set(slug, true);
                         };
                     });
-
                     if (_this.person_unarmed === null && _this.person_armed === null){
                         model.set("not_armed_or_unarmed", true);
                     };
@@ -731,13 +740,14 @@
                     if (_this.reason_for_shooting === "null"){
                         model.set("reason_for_shooting", "undefined");
                     }
-                    if (_this.reason_for_shooting === "NULL" || _this.reason_for_shooting === null){
+                    if (_this.reason_for_shooting === undefined || _this.reason_for_shooting === null){
                         _this.reason_for_shooting = "undefined";
-                        model.set(_this.reason_for_shooting, true);
-                    } else {
-                        _this.reason_for_shooting = _this.reason_for_shooting.replace(/ /g,"_");
-                        model.set(_this.reason_for_shooting, true);
                     };
+                    if (_this.reason_for_shooting === "" || _this.reason_for_shooting === "NULL"){
+                        _this.reason_for_shooting = "undefined";
+                    };
+                    _this.reason_for_shooting = _this.reason_for_shooting.replace(/ /g,"_");
+                    model.set(_this.reason_for_shooting, true);
                     view_object.reasons.push(_this.reason_for_shooting);
                 });
 
@@ -780,7 +790,7 @@
                     "35_44",
                     "45_54",
                     "55_over",
-                    "na"
+                    "na-age"
                 ];
                 view_object.agencies = _.countBy(view_object.agencies, function(item){
                     return item;
