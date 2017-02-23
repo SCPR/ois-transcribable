@@ -321,6 +321,7 @@
                     proper: "Top Line",
                     radio_buttons: [],
                     checkboxes: [
+                        {opt: "2015 Officer Involved Project", opt_field: "original_scope"},
                         {opt: "Was Use Of Force Fatal", opt_field: "person_killed"},
                         {opt: "Was Use Of Force Non-Fatal", opt_field: "person_wounded"},
                         {opt: "Person Was Armed", opt_field: "person_armed"},
@@ -667,9 +668,9 @@
                         };
                     };
                     if (_this.district_attorney_county === "Los Angeles"){
-                        model.set("original-scope", parse_record_creation(_this.created_at));
+                        model.set("original_scope", parse_record_creation(_this.created_at));
                     } else {
-                        model.set("original-scope", false);
+                        model.set("original_scope", false);
                     };
                     _this.district_attorney_county = window.slugify(_this.district_attorney_county);
                     model.set(_this.district_attorney_county, true);
