@@ -422,7 +422,6 @@
                         {opt: "Saturday", opt_field: "saturday"},
                     ]
                 }];
-
                 var agency_filters = {
                     type: "incidents",
                     proper: "Agencies With More Than One Shooting",
@@ -441,7 +440,6 @@
                 });
                 agency_filters.checkboxes = _.sortBy(agency_filters.checkboxes, "opt_count").reverse();
                 this.view_object.filters.push(agency_filters);
-
                 var officer_filters = {
                     type: "incidents",
                     proper: "Officers With More Than One Shooting",
@@ -460,7 +458,24 @@
                 });
                 officer_filters.checkboxes = _.sortBy(officer_filters.checkboxes, "opt_count").reverse();
                 this.view_object.filters.push(officer_filters);
-
+                var unit_filters = {
+                    type: "incident",
+                    proper: "Special Units",
+                    radio_buttons: [],
+                    checkboxes: [],
+                };
+                _.each(this.view_object.units, function(count, item){
+                    var unit_object = {
+                        opt: item + " (" + count + ")",
+                        opt_field: window.slugify(item),
+                        opt_count: count
+                    };
+                    if (count >= 1){
+                        unit_filters.checkboxes.push(unit_object);
+                    };
+                });
+                unit_filters.checkboxes = _.sortBy(unit_filters.checkboxes, "opt_count").reverse();
+                this.view_object.filters.push(unit_filters);
                 var drug_filters = {
                     type: "people",
                     proper: "Presence of drugs",
@@ -479,7 +494,6 @@
                 });
                 drug_filters.checkboxes = _.sortBy(drug_filters.checkboxes, "opt_count").reverse();
                 this.view_object.filters.push(drug_filters);
-
                 var grouped_filters = _.groupBy(this.view_object.filters, function(item){
                     return item.type;
                 });
@@ -492,6 +506,7 @@
                 view_object.ethnicities = [];
                 view_object.responses = [];
                 view_object.reasons = [];
+                view_object.units = [];
                 view_object.drugs = [];
                 view_object.agencies = [];
                 view_object.officers = [];
@@ -684,6 +699,16 @@
                         view_object.officers.push(value)
                         model.set(slug, true);
                     });
+                    window.comma_values_to_array(_this.officer_special_unit).forEach(function(value, index){
+                        if (value !== "" || value === null){
+                            var output = value.toLowerCase();
+                            output = output.split("(");
+                            output = output[0].trim();
+                            slug = window.slugify(output)
+                            view_object.units.push(output)
+                            model.set(slug, true);
+                        };
+                    });
                     window.comma_values_to_array(_this.drugs).forEach(function(value, index){
                         if (value !== ""){
                             var output = value.toLowerCase();
@@ -797,6 +822,9 @@
                     return item;
                 });
                 view_object.officers = _.countBy(view_object.officers, function(item){
+                    return item;
+                });
+                view_object.units = _.countBy(view_object.units, function(item){
                     return item;
                 });
                 view_object.drugs = _.countBy(view_object.drugs, function(item){
