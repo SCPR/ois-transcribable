@@ -11,8 +11,8 @@ class HomeController < ApplicationController
       @verified_scoreboard = @verified.group_by(&:verified_by_email)
       @people = Person.where("person_shot = '1'")
       @all_people = @people.joins(:incident).where("on_duty_shooting_case = '1'").where("verified = '1'")
-      @original_people = @people.joins(:incident).where("district_attorney_county = 'Los Angeles'").where("on_duty_shooting_case = '1'").where("verified = '1'")
-      @sb_people = @people.joins(:incident).where("district_attorney_county = 'San Bernardino'").where("on_duty_shooting_case = '1'").where("verified = '1'")
+      @original_people = @all_people.where("people.created_at < '2015-11-30'").where("district_attorney_county = 'Los Angeles'")
+      @sb_people = @all_people.where("district_attorney_county = 'San Bernardino'")
     end
 
     def statistics
