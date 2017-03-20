@@ -59,7 +59,6 @@ class IncidentsController < ApplicationController
 
     def show
         @incident = Incident.find(params[:id])
-        @transcription = Transcription.find_by district_attorney_file_number: @incident.district_attorney_file_number
     end
 
     def new
