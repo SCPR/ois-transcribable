@@ -50,7 +50,7 @@ Rails.application.routes.draw do
 
   resources :people, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
 
-  resources :transcriptions, :only => [:index]
+  # resources :transcriptions, :only => [:index]
 
   devise_for :users
 

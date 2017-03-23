@@ -1,6 +1,6 @@
 class Incident < ActiveRecord::Base
     validates :incident_url, uniqueness:true, allow_blank: false, allow_nil: false
-    has_many :transcriptions
+    # has_many :transcriptions
     has_many :people, primary_key: "district_attorney_file_number", foreign_key: "district_attorney_file_number"
     accepts_nested_attributes_for :people
     validates_associated :people
