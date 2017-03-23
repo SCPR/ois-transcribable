@@ -2,8 +2,8 @@ source 'http://rubygems.org/'
 
 gem 'pry'
 
-#gem 'transcribable', :path => '/Volumes/one_tb_hd/_programming/2kpcc/data-projects/officer_involved_shootings/transcribable'
-gem 'transcribable', :git => 'https://github.com/SCPR/transcribable.git'
+# gem 'transcribable', :path => '/Volumes/one_tb_hd/_programming/2kpcc/data-projects/officer_involved_shootings/transcribable'
+# gem 'transcribable', :git => 'https://github.com/SCPR/transcribable.git'
 
 gem 'simple_form'
 
