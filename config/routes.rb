@@ -30,6 +30,8 @@ Rails.application.routes.draw do
 
   get "/incidents/moving-cars" => "incidents#moving_cars"
 
+  get "/incidents/fix-times" => "incidents#fix_times"
+
   get "/statistics" => "home#statistics"
 
   get "/statistics/#all" => "home#statistics"

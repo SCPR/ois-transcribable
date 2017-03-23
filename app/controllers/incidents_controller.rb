@@ -57,6 +57,11 @@ class IncidentsController < ApplicationController
         @completed_percent = (@completed.count.to_f / @incidents.count.to_f) * 100
     end
 
+    def fix_times
+        @incidents = Incident.where("on_duty_shooting_case = '1'").where("transcribed = '1'").where("updated_at < '2017-03-23 00:01:00'").order(verified: :desc, district_attorney_county: :asc, district_attorney_file_number: :asc)
+        @left = @incidents.count
+    end
+
     def show
         @incident = Incident.find(params[:id])
     end

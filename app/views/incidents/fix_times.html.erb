@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ol class="breadcrumb">
+            <li><%= link_to 'Home', controller: :home, action: :index %></li>
+            <li>Fix Date-Time of Incident</li>
+        </ol>
+        <h1>Fixing Issue With Time Zones</h1>
+        <p><%= @left %> of the incidents are left to be checked.</p>
+        <div id="table-container">
+            <table class="kpcc-table">
+                <tr>
+                    <th style="width: 10%;">Verified</th>
+                    <th style="width: 20%;">County</th>
+                    <th style="width: 45%;">DA Letter</th>
+                    <th style="width: 20%;">Time Stamp</th>
+                    <th style="width: 10%;">Edit</th>
+                </tr>
+                <% @incidents.each do |incident| %>
+                    <%= simple_form_for(incident) do |item| %>
+                        <tr>
+                            <% if incident.verified == false %>
+                                <td style="width: 10%; color: red">&mdash;</td>
+                            <% else %>
+                                <td style="width: 10%; color: green">&#10004;</td>
+                            <% end %>
+                            <td style="width: 20%;"><%= incident.district_attorney_county %></td>
+                            <td style="width: 45%;"><a href="<%= incident.incident_url %>" target="blank"><%= incident.district_attorney_file_number %></a></td>
+                            <td style="width: 20%;"><%= item.input :date_of_incident %></td>
+                            <td style="width: 10%;">
+                                <%= submit_tag "Submit", :class => "btn btn-success btn-lg btn-block", :id => "incidentsubmit"  %>
+                            </td>
+                        </tr>
+                        <%= hidden_field_tag "incident_id", incident.id %>
+                        <%= hidden_field_tag :redirect_location, "/incidents/fix-times" %>
+                    <% end %>
+                <% end %>
+            </table>
+        </div>
+    </div>
+</div>
