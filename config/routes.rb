@@ -22,6 +22,8 @@ Rails.application.routes.draw do
 
   get "/incidents/transcribe" => "incidents#transcribe"
 
+  get "/incidents/new" => "incidents#new"
+
   get "/incidents/verify" => "incidents#verify"
 
   get "/incidents/classify-response" => "incidents#classify_response"
