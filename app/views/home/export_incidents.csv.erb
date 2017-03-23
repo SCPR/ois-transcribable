@@ -54,7 +54,7 @@ CSV.generate do |csv|
 
         # fix the incident date
         if item.date_of_incident
-            date_of_incident_string = item.date_of_incident.strftime "%Y-%m-%d %H:%M"
+            date_of_incident_string = item.date_of_incident.strftime "%Y-%m-%d %H:%M %Z"
         elsif
             date_of_incident_string = "NULL"
         end
