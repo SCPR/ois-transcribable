@@ -1,40 +1,60 @@
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <ol class="breadcrumb">
-            <li><%= link_to 'Home', controller: :home, action: :index %></li>
-            <li>Fix Date-Time of Incident</li>
-        </ol>
-        <h1>Fixing Issue With Time Zones</h1>
-        <p><%= @left %> of the incidents are left to be checked.</p>
-        <div id="table-container">
-            <table class="kpcc-table">
-                <tr>
-                    <th style="width: 10%;">Verified</th>
-                    <th style="width: 20%;">County</th>
-                    <th style="width: 45%;">DA Letter</th>
-                    <th style="width: 20%;">Time Stamp</th>
-                    <th style="width: 10%;">Edit</th>
-                </tr>
-                <% @incidents.each do |incident| %>
-                    <%= simple_form_for(incident) do |item| %>
-                        <tr>
-                            <% if incident.verified == false %>
-                                <td style="width: 10%; color: red">&mdash;</td>
-                            <% else %>
-                                <td style="width: 10%; color: green">&#10004;</td>
-                            <% end %>
-                            <td style="width: 20%;"><%= incident.district_attorney_county %></td>
-                            <td style="width: 45%;"><a href="<%= incident.incident_url %>" target="blank"><%= incident.district_attorney_file_number %></a></td>
-                            <td style="width: 20%;"><%= item.input :date_of_incident %></td>
-                            <td style="width: 10%;">
-                                <%= submit_tag "Submit", :class => "btn btn-success btn-lg btn-block", :id => "incidentsubmit"  %>
-                            </td>
-                        </tr>
-                        <%= hidden_field_tag "incident_id", incident.id %>
-                        <%= hidden_field_tag :redirect_location, "/incidents/fix-times" %>
-                    <% end %>
-                <% end %>
-            </table>
+<ol class="breadcrumb">
+    <li><%= link_to 'Home', controller: :home, action: :index %></li>
+    <li><%= link_to 'Fix Incident Date and Time', controller: :incidents, action: :fix_times %></li>
+    <li><%= @left %> of incidents have to be checked.</p></li>
+</ol>
+
+<div class="row data-visuals">
+    <% if flash[:alert] %>
+        <div class="warn"><%= flash[:alert] %></div>
+    <% end %>
+    <% if flash[:notice] %>
+        <div class="notice"><%= flash[:notice] %></div>
+    <% end %>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <div id="doc"></div>
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        <div id="form">
+
+            <%= simple_form_for(@this) do |incident| %>
+                <h5>Fix Date and Times</h5>
+                <div class="do_something">
+                    <%= incident.input :district_attorney_date_of_letter, class: "form-control", as: :date, start_year: Date.today.year - 15, end_year: Date.today.year, order: [:month, :day,  :year], label: "District Attorney Date Of Letter", hint: "* Day, month and year of district attorney letter declining to prosecute." %>
+                    <%= incident.input :date_of_incident, class: "form-control", as: :datetime, start_year: Date.today.year - 15, end_year: Date.today.year, label: "Date & Time Of Incident", hint: "* Date and time of the shooting incident" %>
+                </div>
+                <%= submit_tag "Submit The Edited Information", :class => "btn btn-success btn-lg btn-block", :id => "incidentsubmit"  %>
+                <%= hidden_field_tag "incident_id", @this.id %>
+                <%= hidden_field_tag :redirect_location, "/incidents/fix-times" %>
+            <% end %>
         </div>
     </div>
 </div>
+
+<script>
+    var dc_slug = "<%= @this.incident_url %>".replace("https://www.documentcloud.org/documents/", "");
+    var fn = fn || {};
+    var fn = {
+        getDocumentMeta: function(data){
+            $("#document-title").html(data.document.title);
+        }
+    };
+    var doc_width = $("#doc").width();
+    var existing_height = $(".kpcc-header").height() + $(".kpcc-footer").height() + $(".breadcrumb").height();
+    var remaining_height = screen.height - existing_height;
+    var doc_height = remaining_height - 210;
+    $(".data-visuals").css("height", doc_height - 5);
+    $("#form").css("height", doc_height);
+    $(".overflow").css("height", doc_height - 165);
+    var CURRENT_DOCUMENT = DV.load("https://documentcloud.org/documents/" + dc_slug + ".js", {
+        container: "#doc",
+        width: doc_width,
+        height: doc_height,
+        zoom: "auto",
+        showSidebar: false,
+        embedded: true,
+        showAnnotations: false
+    });
+    var docJson = "https://www.documentcloud.org/api/documents/" + dc_slug + ".json";
+    $.getJSON(docJson, fn.getDocumentMeta);
+</script>

@@ -60,6 +60,7 @@ class IncidentsController < ApplicationController
     def fix_times
         @incidents = Incident.where("on_duty_shooting_case = '1'").where("transcribed = '1'").where("updated_at < '2017-03-23 00:01:00'").order(verified: :desc, district_attorney_county: :asc, district_attorney_file_number: :asc)
         @left = @incidents.count
+        @this = @incidents.first()
     end
 
     def show
