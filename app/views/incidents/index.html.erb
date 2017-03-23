@@ -5,6 +5,14 @@
             <li><%= link_to 'Home', controller: :home, action: :index %></li>
             <li>Edit An Incident</li>
         </ol>
+
+        <% if flash[:alert] %>
+            <div class="warn"><%= flash[:alert] %></div>
+        <% end %>
+        <% if flash[:notice] %>
+            <div class="notice"><%= flash[:notice] %></div>
+        <% end %>
+
         <h1><%= @incidents_total.size %> incidents exist in our system</h1>
         <ul>
             <li><%= @incidents_verified.size %> incidents verified</li>
