@@ -1,0 +1,9 @@
+<%= simple_form_for(@incident) do |f| %>
+    <div class="do_something">
+        <h5>Load a new DA letter</h5>
+        <%= f.input :incident_url, label: "URL To Document Cloud Letter", hint: "* Link to the District Attorney summary letter on DocumentCloud." %>
+        <%= f.input :district_attorney_county, class: "form-control", label: "District Attorney's County", hint: "* County of District Attorney's office that reviewed the letter." %>
+        <%= f.input :transcribed, :as => :hidden, :input_html => { :value => false } %>
+    </div>
+    <%= submit_tag "Submit The Edited Information", :class => "btn btn-success btn-lg btn-block", :id => "incidentsubmit"  %>
+<% end %>
