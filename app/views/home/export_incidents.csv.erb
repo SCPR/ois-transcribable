@@ -54,21 +54,14 @@ CSV.generate do |csv|
 
         # fix the incident date
         if item.date_of_incident
-            date_of_incident_pacific = item.date_of_incident.in_time_zone("Pacific Time (US & Canada)")
-            offset = date_of_incident_pacific.utc_offset()
-            date_of_incident_correct = date_of_incident_pacific += offset.abs
-            date_of_incident_string = date_of_incident_correct.strftime "%Y-%m-%d %H:%M"
+            date_of_incident_string = item.date_of_incident.strftime "%Y-%m-%d %H:%M"
         elsif
             date_of_incident_string = "NULL"
         end
-        # puts date_of_incident_string
 
         # fix the date of da letter
         if item.district_attorney_date_of_letter
-            da_date_of_letter_pacific = item.district_attorney_date_of_letter.in_time_zone("Pacific Time (US & Canada)")
-            offset = da_date_of_letter_pacific.utc_offset()
-            da_date_of_letter_correct = da_date_of_letter_pacific += offset.abs
-            da_date_of_letter_string = da_date_of_letter_correct.strftime "%Y-%m-%d"
+            da_date_of_letter_string = item.district_attorney_date_of_letter.strftime "%Y-%m-%d"
         elsif
             da_date_of_letter_string = "NULL"
         end

@@ -21,19 +21,8 @@ class HomeController < ApplicationController
     def export_dashboard_json_data
         @people = Person.select("people.id, people.district_attorney_file_number, people.incident_url, people.person_name, people.person_ethnicity, people.person_gender, people.person_age, people.person_killed, people.person_armed, people.armed_with_firearm, people.armed_with_weapon, people.used_vehicle_as_weapon, people.person_ignored_officer_commands, people.person_hid_hands_from_officer, people.person_reached_for_waistband, people.person_fled_by_foot_or_vehicle, people.person_grabbed_for_officers_weapon_holster, people.person_signs_of_mental_illness, people.person_signs_of_impairment").where("person_shot = '1'").joins(:incident).where("district_attorney_county = 'Los Angeles'").where("on_duty_shooting_case = '1'")
         @people.each do |item|
-            # fix the incident date
-            date_of_incident_pacific = item.incident.date_of_incident.in_time_zone("Pacific Time (US & Canada)")
-            offset = date_of_incident_pacific.utc_offset()
-            date_of_incident_correct = date_of_incident_pacific += offset.abs
-            date_of_incident_string = date_of_incident_correct.strftime "%Y-%m-%d %H:%M %Z"
-            item.incident.date_of_incident = date_of_incident_string
-            # fix the date of da letter
-            da_date_of_letter_pacific = item.incident.district_attorney_date_of_letter.in_time_zone("Pacific Time (US & Canada)")
-            offset = da_date_of_letter_pacific.utc_offset()
-            da_date_of_letter_correct = da_date_of_letter_pacific += offset.abs
-            da_date_of_letter_string = da_date_of_letter_correct.strftime "%Y-%m-%d"
-            puts da_date_of_letter_string
-            item.incident.district_attorney_date_of_letter = da_date_of_letter_string
+            item.incident.date_of_incident = item.incident.date_of_incident.strftime "%Y-%m-%d %H:%M %Z"
+            item.incident.district_attorney_date_of_letter = item.incident.district_attorney_date_of_letter.strftime "%Y-%m-%d"
         end
 
         render :json => @people.as_json(:include => {:incident => {:only => [:district_attorney_county, :district_attorney_date_of_letter, :type_of_incident, :date_of_incident, :officer_self_defense, :officer_defense_of_civillians, :officer_defense_of_officers]}})
