@@ -67,6 +67,22 @@ class IncidentsController < ApplicationController
 
     def create
         @incident = Incident.new(incident_params)
+        if @incident.incident_url.include? ".html"
+           @incident.incident_url = @incident.incident_url.sub! ".html", ""
+        else
+            @incident.incident_url = @incident.incident_url
+        end
+        if(@incident.save)
+            #Saved successfully; go to the index (or wherever)...
+            mssg_text = @incident.incident_url.sub! "https://www.documentcloud.org/documents/", ""
+            flash[:notice] = "Incident " + mssg_text + " successfully created"
+            redirect_to :action => :new
+        else
+            #Validation failed; show the "new" form again...
+            mssg_text = @incident.incident_url.sub! "https://www.documentcloud.org/documents/", ""
+            flash[:alert] = "URL not saved. Incident " + mssg_text + " likely already exists"
+            redirect_to :action => :index
+        end
     end
 
     def edit
