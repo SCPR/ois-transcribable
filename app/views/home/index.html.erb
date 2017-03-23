@@ -60,33 +60,26 @@
                         <li><%= link_to "Edit people", people_path(), class: "btn btn-success" %></li>
                     <% end %>
                 </ul>
+                <hr></hr>
+                <h5 class="text-center">Statistics</h5>
+                <ul>
+                    <li><%= link_to "Los Angeles County statistics", statistics_path(:anchor => "original") %> about <%= @original_people.size %>  people shot that formed the basis for <a href="http://projects.scpr.org/officer-involved/">#OfficerInvolved</a>.</li>
+                    <li><%= link_to "San Bernardino County statistics", statistics_path(:anchor => "san-bernardino") %> about <%= @sb_people.size %>  people shot.</li>
+                    <li><%= link_to "Explore details", statistics_path(:anchor => "all") %> about the <%= @all_people.size %> people we've recorded that were shot by law enforcement.</li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="text-center col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <% if @user.email == "wcterrill@gmail.com" %>
-            <% if @verified.size == 0 %>
-                <h6>We haven't verified any incidents.</h6>
-            <% else %>
-                <h6><%= link_to "Explore details", statistics_path(:anchor => "all") %> about the <%= @all_people.size %> people shot by law enforcement.</h6>
-                <h6><%= link_to "Explore details", statistics_path(:anchor => "original") %> about <%= @original_people.size %>  people shot by Los Angeles County law enforcement.</h6>
-                <h6><%= link_to "Explore details", statistics_path(:anchor => "san-bernardino") %> about <%= @sb_people.size %>  people shot by San Bernardino County law enforcement.</h6>
-            <% end %>
-        <% elsif @verified.size == 0 %>
-            <h6>We haven't verified any incidents. You should transcribe or verify some</h6>
-        <% else %>
-            <h6><%= link_to "Explore details", statistics_path(:anchor => "original") %> about <%= @original_people.size %>  people shot by Los Angeles County law enforcement that formed the basis for <a href="http://projects.scpr.org/officer-involved/">#OfficerInvolved</a>.</h6>
-            <h6><%= link_to "Explore details", statistics_path(:anchor => "san-bernardino") %> about <%= @sb_people.size %>  people shot by San Bernardino County law enforcement.</h6>
-            <h6><%= link_to "Explore details", statistics_path(:anchor => "all") %> about the <%= @all_people.size %> people shot by law enforcement.</h6>
-        <% end %>
         <h6>Build a new <%= link_to 'json file', dashboard_json_data_path(format: :json) %> file for the <a href="http://projects.scpr.org/officer-involved/explore/">published data exploration tool</a>.</h6>
         <h6><%= link_to 'Download a csv file', dashboard_csv_data_path(format: :csv) %> of <a href="https://github.com/SCPR/kpcc-data-team/tree/master/data/kpcc-officer-involved#data-dictionary">selected fields</a>.</h6>
         <h6>Download the relational database as a <%= link_to 'json file', all_json_data_path(format: :json) %> or <%= link_to 'a csv file', all_csv_data_path(format: :csv) %>.</h6>
         <h6>Export a backup of the <%= link_to 'incidents table csv', bak_incident_data_path(format: :csv) %>.</h6>
         <h6>Export a backup of the <%= link_to 'people table csv', bak_people_data_path(format: :csv) %>.</h6>
         <h6>Export a backup of the <%= link_to 'users table csv', bak_user_data_path(format: :csv) %>.</h6>
+        <h6><%= link_to 'Add a DA letter', incidents_new_path() %> from Document Cloud URL.</h6>
         <hr></hr>
     </div>
 </div>

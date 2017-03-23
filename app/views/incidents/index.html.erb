@@ -18,6 +18,9 @@
             <li><%= @incidents_verified.size %> incidents verified</li>
             <li><%= @incidents_awaiting_verification.size %> incidents awaiting verification</li>
             <li><%= @incidents_awaiting_transcription.size %> incidents awaiting transcription</li>
+            <li><%= link_to 'Fix Incident Date and Time', controller: :incidents, action: :fix_times %></li>
+            <li><%= link_to 'Classify Responses', controller: :incidents, action: :classify_response %></li>
+            <li><%= link_to 'Classify Moving Cars Cases', controller: :incidents, action: :moving_cars %></li>
         </ul>
         <hr></hr>
         <div id="table-container">
