@@ -2,8 +2,7 @@ class Incident < ActiveRecord::Base
     transcribable :district_attorney_file_number,
         :district_attorney_county,
         :district_attorney_prepared_report
-
-    #validates :district_attorney_file_number, uniqueness:true, allow_blank: true, allow_nil: true
+    validates :incident_url, uniqueness:true, allow_blank: false, allow_nil: false
     has_many :transcriptions
     has_many :people, primary_key: "district_attorney_file_number", foreign_key: "district_attorney_file_number"
     accepts_nested_attributes_for :people
