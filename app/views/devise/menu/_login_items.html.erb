@@ -1,6 +1,6 @@
 <ul class="list-inline">
     <% if user_signed_in? %>
-        <% if @user.email == "ckeller@scpr.org" or @user.email == "elarrubia@scpr.org" %>
+        <% if @user.email == "ckeller@scpr.org" or @user.email == "elarrubia@scpr.org" or @user.email == "amendelson@scpr.org" %>
             <li><%= link_to('Invite new users', new_invitation_path(:user), class: "btn btn-success") %></li>
         <% end %>
         <li><%= link_to('Logout', destroy_user_session_path, :method => :get, class: "btn btn-danger") %></li>
