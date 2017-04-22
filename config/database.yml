@@ -12,6 +12,8 @@ default: &default
 development:
   <<: *default
   database: ois_transcriptions
+  username: root
+  password: 8bBiAuo&
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

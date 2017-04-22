@@ -4,6 +4,10 @@ gem 'pry'
 
 gem 'simple_form'
 
+# gem 'transcribable', :git => 'https://github.com/SCPR/transcribable.git'
+
+gem 'uuid'
+
 gem 'devise'
 
 gem 'devise-bootstrap-views'
